@@ -1,232 +1,221 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import {
-  Editor,
-  EditorProvider,
-  ContentEditableEvent,
-  BtnBold,
-  BtnBulletList,
-  BtnClearFormatting,
-  BtnItalic,
-  BtnLink,
-  BtnNumberedList,
-  BtnRedo,
-  BtnStrikeThrough,
-  BtnStyles,
-  BtnUnderline,
-  BtnUndo,
-  HtmlButton,
-  Separator,
-  Toolbar,
-} from "react-simple-wysiwyg";
 
 const AddPatientForm: React.FC = () => {
-  // Text Editor
-  const [value, setValue] = useState<string>("Type your message here...");
+  const [formData, setFormData] = useState({
+    patientName: "",
+    mobileNumber: "",
+    emailAddress: "",
+    dateOfBirth: "",
+    address: "",
+    city: "",
+    stateProvince: "",
+    postalCode: "",
+    emergencyContactNumber: "",
+    gender: "",
+    status: "",
+  });
 
-  function onChange(e: ContentEditableEvent) {
-    setValue(e.target.value);
-  }
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Upload images
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const filesArray = Array.from(event.target.files);
-      setSelectedImages((prevImages) => [...prevImages, ...filesArray]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/addpatient", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      setLoading(false);
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error || "Failed to add patient");
+        return;
+      }
+
+      alert("Patient added successfully!");
+      setFormData({
+        patientName: "",
+        mobileNumber: "",
+        emailAddress: "",
+        dateOfBirth: "",
+        address: "",
+        city: "",
+        stateProvince: "",
+        postalCode: "",
+        emergencyContactNumber: "",
+        gender: "",
+        status: "",
+      });
+    } catch (err) {
+      setLoading(false);
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
     }
   };
 
-  const handleRemoveImage = (index: number) => {
-    setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
-
   return (
-    <>
-      <form>
-        <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-          <div className="trezo-card-content">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-              <div className="sm:col-span-2">
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  ID
-                </label>
-                <input
-                  type="text"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                  placeholder="Enter ID"
-                />
-              </div>
+    <form onSubmit={handleSubmit}>
+      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-6 p-6 rounded-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <input
+            name="patientName"
+            type="text"
+            placeholder="Enter Patient Name(required)"
+            value={formData.patientName}
+            onChange={handleChange}
+            required
+            className="input"
+          />
 
-              <div>
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                  placeholder="Enter First Name"
-                />
-              </div>
+          <input
+            name="mobileNumber"
+            type="text"
+            placeholder="Enter Mobile Number(required)"
+            value={formData.mobileNumber}
+            onChange={handleChange}
+            required
+            className="input"
+          />
 
-              <div>
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                  placeholder="Enter Last Name"
-                />
-              </div>
+          <input
+            name="emailAddress"
+            type="email"
+            placeholder="Enter Email Address"
+            value={formData.emailAddress}
+            onChange={handleChange}
+            className="input"
+          />
 
-              <div>
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Email Address
-                </label>
-                <input
-                  type="text"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                  placeholder="Enter Email Address"
-                />
-              </div>
+          <input
+            name="dateOfBirth"
+            type="date"
+            placeholder="Enter DOB"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            className="input"
+          />
 
-              <div>
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                  placeholder="Enter Phone Number"
-                />
-              </div>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            className="input"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
 
-              <div className="sm:col-span-2">
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Disease Description
-                </label>
-                <EditorProvider>
-                  <Editor
-                    value={value}
-                    onChange={onChange}
-                    style={{ minHeight: "200px" }}
-                    className="rsw-editor"
-                  >
-                    <Toolbar>
-                      <BtnUndo />
-                      <BtnRedo />
-                      <Separator />
-                      <BtnBold />
-                      <BtnItalic />
-                      <BtnUnderline />
-                      <BtnStrikeThrough />
-                      <Separator />
-                      <BtnNumberedList />
-                      <BtnBulletList />
-                      <Separator />
-                      <BtnLink />
-                      <BtnClearFormatting />
-                      <HtmlButton />
-                      <Separator />
-                      <BtnStyles />
-                    </Toolbar>
-                  </Editor>
-                </EditorProvider>
-              </div>
+          <input
+            name="address"
+            type="text"
+            placeholder="Enter Address"
+            value={formData.address}
+            onChange={handleChange}
+            className="input"
+          />
 
-              <div className="sm:col-span-2">
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Appointment Date
-                </label>
-                <input
-                  type="date"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                />
-              </div>
+          <input
+            name="city"
+            type="text"
+            placeholder="Enter City"
+            value={formData.city}
+            onChange={handleChange}
+            className="input"
+          />
 
-              <div className="sm:col-span-2">
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Add Avatar
-                </label>
-                <div id="fileUploader">
-                  <div className="relative flex items-center justify-center overflow-hidden rounded-md py-[88px] px-[20px] border border-gray-200 dark:border-[#172036]">
-                    <div className="flex items-center justify-center">
-                      <div className="w-[35px] h-[35px] border border-gray-100 dark:border-[#15203c] flex items-center justify-center rounded-md text-primary-500 text-lg ltr:mr-[12px] rtl:ml-[12px]">
-                        <i className="ri-upload-2-line"></i>
-                      </div>
-                      <p className="leading-[1.5]">
-                        <strong className="text-black dark:text-white">
-                          Click to upload
-                        </strong>
-                        <br /> you file here
-                      </p>
-                    </div>
+          <input
+            name="stateProvince"
+            type="text"
+            placeholder="Enter State/Province"
+            value={formData.stateProvince}
+            onChange={handleChange}
+            className="input"
+          />
 
-                    <input
-                      type="file"
-                      id="fileInput"
-                      multiple
-                      accept="image/*"
-                      className="absolute top-0 left-0 right-0 bottom-0 rounded-md z-[1] opacity-0 cursor-pointer"
-                      onChange={handleFileChange}
-                    />
-                  </div>
+          <input
+            name="postalCode"
+            type="text"
+            placeholder="Enter Postal Code"
+            value={formData.postalCode}
+            onChange={handleChange}
+            className="input"
+          />
 
-                  {/* Image Previews */}
-                  <div className="mt-[10px] flex flex-wrap gap-2">
-                    {selectedImages.map((image, index) => (
-                      <div key={index} className="relative w-[50px] h-[50px]">
-                        <Image
-                          src={URL.createObjectURL(image)}
-                          alt="product-preview"
-                          width={50}
-                          height={50}
-                          className="rounded-md"
-                        />
-                        <button
-                          type="button"
-                          className="absolute top-[-5px] right-[-5px] bg-orange-500 text-white w-[20px] h-[20px] flex items-center justify-center rounded-full text-xs rtl:right-auto rtl:left-[-5px]"
-                          onClick={() => handleRemoveImage(index)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <input
+            name="emergencyContactNumber"
+            type="text"
+            placeholder="Enter Emergency Contact"
+            value={formData.emergencyContactNumber}
+            onChange={handleChange}
+            className="input"
+          />
+
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            className="input"
+            required
+          >
+            <option value="">Select Status</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Deactivated">Deactivated</option>
+          </select>
         </div>
 
-        <div className="trezo-card mb-[25px]">
-          <div className="trezo-card-content">
-            <button
-              type="button"
-              className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
-            >
-              Cancel
-            </button>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
 
-            <button
-              type="button"
-              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
-            >
-              <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
-                <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                  add
-                </i>
-                Add Patient
-              </span>
-            </button>
-          </div>
+        <div className="mt-6 flex gap-4">
+          <button
+            type="button"
+            className="bg-gray-500 text-white px-5 py-2 rounded-md"
+            onClick={() =>
+              setFormData({
+                patientName: "",
+                mobileNumber: "",
+                emailAddress: "",
+                dateOfBirth: "",
+                address: "",
+                city: "",
+                stateProvince: "",
+                postalCode: "",
+                emergencyContactNumber: "",
+                gender: "",
+                status: "",
+              })
+            }
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-500"
+          >
+            {loading ? "Submitting..." : "Add Patient"}
+          </button>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
 
