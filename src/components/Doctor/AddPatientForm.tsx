@@ -71,148 +71,200 @@ const AddPatientForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-6 p-6 rounded-md">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <input
-            name="patientName"
-            type="text"
-            placeholder="Enter Patient Name(required)"
-            value={formData.patientName}
-            onChange={handleChange}
-            required
-            className="input"
-          />
-
-          <input
-            name="mobileNumber"
-            type="text"
-            placeholder="Enter Mobile Number(required)"
-            value={formData.mobileNumber}
-            onChange={handleChange}
-            required
-            className="input"
-          />
-
-          <input
-            name="emailAddress"
-            type="email"
-            placeholder="Enter Email Address"
-            value={formData.emailAddress}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <input
-            name="dateOfBirth"
-            type="date"
-            placeholder="Enter DOB"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="input"
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <input
-            name="address"
-            type="text"
-            placeholder="Enter Address"
-            value={formData.address}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <input
-            name="city"
-            type="text"
-            placeholder="Enter City"
-            value={formData.city}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <input
-            name="stateProvince"
-            type="text"
-            placeholder="Enter State/Province"
-            value={formData.stateProvince}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <input
-            name="postalCode"
-            type="text"
-            placeholder="Enter Postal Code"
-            value={formData.postalCode}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <input
-            name="emergencyContactNumber"
-            type="text"
-            placeholder="Enter Emergency Contact"
-            value={formData.emergencyContactNumber}
-            onChange={handleChange}
-            className="input"
-          />
-
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="input"
-            required
-          >
-            <option value="">Select Status</option>
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-            <option value="Deactivated">Deactivated</option>
-          </select>
+      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+        <div className="trezo-card-content">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Patient Name
+              </label>
+              <input
+                name="patientName"
+                type="text"
+                placeholder="Enter Patient Name"
+                value={formData.patientName}
+                onChange={handleChange}
+                required
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Mobile Numebr
+              </label>
+              <input
+                name="mobileNumber"
+                type="text"
+                placeholder="Enter Mobile Number"
+                value={formData.mobileNumber}
+                onChange={handleChange}
+                required
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Email Address
+              </label>
+              <input
+                name="emailAddress"
+                type="email"
+                placeholder="Enter Email Address"
+                value={formData.emailAddress}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Date Of Birth
+              </label>
+              <input
+                name="dateOfBirth"
+                type="date"
+                placeholder="Enter DOB"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Select Gender
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Address
+              </label>
+              <input
+                name="address"
+                type="text"
+                placeholder="Enter Address"
+                value={formData.address}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                City
+              </label>
+              <input
+                name="city"
+                type="text"
+                placeholder="Enter City"
+                value={formData.city}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                State
+              </label>
+              <input
+                name="stateProvince"
+                type="text"
+                placeholder="Enter State/Province"
+                value={formData.stateProvince}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Postal Code
+              </label>
+              <input
+                name="postalCode"
+                type="text"
+                placeholder="Enter Postal Code"
+                value={formData.postalCode}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Emergency Contact Number
+              </label>
+              <input
+                name="emergencyContactNumber"
+                type="text"
+                placeholder="Enter Emergency Contact"
+                value={formData.emergencyContactNumber}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Select Status
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                required
+              >
+                <option value="">Select Status</option>
+                <option value="Active">Active</option>
+                <option value="Suspended">Suspended</option>
+                <option value="Deactivated">Deactivated</option>
+              </select>
+            </div>
+          </div>
         </div>
-
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
-        <div className="mt-6 flex gap-4">
-          <button
-            type="button"
-            className="bg-gray-500 text-white px-5 py-2 rounded-md"
-            onClick={() =>
-              setFormData({
-                patientName: "",
-                mobileNumber: "",
-                emailAddress: "",
-                dateOfBirth: "",
-                address: "",
-                city: "",
-                stateProvince: "",
-                postalCode: "",
-                emergencyContactNumber: "",
-                gender: "",
-                status: "",
-              })
-            }
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-500"
-          >
-            {loading ? "Submitting..." : "Add Patient"}
-          </button>
+        <div className="trezo-card mt-[25px]">
+          <div className="trezo-card-content">
+            <button
+              type="button"
+              className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
+              onClick={() =>
+                setFormData({
+                  patientName: "",
+                  mobileNumber: "",
+                  emailAddress: "",
+                  dateOfBirth: "",
+                  address: "",
+                  city: "",
+                  stateProvince: "",
+                  postalCode: "",
+                  emergencyContactNumber: "",
+                  gender: "",
+                  status: "",
+                })
+              }
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
+            >
+              <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                  add
+                </i>
+                {loading ? "Submitting..." : "Add Patient"}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </form>
