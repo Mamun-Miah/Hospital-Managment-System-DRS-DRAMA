@@ -1,11 +1,14 @@
 "use client";
-
+import { useSession } from 'next-auth/react'
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const ProfileMenu: React.FC = () => {
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const pathname = usePathname();
 
   const [active, setActive] = useState<boolean>(false);
@@ -55,7 +58,7 @@ const ProfileMenu: React.FC = () => {
           height={35}
         />
         <span className="block font-semibold text-[0px] lg:text-base">
-          Olivia
+          {user?.name}
         </span>
         <i className="ri-arrow-down-s-line text-[15px] absolute ltr:-right-[3px] rtl:-left-[3px] top-1/2 -translate-y-1/2 mt-px"></i>
       </button>
@@ -72,7 +75,7 @@ const ProfileMenu: React.FC = () => {
             />
             <div>
               <span className="block text-black dark:text-white font-medium">
-                Olivia John
+                {user?.name}
               </span>
               <span className="block text-xs">Marketing Manager</span>
             </div>
