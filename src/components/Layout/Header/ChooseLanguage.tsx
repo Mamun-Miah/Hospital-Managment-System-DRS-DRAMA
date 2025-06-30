@@ -26,9 +26,9 @@ const ChooseLanguage: React.FC = () => {
   const [active, setActive] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null); // Ref for the dropdown container
 
-  const handleDropdownToggle = () => {
-    setActive((prevState) => !prevState);
-  };
+  // const handleDropdownToggle = () => {
+  //   setActive((prevState) => !prevState);
+  // };
 
   // Handle clicks outside the dropdown
   useEffect(() => {
@@ -55,7 +55,7 @@ const ChooseLanguage: React.FC = () => {
       className="relative language-menu mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
       ref={dropdownRef}
     >
-      <button
+      {/* <button
         type="button"
         onClick={handleDropdownToggle}
         className={`leading-none pr-[12px] inline-block transition-all relative top-[2px] hover:text-primary-500 ${
@@ -66,7 +66,7 @@ const ChooseLanguage: React.FC = () => {
           translate
         </i>
         <i className="ri-arrow-down-s-line text-[15px] absolute -right-[3px] top-1/2 -translate-y-1/2 -mt-[2px]"></i>
-      </button>
+      </button> */}
 
       {active && (
         <div className="language-menu-dropdown bg-white dark:bg-[#0c1427] transition-all shadow-3xl dark:shadow-none pt-[13px] md:pt-[14px] absolute mt-[18px] md:mt-[21px] w-[200px] md:w-[240px] z-[1] top-full ltr:left-0 ltr:md:left-auto ltr:lg:right-0 rtl:right-0 rtl:md:right-auto rtl:lg:left-0 rounded-md">

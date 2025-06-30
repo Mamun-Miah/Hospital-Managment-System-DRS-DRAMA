@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Menu, MenuButton, MenuItems } from "@headlessui/react";
+import { Menu, MenuItems } from "@headlessui/react";
 import Image from "next/image";
 
 type App = {
@@ -63,11 +63,11 @@ const AppsMenu: React.FC = () => {
   return (
     <div className="connected-apps-menu relative ltr:ml-[13px] ltr:md:ml-[18px] ltr:lg:ml-[25px] rtl:ml-[r3px] rtl:md:mr-[18px] rtl:lg:mr-[25px]">
       <Menu as="div" className="relative inline-block text-left">
-        <MenuButton className="transition-all relative top-[2px] hover:text-primary-500">
+        {/* <MenuButton className="transition-all relative top-[2px] hover:text-primary-500">
           <i className="material-symbols-outlined !text-[22px] md:!text-[24px]">
             apps
           </i>
-        </MenuButton>
+        </MenuButton> */}
         <MenuItems
           transition
           className="bg-white dark:bg-[#0c1427] transition-all shadow-3xl dark:shadow-none pt-[20px] md:pt-[25px] px-[10px] md:px-[15px] pb-[5px] md:pb-[8px] absolute mt-[9px] md:mt-[20px] w-[240px] z-[1] top-full right-0 rounded-md data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"

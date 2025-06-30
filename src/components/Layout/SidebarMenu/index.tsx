@@ -3200,18 +3200,18 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
               </div>
             </div>
 
-            <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
-              <Link
-                href="/authentication/sign-in/"
+            <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <a
+              
                 className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
                   pathname === "/" ? "active" : ""
                 }`}
               >
-                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
+                <i className=" material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
                   logout
                 </i>
                  <SignOutButton/> 
-              </Link>
+              </a>
             </div>
           </div>
         </div>

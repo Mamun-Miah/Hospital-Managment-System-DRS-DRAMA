@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Settings from "./Settings";
 import DarkMode from "./DarkMode";
-import SearchForm from "./SearchForm";
+// import SearchForm from "./SearchForm";
 import AppsMenu from "./AppsMenu";
 import ChooseLanguage from "./ChooseLanguage";
 import Fullscreen from "./Fullscreen";
@@ -51,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ toggleActive }) => {
               </button>
             </div>
 
-            <SearchForm />
+            {/* <SearchForm /> */}
 
             <AppsMenu />
           </div>
