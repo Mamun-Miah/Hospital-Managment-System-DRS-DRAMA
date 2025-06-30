@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
+
 // import Image from "next/image";
 import Link from "next/link";
 
@@ -23,6 +25,11 @@ interface Patient {
 }
 
 const PatientsListTable: React.FC = () => {
+
+  //modal state
+    const [isOpen, setIsOpen] = useState(false);
+     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+//end modal state
   const [allPatients, setAllPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,6 +116,21 @@ const PatientsListTable: React.FC = () => {
     }
   }
 }; 
+
+
+//view patient details in modal
+const handleViewClick = async (id: number) => {
+  try {
+    const res = await fetch(`/api/patient/viewpatient/${id}`); // Adjust path based on your route
+    if (!res.ok) throw new Error('Failed to fetch');
+    const data = await res.json();
+    setSelectedPatient(data);
+    setIsOpen(true);
+  } catch (error) {
+    console.error("Error fetching patient:", error);
+  }
+};
+
 
 
   return (
@@ -250,14 +272,16 @@ const PatientsListTable: React.FC = () => {
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
                           {/* View button */}
-                          <Link href={`/patients/view/${patient.patient_id}`}>
+                          {/* <Link href={`view-patient/${patient.patient_id}`}> */}
                             <button
                               type="button"
                               className="text-primary-500 leading-none custom-tooltip"
+                              onClick={() => handleViewClick(patient.patient_id)}
+                              
                             >
                               <i className="material-symbols-outlined !text-md">visibility</i>
                             </button>
-                          </Link>
+                          {/* </Link> */}
 
                           {/* Edit button */}
                           <Link href={`/patients/edit/${patient.patient_id}`}>
@@ -359,6 +383,44 @@ const PatientsListTable: React.FC = () => {
           </div>
         </div>
       </div>
+{/* view modal */}
+  {isOpen && selectedPatient && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+      <button
+        className="absolute top-2 right-2 text-xl text-gray-500 hover:text-black"
+        onClick={() => setIsOpen(false)}
+      >
+        &times;
+      </button>
+      <h2 className="text-lg font-bold mb-2">Patient Details</h2>
+      <div className="space-y-2 text-sm">
+        <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
+        <p><strong>Email:</strong> {selectedPatient?.email}</p>
+        <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
+        <p><strong>DOB:</strong> {selectedPatient?.date_of_birth}</p>
+        <p><strong>Gender</strong> {selectedPatient?.gender}</p>
+        <p><strong>State</strong> {selectedPatient?.state_province}</p>
+        <p><strong>Postal Code</strong> {selectedPatient?.postal_code}</p>
+        <p><strong>Emergency Contact Number</strong> {selectedPatient?.emergency_contact_phone}</p>
+        <p><strong>Status:</strong> {selectedPatient?.status}</p>
+        {/* Add more fields as needed */}
+      </div>
+    </div>
+  </div>
+// view modal
+
+// edit modal
+
+
+
+
+)}
+
+
+
+
+
     </>
   );
 };
