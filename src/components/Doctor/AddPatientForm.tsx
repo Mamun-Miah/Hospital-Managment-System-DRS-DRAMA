@@ -33,7 +33,7 @@ const AddPatientForm: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/addpatient", {
+      const response = await fetch("/api/patient/addpatient", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -90,7 +90,7 @@ const AddPatientForm: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Mobile Numebr
+                Mobile Number
               </label>
               <input
                 name="mobileNumber"

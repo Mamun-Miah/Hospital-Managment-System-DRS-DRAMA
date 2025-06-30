@@ -1,304 +1,115 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 
 interface Patient {
-  id: string;
-  userId: string;
-  name: string;
-  avatar: string;
+  patient_id: number;
+  patient_name: string;
+  mobile_number: string;
   email: string;
-  phone: string;
-  disease: string;
-  appointmentDate: string;
+  date_of_birth: string;
+  gender: string;
+  address_line1: string;
+  city: string;
+  state_province: string;
+  postal_code: string;
+  emergency_contact_phone: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
   checked?: boolean;
 }
 
 const PatientsListTable: React.FC = () => {
-  // Sample data - in a real app, this would come from an API
-  const [allPatients, setAllPatients] = useState<Patient[]>([
-    {
-      id: "1",
-      userId: "#001",
-      name: "Johhna Loren",
-      avatar: "/images/users/user33.jpg",
-      email: "lorenjohna@gmail.com",
-      phone: "+1 555-225-4488",
-      disease: "Heart Attack",
-      appointmentDate: "05 Nov, 2025",
-      checked: false,
-    },
-    {
-      id: "2",
-      userId: "#002",
-      name: "Skyler White",
-      avatar: "/images/users/user34.jpg",
-      email: "skylerwhite@gmail.com",
-      phone: "+1 555-123-4567",
-      disease: "HBP",
-      appointmentDate: "04 Nov, 2025",
-      checked: false,
-    },
-    {
-      id: "3",
-      userId: "#003",
-      name: "Jonathon Watson",
-      avatar: "/images/users/user35.jpg",
-      email: "jonathonwatson@gmail.com",
-      phone: "+1 555-987-6543",
-      disease: "Chest Pain",
-      appointmentDate: "03 Nov, 2025",
-      checked: false,
-    },
-    {
-      id: "4",
-      userId: "#004",
-      name: "Walter White",
-      avatar: "/images/users/user36.jpg",
-      email: "walterwhite@gmail.com",
-      phone: "+1 555-456-7890",
-      disease: "Breathing Problem",
-      appointmentDate: "03 Nov, 2025",
-      checked: false,
-    },
-    {
-      id: "5",
-      userId: "#005",
-      name: "David Carlen",
-      avatar: "/images/users/user37.jpg",
-      email: "davidcarlen@gmail.com",
-      phone: "+1 555-369-7878",
-      disease: "Minor Heart Attack",
-      appointmentDate: "02 Nov, 2025",
-      checked: false,
-    },
-    {
-      id: "6",
-      userId: "#006",
-      name: "Sarah Johnson",
-      avatar: "/images/users/user38.jpg",
-      email: "sarahjohnson@gmail.com",
-      phone: "+1 555-111-2222",
-      disease: "Diabetes",
-      appointmentDate: "01 Nov, 2025",
-      checked: false,
-    },
-    {
-      id: "7",
-      userId: "#007",
-      name: "Michael Brown",
-      avatar: "/images/users/user39.jpg",
-      email: "michaelbrown@gmail.com",
-      phone: "+1 555-333-4444",
-      disease: "Migraine",
-      appointmentDate: "31 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "8",
-      userId: "#008",
-      name: "Emily Davis",
-      avatar: "/images/users/user40.jpg",
-      email: "emilydavis@gmail.com",
-      phone: "+1 555-555-6666",
-      disease: "Allergy",
-      appointmentDate: "30 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "9",
-      userId: "#009",
-      name: "Andrew Scott",
-      avatar: "/images/users/user41.jpg",
-      email: "andrewscott@gmail.com",
-      phone: "+1 555-777-8888",
-      disease: "Asthma",
-      appointmentDate: "29 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "10",
-      userId: "#010",
-      name: "Nina Patel",
-      avatar: "/images/users/user42.jpg",
-      email: "ninapatel@gmail.com",
-      phone: "+1 555-999-0000",
-      disease: "Thyroid",
-      appointmentDate: "28 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "11",
-      userId: "#011",
-      name: "Jake Sullivan",
-      avatar: "/images/users/user43.jpg",
-      email: "jakesullivan@gmail.com",
-      phone: "+1 555-654-3210",
-      disease: "Anemia",
-      appointmentDate: "27 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "12",
-      userId: "#012",
-      name: "Sophia Lee",
-      avatar: "/images/users/user44.jpg",
-      email: "sophialee@gmail.com",
-      phone: "+1 555-432-1098",
-      disease: "Arthritis",
-      appointmentDate: "26 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "13",
-      userId: "#013",
-      name: "Liam Miller",
-      avatar: "/images/users/user45.jpg",
-      email: "liammiller@gmail.com",
-      phone: "+1 555-321-6789",
-      disease: "Ulcer",
-      appointmentDate: "25 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "14",
-      userId: "#014",
-      name: "Grace Kim",
-      avatar: "/images/users/user46.jpg",
-      email: "gracekim@gmail.com",
-      phone: "+1 555-888-2222",
-      disease: "Cough & Cold",
-      appointmentDate: "24 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "15",
-      userId: "#015",
-      name: "Ethan Clark",
-      avatar: "/images/users/user47.jpg",
-      email: "ethanclark@gmail.com",
-      phone: "+1 555-111-3333",
-      disease: "Back Pain",
-      appointmentDate: "23 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "16",
-      userId: "#016",
-      name: "Olivia Moore",
-      avatar: "/images/users/user48.jpg",
-      email: "oliviamoore@gmail.com",
-      phone: "+1 555-444-5555",
-      disease: "Sinus",
-      appointmentDate: "22 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "17",
-      userId: "#017",
-      name: "Benjamin Lee",
-      avatar: "/images/users/user49.jpg",
-      email: "benjaminlee@gmail.com",
-      phone: "+1 555-666-7777",
-      disease: "Depression",
-      appointmentDate: "21 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "18",
-      userId: "#018",
-      name: "Ava Thompson",
-      avatar: "/images/users/user50.jpg",
-      email: "avathompson@gmail.com",
-      phone: "+1 555-888-9999",
-      disease: "Insomnia",
-      appointmentDate: "20 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "19",
-      userId: "#019",
-      name: "Lucas Harris",
-      avatar: "/images/users/user51.jpg",
-      email: "lucasharris@gmail.com",
-      phone: "+1 555-777-6666",
-      disease: "Cold",
-      appointmentDate: "19 Oct, 2025",
-      checked: false,
-    },
-    {
-      id: "20",
-      userId: "#020",
-      name: "Charlotte Walker",
-      avatar: "/images/users/user52.jpg",
-      email: "charlottewalker@gmail.com",
-      phone: "+1 555-555-4444",
-      disease: "Flu",
-      appointmentDate: "18 Oct, 2025",
-      checked: false,
-    },
-  ]);
-
-  // State management
-  const [filteredPatients, setFilteredPatients] = useState<Patient[]>(allPatients);
+  const [allPatients, setAllPatients] = useState<Patient[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Pagination
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const res = await fetch("/api/patient/patientlist");
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          const dataWithCheck = data.map((patient: Patient) => ({ ...patient, checked: false }));
+          setAllPatients(dataWithCheck);
+        } else {
+          console.error("Invalid data format:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+
+    fetchPatients();
+  }, []);
+
+  useEffect(() => {
+    const results = allPatients.filter(
+      (patient) =>
+        patient.patient_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patient.mobile_number.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredPatients(results);
+    setCurrentPage(1);
+  }, [searchTerm, allPatients]);
+
   const totalItems = filteredPatients.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPatients = filteredPatients.slice(startIndex, endIndex);
 
-  // Search functionality
-  useEffect(() => {
-    const results = allPatients.filter(
-      (patient) =>
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.disease.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.userId.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredPatients(results);
-    setCurrentPage(1); // Reset to first page when search changes
-  }, [searchTerm, allPatients]); // Added allPatients to dependencies
-
-  // Handle page change
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
-  // Handle checkbox change
-  const handleCheckboxChange = (id: string) => {
-    setAllPatients(prevPatients =>
-      prevPatients.map(patient =>
-        patient.id === id ? { ...patient, checked: !patient.checked } : patient
+  const handleCheckboxChange = (id: number) => {
+    setAllPatients((prev) =>
+      prev.map((patient) =>
+        patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
       )
     );
-    setFilteredPatients(prevPatients =>
-      prevPatients.map(patient =>
-        patient.id === id ? { ...patient, checked: !patient.checked } : patient
+    setFilteredPatients((prev) =>
+      prev.map((patient) =>
+        patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
       )
     );
   };
 
-  // Handle select all
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
-    setAllPatients(prevPatients =>
-      prevPatients.map(patient => ({ ...patient, checked: isChecked }))
-    );
-    setFilteredPatients(prevPatients =>
-      prevPatients.map(patient => ({ ...patient, checked: isChecked }))
-    );
+    setAllPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
+    setFilteredPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
   };
+
+ const handleDelete = async (id: number) => {
+  if (confirm("Are you sure you want to delete this patient?")) {
+    try {
+      const res = await fetch(`/api/patient/deletepatient/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setAllPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
+        setFilteredPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
+      } else {
+        console.error("Failed to delete patient");
+      }
+    } catch (error) {
+      console.error("Error deleting patient:", error);
+    }
+  }
+}; 
+
 
   return (
     <>
@@ -352,11 +163,11 @@ const PatientsListTable: React.FC = () => {
                           onChange={handleSelectAll}
                         />
                       </div>
-                      Code
+                      Patient ID
                     </div>
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Patient
+                    Patient Name
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Email
@@ -365,10 +176,10 @@ const PatientsListTable: React.FC = () => {
                     Phone No.
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Disease
+                    Gender
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Appoint. Date
+                    Status
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Action
@@ -379,7 +190,7 @@ const PatientsListTable: React.FC = () => {
               <tbody className="text-black dark:text-white">
                 {currentPatients.length > 0 ? (
                   currentPatients.map((patient) => (
-                    <tr key={patient.id}>
+                    <tr key={patient.patient_id}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
                           <div className="form-check relative top-[1.2px]">
@@ -387,15 +198,15 @@ const PatientsListTable: React.FC = () => {
                               type="checkbox"
                               className="cursor-pointer"
                               checked={patient.checked || false}
-                              onChange={() => handleCheckboxChange(patient.id)}
+                              onChange={() => handleCheckboxChange(patient.patient_id)}
                             />
                           </div>
                           <span className="block text-xs font-semibold text-gray-600 dark:text-gray-400">
-                            {patient.userId}
+                            {patient.patient_id}
                           </span>
                         </div>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
                           <div className="rounded-full w-[35px]">
                             <Image
@@ -410,55 +221,65 @@ const PatientsListTable: React.FC = () => {
                             {patient.name}
                           </span>
                         </div>
-                      </td>
+                      </td> */}
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-primary-500">
-                          {patient.email}
+                          {patient.patient_name}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {patient.phone}
+                          {patient?.email}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {patient.disease}
+                          {patient.mobile_number}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {patient.appointmentDate}
+                          {patient?.gender}
+                        </span>
+                      </td>
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                          {patient?.status}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
-                          <button
-                            type="button"
-                            className="text-primary-500 leading-none custom-tooltip"
-                          >
-                            <i className="material-symbols-outlined !text-md">
-                              visibility
-                            </i>
-                          </button>
-                          <button
-                            type="button"
-                            className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
-                          >
-                            <i className="material-symbols-outlined !text-md">
-                              edit
-                            </i>
-                          </button>
+                          {/* View button */}
+                          <Link href={`/patients/view/${patient.patient_id}`}>
+                            <button
+                              type="button"
+                              className="text-primary-500 leading-none custom-tooltip"
+                            >
+                              <i className="material-symbols-outlined !text-md">visibility</i>
+                            </button>
+                          </Link>
+
+                          {/* Edit button */}
+                          <Link href={`/patients/edit/${patient.patient_id}`}>
+                            <button
+                              type="button"
+                              className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
+                            >
+                              <i className="material-symbols-outlined !text-md">edit</i>
+                            </button>
+                          </Link>
+
+                          {/* Delete button */}
                           <button
                             type="button"
                             className="text-danger-500 leading-none custom-tooltip"
+                            onClick={() => handleDelete(patient.patient_id)}
                           >
-                            <i className="material-symbols-outlined !text-md">
-                              delete
-                            </i>
+                            <i className="material-symbols-outlined !text-md">delete</i>
                           </button>
                         </div>
                       </td>
+
                     </tr>
                   ))
                 ) : (
