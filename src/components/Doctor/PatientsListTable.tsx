@@ -79,24 +79,24 @@ const PatientsListTable: React.FC = () => {
     }
   };
 
-  const handleCheckboxChange = (id: number) => {
-    setAllPatients((prev) =>
-      prev.map((patient) =>
-        patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
-      )
-    );
-    setFilteredPatients((prev) =>
-      prev.map((patient) =>
-        patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
-      )
-    );
-  };
+  // const handleCheckboxChange = (id: number) => {
+  //   setAllPatients((prev) =>
+  //     prev.map((patient) =>
+  //       patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
+  //     )
+  //   );
+  //   setFilteredPatients((prev) =>
+  //     prev.map((patient) =>
+  //       patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
+  //     )
+  //   );
+  // };
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked;
-    setAllPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
-    setFilteredPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
-  };
+  // const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const isChecked = e.target.checked;
+  //   setAllPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
+  //   setFilteredPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
+  // };
 
  const handleDelete = async (id: number) => {
   if (confirm("Are you sure you want to delete this patient?")) {
@@ -175,7 +175,7 @@ const handleViewClick = async (id: number) => {
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     <div className="flex items-center gap-[10px]">
                       <div className="form-check relative top-[1.2px]">
-                        <input
+                        {/* <input
                           type="checkbox"
                           className="cursor-pointer"
                           checked={
@@ -183,7 +183,7 @@ const handleViewClick = async (id: number) => {
                             filteredPatients.every((p) => p.checked)
                           }
                           onChange={handleSelectAll}
-                        />
+                        /> */}
                       </div>
                       Patient ID
                     </div>
@@ -215,15 +215,15 @@ const handleViewClick = async (id: number) => {
                     <tr key={patient.patient_id}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
-                          <div className="form-check relative top-[1.2px]">
+                          {/* <div className="form-check relative top-[1.2px]">
                             <input
                               type="checkbox"
                               className="cursor-pointer"
                               checked={patient.checked || false}
                               onChange={() => handleCheckboxChange(patient.patient_id)}
                             />
-                          </div>
-                          <span className="block text-xs font-semibold text-gray-600 dark:text-gray-400">
+                          </div> */}
+                          <span className="block ms-5 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             {patient.patient_id}
                           </span>
                         </div>
@@ -284,7 +284,7 @@ const handleViewClick = async (id: number) => {
                           {/* </Link> */}
 
                           {/* Edit button */}
-                          <Link href={`/patients/edit/${patient.patient_id}`}>
+                          <Link href={`edit-patient/${patient.patient_id}`}>
                             <button
                               type="button"
                               className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
@@ -399,21 +399,16 @@ const handleViewClick = async (id: number) => {
         <p><strong>Email:</strong> {selectedPatient?.email}</p>
         <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
         <p><strong>DOB:</strong> {selectedPatient?.date_of_birth}</p>
-        <p><strong>Gender</strong> {selectedPatient?.gender}</p>
-        <p><strong>State</strong> {selectedPatient?.state_province}</p>
-        <p><strong>Postal Code</strong> {selectedPatient?.postal_code}</p>
-        <p><strong>Emergency Contact Number</strong> {selectedPatient?.emergency_contact_phone}</p>
+        <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
+        <p><strong>State:</strong> {selectedPatient?.state_province}</p>
+        <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
+        <p><strong>Emergency Contact Number:</strong> {selectedPatient?.emergency_contact_phone}</p>
         <p><strong>Status:</strong> {selectedPatient?.status}</p>
         {/* Add more fields as needed */}
       </div>
     </div>
   </div>
 // view modal
-
-// edit modal
-
-
-
 
 )}
 
