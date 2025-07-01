@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     emergencyContactNumber,
     gender,
     status,
+    image_url
   } = await req.json();
 
   if (!patientName || !mobileNumber || !status) {
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
       postal_code: postalCode,
       emergency_contact_phone: emergencyContactNumber,
       gender,
+      image_url: image_url || null,
       status,
     },
   });

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 
 const AddPatientForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const AddPatientForm: React.FC = () => {
     status: "",
   });
 
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,24 +29,60 @@ const AddPatientForm: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const filesArray = Array.from(event.target.files);
+      setSelectedImages(filesArray);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
+    let imageUrl = "";
+
     try {
+      if (selectedImages.length > 0) {
+        const formDataImg = new FormData();
+        formDataImg.append("image", selectedImages[0]);
+
+        const uploadRes = await fetch("/api/patient/uploadimage", {
+          method: "POST",
+          body: formDataImg,
+        });
+
+        const uploadData = await uploadRes.json();
+
+        if (uploadRes.ok) {
+          imageUrl = uploadData.imageUrl;
+        } else {
+          throw new Error("Image upload failed");
+        }
+      }
+
+      const patientData = {
+        ...formData,
+        image_url: imageUrl,
+      };
+
       const response = await fetch("/api/patient/addpatient", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patientData),
       });
 
-      setLoading(false);
+      const data = await response.json();
 
       if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || "Failed to add patient");
-        return;
+        throw new Error(data.error || "Failed to add patient");
       }
 
       alert("Patient added successfully!");
@@ -61,11 +99,11 @@ const AddPatientForm: React.FC = () => {
         gender: "",
         status: "",
       });
+      setSelectedImages([]);
     } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
       setLoading(false);
-      setError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
-      );
     }
   };
 
@@ -228,6 +266,64 @@ const AddPatientForm: React.FC = () => {
             </div>
           </div>
         </div>
+
+{/* image */}
+        <div className="sm:col-span-2 mt-[20px]">
+                <label className="mb-[1px] text-black dark:text-white font-medium block">
+                  Add Avatar
+                </label>
+                <div id="fileUploader">
+                  <div className="relative flex items-center justify-center overflow-hidden rounded-md py-[88px] px-[20px] border border-gray-200 dark:border-[#172036]">
+                    <div className="flex items-center justify-center">
+                      <div className="w-[35px] h-[35px] border border-gray-100 dark:border-[#15203c] flex items-center justify-center rounded-md text-primary-500 text-lg ltr:mr-[12px] rtl:ml-[12px]">
+                        <i className="ri-upload-2-line"></i>
+                      </div>
+                      <p className="leading-[1.5]">
+                        <strong className="text-black dark:text-white">
+                          Click to upload
+                        </strong>
+                        <br /> your file here
+                      </p>
+                    </div>
+
+                    <input
+                      type="file"
+                      id="fileInput"
+                      multiple
+                      accept="image/*"
+                      className="absolute top-0 left-0 right-0 bottom-0 rounded-md z-[1] opacity-0 cursor-pointer"
+                      onChange={handleFileChange}
+                    />
+                  </div>
+
+                  {/* Image Previews */}
+                  <div className="mt-[10px] flex flex-wrap gap-2">
+                    {selectedImages.map((image, index) => (
+                      <div key={index} className="relative w-[50px] h-[50px]">
+                        <Image
+                          src={URL.createObjectURL(image)}
+                          alt="product-preview"
+                          width={50}
+                          height={50}
+                          className="rounded-md"
+                        />
+                        <button
+                          type="button"
+                          className="absolute top-[-5px] right-[-5px] bg-orange-500 text-white w-[20px] h-[20px] flex items-center justify-center rounded-full text-xs rtl:right-auto rtl:left-[-5px]"
+                          onClick={() => handleRemoveImage(index)}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
         <div className="trezo-card mt-[25px]">
