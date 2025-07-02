@@ -1,5 +1,5 @@
  
-import AddPatientForm from "@/components/Doctor/AddPatientForm";
+import AddDoctor from "@/components/Doctor/AddDoctorComponent";
 import Link from "next/link";
 
 export default function Page() {
@@ -31,7 +31,7 @@ export default function Page() {
         </ol>
       </div>
 
-      <AddPatientForm />
+      <AddDoctor />
     </>
   );
 }
