@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
 
 // import Image from "next/image";
@@ -22,6 +23,7 @@ interface Patient {
   created_at: string;
   updated_at: string;
   checked?: boolean;
+  image_url?: string; // Optional field for patient image URL 
 }
 
 const PatientsListTable: React.FC = () => {
@@ -244,11 +246,11 @@ const handleViewClick = async (id: number) => {
                           </span>
                         </div>
                       </td>
-                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
                           <div className="rounded-full w-[35px]">
                             <Image
-                              src={patient.avatar}
+                              src={patient.image_url || "/uploads/default.avif"}
                               width={35}
                               height={35}
                               className="inline-block rounded-full"
@@ -256,15 +258,15 @@ const handleViewClick = async (id: number) => {
                             />
                           </div>
                           <span className="font-semibold inline-block">
-                            {patient.name}
+                            {patient.patient_name}
                           </span>
                         </div>
-                      </td> */}
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      </td>
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-primary-500">
                           {patient.patient_name}
                         </span>
-                      </td>
+                      </td> */}
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {patient?.email}
@@ -282,7 +284,7 @@ const handleViewClick = async (id: number) => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         ---
+                         {new Date(patient?.created_at).toLocaleDateString()}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
@@ -428,24 +430,46 @@ const handleViewClick = async (id: number) => {
 {/* view modal */}
   {isOpen && selectedPatient && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative">
       <button
         className="absolute top-2 right-2 text-xl text-gray-500 hover:text-black"
         onClick={() => setIsOpen(false)}
       >
         &times;
       </button>
-      <h2 className="text-lg font-bold mb-2">Patient Details</h2>
+      {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
+      <p className="text-lg font-bold underline">Patient Details:</p>
       <div className="space-y-2 text-sm">
-        <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
-        <p><strong>Email:</strong> {selectedPatient?.email}</p>
-        <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
-        <p><strong>DOB:</strong> {selectedPatient?.date_of_birth}</p>
-        <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
-        <p><strong>State:</strong> {selectedPatient?.state_province}</p>
-        <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
-        <p><strong>Emergency Contact Number:</strong> {selectedPatient?.emergency_contact_phone}</p>
-        <p><strong>Status:</strong> {selectedPatient?.status}</p>
+        <Image
+          src={selectedPatient.image_url || "/uploads/default.avif"}
+          width={150}
+          height={150}
+          className="inline-block rounded-full"
+          alt="user-image"
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+              <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
+              <p><strong>Email:</strong> {selectedPatient?.email}</p>
+              <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
+               <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
+              <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
+              <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
+              <p><strong>State:</strong> {selectedPatient?.state_province}</p>
+          </div>
+          <div>
+            
+            <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
+            <p><strong>Assigns Doctor:</strong> DR. X*</p>
+            <p><strong>Last Visit:</strong> {new Date(selectedPatient?.created_at).toLocaleDateString()}</p>
+            <p><strong>Next Visit:</strong> May 2024*</p>
+            <p><strong>Treatment:</strong> DR. X*</p>
+            <p><strong>Due Amount:</strong> 50000*</p>
+            <p><strong>Paid Amount:</strong> 50000*</p>
+            <p><strong>Status:</strong> {selectedPatient?.status}</p>
+          </div>
+        </div>
+        
         {/* Add more fields as needed */}
       </div>
     </div>

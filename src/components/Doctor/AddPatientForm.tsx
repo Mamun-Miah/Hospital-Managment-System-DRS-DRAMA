@@ -270,7 +270,7 @@ const AddPatientForm: React.FC = () => {
 {/* image */}
         <div className="sm:col-span-2 mt-[20px]">
                 <label className="mb-[1px] text-black dark:text-white font-medium block">
-                  Add Avatar
+                  Add Image
                 </label>
                 <div id="fileUploader">
                   <div className="relative flex items-center justify-center overflow-hidden rounded-md py-[88px] px-[20px] border border-gray-200 dark:border-[#172036]">
