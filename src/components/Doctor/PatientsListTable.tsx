@@ -442,8 +442,8 @@ const handleViewClick = async (id: number) => {
       <div className="space-y-2 text-sm">
         <Image
           src={selectedPatient.image_url || "/uploads/default.avif"}
-          width={150}
-          height={150}
+          width={100}
+          height={100}
           className="inline-block rounded-full"
           alt="user-image"
         />

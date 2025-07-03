@@ -6,13 +6,15 @@ import Image from "next/image";
 const AddDoctor: React.FC = () => {
   const [formData, setFormData] = useState({
     doctorName: "",
-    mobileNumber: "",
+    phone_number: "",
     emailAddress: "",
     specialization: "",
     address: "",
     city: "",
     stateProvince: "",
     status: "",
+    postal_code: "",
+    doctor_image: "", // Optional field for image URL
   });
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -49,7 +51,7 @@ const AddDoctor: React.FC = () => {
         const formDataImg = new FormData();
         formDataImg.append("image", selectedImages[0]);
 
-        const uploadRes = await fetch("/api/patient/uploadimage", {
+        const uploadRes = await fetch("/api/uploadimage", {
           method: "POST",
           body: formDataImg,
         });
@@ -65,10 +67,10 @@ const AddDoctor: React.FC = () => {
 
       const patientData = {
         ...formData,
-        image_url: imageUrl,
+        doctor_image: imageUrl,
       };
 
-      const response = await fetch("/api/patient/addpatient", {
+      const response = await fetch("/api/doctor/add-doctor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,13 +87,15 @@ const AddDoctor: React.FC = () => {
       alert("Patient added successfully!");
       setFormData({
         doctorName: "",
-        mobileNumber: "",
+        phone_number: "",
         emailAddress: "",
         address: "",
         city: "",
         stateProvince: "",
         specialization: "",
         status: "",
+        postal_code: "",
+        doctor_image: "", // Reset image URL
       });
       setSelectedImages([]);
     } catch (err) {
@@ -113,7 +117,7 @@ const AddDoctor: React.FC = () => {
                 Doctor Name
               </label>
               <input
-                name="patientName"
+                name="doctorName"
                 type="text"
                 placeholder="Enter Patient Name"
                 value={formData.doctorName}
@@ -127,10 +131,10 @@ const AddDoctor: React.FC = () => {
                 Mobile Number
               </label>
               <input
-                name="mobileNumber"
-                type="text"
+                name="phone_number"
+                type="number"
                 placeholder="Enter Mobile Number"
-                value={formData.mobileNumber}
+                value={formData.phone_number}
                 onChange={handleChange}
                 required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -205,6 +209,19 @@ const AddDoctor: React.FC = () => {
                 type="text"
                 placeholder="Enter State/Province"
                 value={formData.stateProvince}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Postal Code
+              </label>
+              <input
+                name="postal_code"
+                type="number"
+                placeholder="Enter State/Province"
+                value={formData.postal_code}
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
@@ -293,13 +310,15 @@ const AddDoctor: React.FC = () => {
               onClick={() =>
                 setFormData({
                   doctorName: "",
-                  mobileNumber: "",
+                  phone_number: "",
                   emailAddress: "",
                   address: "",
                   city: "",
                   stateProvince: "",
                   specialization: "",
                   status: "",
+                  postal_code: "",
+                  doctor_image: "", // Reset image URL
                 })
               }
             >

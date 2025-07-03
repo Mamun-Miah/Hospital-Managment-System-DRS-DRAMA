@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 interface Patient {
   patient_id: number;
@@ -24,9 +25,30 @@ const ViewPatientDetails: React.FC = () => {
   const params = useParams();
   const patientId = params?.id;
   const [formData, setFormData] = useState<Patient | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+
+// const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+//   ) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({ ...prev, [name]: value }));
+//   };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const filesArray = Array.from(event.target.files);
+      setSelectedImages(filesArray);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -239,6 +261,60 @@ const ViewPatientDetails: React.FC = () => {
               </div>
             </div>
           </div>
+
+
+         <div className="sm:col-span-2 mt-[20px]">
+                   <label className="mb-[1px] text-black dark:text-white font-medium block">
+                     Add Image
+                   </label>
+                   <div id="fileUploader">
+                     <div className="relative flex items-center justify-center overflow-hidden rounded-md py-[88px] px-[20px] border border-gray-200 dark:border-[#172036]">
+                       <div className="flex items-center justify-center">
+                         <div className="w-[35px] h-[35px] border border-gray-100 dark:border-[#15203c] flex items-center justify-center rounded-md text-primary-500 text-lg ltr:mr-[12px] rtl:ml-[12px]">
+                           <i className="ri-upload-2-line"></i>
+                         </div>
+                         <p className="leading-[1.5]">
+                           <strong className="text-black dark:text-white">
+                             Click to upload
+                           </strong>
+                           <br /> your file here
+                         </p>
+                       </div>
+         
+                       <input
+                         type="file"
+                         id="fileInput"
+                         multiple
+                         accept="image/*"
+                         className="absolute top-0 left-0 right-0 bottom-0 rounded-md z-[1] opacity-0 cursor-pointer"
+                         onChange={handleFileChange}
+                       />
+                     </div>
+         
+                     {/* Image Previews */}
+                     <div className="mt-[10px] flex flex-wrap gap-2">
+                       {selectedImages.map((image, index) => (
+                         <div key={index} className="relative w-[50px] h-[50px]">
+                           <Image
+                             src={URL.createObjectURL(image)}
+                             alt="product-preview"
+                             width={50}
+                             height={50}
+                             className="rounded-md"
+                           />
+                           <button
+                             type="button"
+                             className="absolute top-[-5px] right-[-5px] bg-orange-500 text-white w-[20px] h-[20px] flex items-center justify-center rounded-full text-xs rtl:right-auto rtl:left-[-5px]"
+                             onClick={() => handleRemoveImage(index)}
+                           >
+                             ✕
+                           </button>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                 </div> 
+
 
           <div className="trezo-card mt-[25px]">
             <div className="trezo-card-content">
