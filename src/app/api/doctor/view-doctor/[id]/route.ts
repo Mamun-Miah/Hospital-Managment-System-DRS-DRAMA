@@ -9,7 +9,7 @@ export async function GET( request: NextRequest,
     const id = parseInt(doctorId);
 
     try{
-        const doctorview = await prisma.doctor.findMany({
+        const doctorview = await prisma.doctor.findUnique({
             where: { doctor_id: id },}
         )
 
