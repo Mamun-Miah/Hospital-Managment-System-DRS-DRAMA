@@ -162,7 +162,7 @@ const AddTreatmentComponent: React.FC = () => {
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                   add
                 </i>
-                {loading ? "Submitting..." : "Add Treatment"}
+                {loading ? "Submitting..." : "Confirm"}
               </span>
             </button>
           </div>
