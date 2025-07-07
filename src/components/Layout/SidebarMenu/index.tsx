@@ -6,6 +6,10 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import SignOutButton from '@/components/SignOutButton';
 
+
+import { useSession } from 'next-auth/react'
+// import { redirect } from 'next/navigation'
+
 interface SidebarMenuProps {
   toggleActive: () => void;
 }
@@ -19,6 +23,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
   const toggleAccordion = (index: number) => {
     setOpenIndex((prevIndex) => (prevIndex === index ? null : index));
   };
+    const { data: session } = useSession()
+    if (!session) return ""
+    const role = session.user?.role;
 
   return (
     <>
@@ -35,7 +42,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
               height={26}
             />
             <span className="font-bold text-black dark:text-white relative ltr:ml-[8px] rtl:mr-[8px] top-px text-xl">
-              DRS Drama
+              DRS DERMA
             </span>
           </Link>
 
@@ -1599,6 +1606,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 </div>
               </div>
             </div> */}
+
+            <span className="block relative font-medium uppercase text-gray-400 mb-[8px] text-xs [&:not(:first-child)]:mt-[22px]">
+              HMS
+            </span>
+
+            {/* patient */}
              <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <button
                 className={`accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
@@ -1610,7 +1623,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
                   badge
                 </i>
-                <span className="title leading-none">Doctor</span>
+                <span className="title leading-none">Patient</span>
               </button>
 
               <div
@@ -1631,6 +1644,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       </Link>
                     </li>
 
+                          
+
+
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/add-patient/"
@@ -1641,6 +1657,36 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                         Add Patient
                       </Link>
                     </li>
+
+                   
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+             <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <button
+                className={`accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  openIndex === 13 ? "open" : ""
+                }`}
+                type="button"
+                onClick={() => toggleAccordion(13)}
+              >
+                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
+                  badge
+                </i>
+                <span className="title leading-none">Doctor</span>
+              </button>
+
+              <div
+                className={`accordion-collapse ${
+                  openIndex === 13 ? "open" : "hidden"
+                }`}
+              >
+                <div className="pt-[4px]">
+                  <ul className="sidebar-sub-menu">
+                    
+                    {role === "admin" ? (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/add-doctor/"
@@ -1650,7 +1696,111 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       >
                         Add Doctor
                       </Link>
+                    </li>) : ""}
+
+                        
+
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/doctor/doctor-list/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/doctor/doctor-list/" ? "active" : ""
+                        }`}
+                      >
+                        Doctor List
+                      </Link>
                     </li>
+
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/doctor/add-treatment/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/doctor/add-treatment/" ? "active" : ""
+                        }`}
+                      >
+                        Add Treatment
+                      </Link>
+                    </li>
+
+                    
+
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/doctor/appointments/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/doctor/appointments/" ? "active" : ""
+                        }`}
+                      >
+                        Appointments
+                      </Link>
+                    </li>
+
+                    
+                  </ul>
+                </div>
+              </div>
+            </div>  
+
+             <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <button
+                className={`accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  openIndex === 14 ? "open" : ""
+                }`}
+                type="button"
+                onClick={() => toggleAccordion(14)}
+              >
+                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
+                  badge
+                </i>
+                <span className="title leading-none">Receptiontist</span>
+              </button>
+
+              <div
+                className={`accordion-collapse ${
+                  openIndex === 14 ? "open" : "hidden"
+                }`}
+              >
+                <div className="pt-[4px]">
+                  <ul className="sidebar-sub-menu">
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/doctor/patients-list/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/doctor/patients-list/" ? "active" : ""
+                        }`}
+                      >
+                        Patients List
+                      </Link>
+                    </li>
+
+                          
+
+
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/doctor/add-patient/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/doctor/add-patient/" ? "active" : ""
+                        }`}
+                      >
+                        Add Patient
+                      </Link>
+                    </li>
+
+                    {role === "admin" ? (
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/doctor/add-doctor/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/doctor/add-doctor/" ? "active" : ""
+                        }`}
+                      >
+                        Add Doctor
+                      </Link>
+                    </li>) : ""}
+
+                        
+
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/doctor-list/"
@@ -1734,7 +1884,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                   </ul>
                 </div>
               </div>
-            </div>
+            </div>  
 
             {/* <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <button

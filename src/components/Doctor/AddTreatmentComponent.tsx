@@ -4,10 +4,9 @@ import React, { useState } from "react";
 
 const AddTreatmentComponent: React.FC = () => {
   const [formData, setFormData] = useState({
-    treatmentID: "",
-    treatmentName: "",
-    totalCost: "",
-    durationMonths: "",
+    treatment_name: "",
+    total_cost: "",
+    duration_months: "",
   });
 
   const [error, setError] = useState("");
@@ -21,10 +20,46 @@ const AddTreatmentComponent: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+   e.preventDefault()
+    setLoading(true)
+    setError("") 
+    
+    try {
+      // const formData = new FormData(e.currentTarget)
+      const response = await fetch('/api/treatment/add-treatment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+ 
+       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to add patient");
+      }
+
+      alert("Treatment added successfully!");
+      
+      setFormData({
+        treatment_name: "",
+        total_cost: "",
+        duration_months: "",
+      });
+
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred.')
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+
+
+
   };
+
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -50,10 +85,10 @@ const AddTreatmentComponent: React.FC = () => {
                 Treatment Name
               </label>
               <input
-                name="treatmentName"
+                name="treatment_name"
                 type="text"
                 placeholder="Treatment Name"
-                value={formData.treatmentName}
+                value={formData.treatment_name}
                 onChange={handleChange}
                 required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -64,35 +99,23 @@ const AddTreatmentComponent: React.FC = () => {
                 Total Cost
               </label>
               <input
-                name="totalCost"
+                name="total_cost"
                 type="number"
                 placeholder="Total Treatment Cost"
-                value={formData.totalCost}
+                value={formData.total_cost}
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
-            <div>
-              <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Date
-              </label>
-              <input
-                name="totalCost"
-                type="date"
-                placeholder="Total Treatment Cost"
-                value={formData.totalCost}
-                onChange={handleChange}
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              />
-            </div>
+            
 
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Treatment Duration
               </label>
               <select
-                name="durationMonths"
-                value={formData.durationMonths}
+                name="duration_months"
+                value={formData.duration_months}
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
@@ -123,10 +146,9 @@ const AddTreatmentComponent: React.FC = () => {
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
               onClick={() =>
                 setFormData({
-                  treatmentID: "",
-                  treatmentName: "",
-                  totalCost: "",
-                  durationMonths: "",
+                  treatment_name: "",
+                  total_cost: "",
+                  duration_months: "",
                 })
               }
             >

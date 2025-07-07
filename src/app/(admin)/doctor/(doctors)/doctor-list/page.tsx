@@ -13,6 +13,7 @@ interface Doctor {
   phone_number: string;
   address_line1: string;
   city: string;
+  doctor_fee: string;
   state_province: string;
   postal_code: string;
   status: string;
@@ -46,21 +47,27 @@ const DoctorListTable: React.FC = () => {
   }
 
   const handleDeleteDoctor = async (doctor_id: number) => {
+      if(confirm("Are you sure you want to delete this doctor?")) {
+
     try {
+
+       
       const response = await fetch(`/api/doctor/delete-doctor/${doctor_id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
         throw new Error("Failed to delete doctor");
       }
-      confirm("Are you sure you want to delete this doctor?")
+     
       // Remove the deleted doctor from the state
       setAllDoctors((prevDoctors) =>
         prevDoctors.filter((doctor) => doctor.doctor_id !== doctor_id)
       );
     } catch (error) {
       console.error("Error deleting doctor:", error);
-    }}
+    }
+      }
+  }
 
   return (
     <>
@@ -99,14 +106,14 @@ const DoctorListTable: React.FC = () => {
                     Specialization
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Address
+                    Doctor Fee
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     City
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     State
-                  </th>
+                  </th> */}
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Status
                   </th>
@@ -153,7 +160,7 @@ const DoctorListTable: React.FC = () => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {doctor.address_line1}
+                          {doctor.doctor_fee}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
@@ -161,11 +168,11 @@ const DoctorListTable: React.FC = () => {
                           {doctor.city}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {doctor.state_province}
                         </span>
-                      </td>
+                      </td> */}
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {doctor.status}
@@ -173,7 +180,7 @@ const DoctorListTable: React.FC = () => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
-                          <button
+                          {/* <button
                             type="button"
                             className="text-primary-500 leading-none custom-tooltip"
                             // onClick={() => setOpen(true)}
@@ -181,7 +188,7 @@ const DoctorListTable: React.FC = () => {
                             <i className="material-symbols-outlined !text-md">
                               visibility
                             </i>
-                          </button>
+                          </button> */}
                           <Link href={`/doctor/edit-doctor/${doctor.doctor_id}`}>
 
                           <button

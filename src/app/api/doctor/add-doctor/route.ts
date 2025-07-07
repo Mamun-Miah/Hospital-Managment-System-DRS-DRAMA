@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     address,
     city,
     stateProvince,
+    doctorFee,
     status,
     postal_code,
     doctor_image,
@@ -40,8 +41,9 @@ export async function POST(req: Request) {
             city,
             state_province: stateProvince,
             postal_code: postal_code || null,
+            doctor_fee: doctorFee, 
             status,
-            doctor_image // Optional field, can be null
+            doctor_image 
         },
     }); 
     return NextResponse.json({ success: true, doctor: newDoctor }, { status: 201 });

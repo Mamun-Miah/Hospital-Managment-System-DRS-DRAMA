@@ -17,6 +17,7 @@ export default function EditDoctor() {
            address: "",
            city: "",
            stateProvince: "",
+           doctorFee: "", // Optional field for doctor's visit fee
            status: "",
            postal_code: "",
            doctor_image: "",
@@ -46,6 +47,7 @@ export default function EditDoctor() {
         address: data.address_line1 || "",
         city: data.city || "",
         stateProvince: data.state_province || "",
+       doctorFee: data.doctor_fee || "", 
         status: data.status || "",
         postal_code: data.postal_code || "",
         doctor_image: data.doctor_image || "",
@@ -61,23 +63,23 @@ export default function EditDoctor() {
   getDoctorData();
 }, [doctorIds]);
    
-     const handleChange = (
-       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-     ) => {
-       const { name, value } = e.target;
-       setFormData((prev) => ({ ...prev, [name]: value }));
-     };
-   
-     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-       if (event.target.files) {
-         const filesArray = Array.from(event.target.files);
-         setSelectedImages(filesArray);
-       }
-     };
-   
-     const handleRemoveImage = (index: number) => {
-       setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
-     };
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
+
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.files) {
+    const filesArray = Array.from(event.target.files);
+    setSelectedImages(filesArray);
+  }
+};
+
+const handleRemoveImage = (index: number) => {
+  setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+};
    
 
 
@@ -87,69 +89,70 @@ export default function EditDoctor() {
      const handleSubmit = async (e: React.FormEvent) => {
        e.preventDefault();
        setError("");
-      //  setLoading(true);
+       setLoading(true);
    
-      //  let imageUrl = "";
+       let imageUrl = "";
    
-      //  try {
-      //    if (selectedImages.length > 0) {
-      //      const formDataImg = new FormData();
-      //      formDataImg.append("image", selectedImages[0]);
+       try {
+         if (selectedImages.length > 0) {
+           const formDataImg = new FormData();
+           formDataImg.append("image", selectedImages[0]);
    
-      //      const uploadRes = await fetch("/api/uploadimage", {
-      //        method: "POST",
-      //        body: formDataImg,
-      //      });
+           const uploadRes = await fetch("/api/uploadimage", {
+             method: "POST",
+             body: formDataImg,
+           });
    
-      //      const uploadData = await uploadRes.json();
+           const uploadData = await uploadRes.json();
    
-      //      if (uploadRes.ok) {
-      //        imageUrl = uploadData.imageUrl;
-      //      } else {
-      //        throw new Error("Image upload failed");
-      //      }
-      //    }
+           if (uploadRes.ok) {
+             imageUrl = uploadData.imageUrl;
+           } else {
+             throw new Error("Image upload failed");
+           }
+         }
    
-      //    const patientData = {
-      //      ...formData,
-      //      doctor_image: imageUrl,
-      //    };
+         const patientData = {
+           ...formData,
+           doctor_image: imageUrl,
+         };
    
-      //    const response = await fetch("/api/doctor/add-doctor", {
-      //      method: "POST",
-      //      headers: {
-      //        "Content-Type": "application/json",
-      //      },
-      //      body: JSON.stringify(patientData),
-      //    });
+         const response = await fetch("/api/doctor/add-doctor", {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+           },
+           body: JSON.stringify(patientData),
+         });
    
-      //    const data = await response.json();
+         const data = await response.json();
    
-      //    if (!response.ok) {
-      //      throw new Error(data.error || "Failed to add patient");
-      //    }
+         if (!response.ok) {
+           throw new Error(data.error || "Failed to add patient");
+         }
    
-      //    alert("Patient added successfully!");
-      //    setFormData({
-      //      doctorName: "",
-      //      phone_number: "",
-      //      emailAddress: "",
-      //      specialization: "",
-      //      address: "",
-      //      city: "",
-      //      stateProvince: "",
-      //      status: "",
-      //      postal_code: "",
-      //      doctor_image: "",// Reset image URL
-      //    });
-      //    setSelectedImages([]);
-      //  } catch (err) {
-      //    setError(
-      //      err instanceof Error ? err.message : "An unexpected error occurred"
-      //    );
-      //  } finally {
-      //    setLoading(false);
-      //  }
+         alert("Patient added successfully!");
+         setFormData({
+           doctorName: "",
+            phone_number: "",
+            emailAddress: "",
+            specialization: "",
+            address: "",
+            city: "",
+            stateProvince: "",
+            status: "",
+            doctorFee: "", // Optional field for doctor's visit fee
+            postal_code: "",
+            doctor_image: "",// Reset image URL
+         });
+         setSelectedImages([]);
+       } catch (err) {
+         setError(
+           err instanceof Error ? err.message : "An unexpected error occurred"
+         );
+       } finally {
+         setLoading(false);
+       }
      };
    
     
@@ -301,6 +304,20 @@ export default function EditDoctor() {
                       className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     />
                   </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Doctor Fee
+                    </label>
+                    <input
+                      name="doctorFee"
+                      type="number"
+                      placeholder="Enter Doctor Fee"
+                      value={formData.doctorFee}
+                      onChange={handleChange}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
       
                   <div>
                     <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -392,6 +409,7 @@ export default function EditDoctor() {
                       city: "",
                       stateProvince: "",
                       status: "",
+                      doctorFee: "", // Reset doctor fee
                       postal_code: "",
                       doctor_image: "",
                       })

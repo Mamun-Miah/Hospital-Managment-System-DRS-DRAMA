@@ -1,8 +1,28 @@
  
+'use client';
 import AddDoctor from "@/components/Doctor/AddDoctorComponent";
 import Link from "next/link";
 
+import { useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
+
+
+
 export default function Page() {
+  const { data: session, status } = useSession()
+  console.log('Session from doctor:', session, 'Status:', status) 
+ 
+
+  if (status === 'loading') return <div>Loading...</div>
+
+  if (!session) return redirect('/authentication/sign-in/')
+
+  const role = session.user?.role;
+
+  if (role !== 'admin') {
+    return redirect('/dashboard/ecommerce/');
+  }
+  
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
