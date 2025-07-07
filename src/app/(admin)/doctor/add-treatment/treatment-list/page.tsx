@@ -138,6 +138,8 @@ useEffect(() => {
                               visibility
                             </i>
                           </button> */}
+
+                          <Link href={`/doctor/add-treatment/edit-treatment/${treatment.treatment_id}`}>
                           <button
                             type="button"
                             className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
@@ -146,6 +148,8 @@ useEffect(() => {
                               edit
                             </i>
                           </button>
+
+                          </Link>
                          
                             <button
                             type="button"
