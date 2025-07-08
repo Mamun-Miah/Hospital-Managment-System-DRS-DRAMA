@@ -16,8 +16,8 @@ export async function PATCH(request: NextRequest,
             },
             data: {
                 treatment_name: editedTreatment.treatment_name,
-                total_cost: editedTreatment.total_cost,
-                duration_months: editedTreatment.duration_months,
+                total_cost: parseFloat(editedTreatment.total_cost),
+                duration_months: parseInt(editedTreatment.duration_months, 10),
             },
         });
 

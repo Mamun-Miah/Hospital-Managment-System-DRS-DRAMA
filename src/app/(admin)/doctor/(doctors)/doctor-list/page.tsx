@@ -72,7 +72,8 @@ const DoctorListTable: React.FC = () => {
   return (
     <>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-        <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-end">
+        <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-between">
+           <h3>Doctor List</h3>
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/add-doctor"

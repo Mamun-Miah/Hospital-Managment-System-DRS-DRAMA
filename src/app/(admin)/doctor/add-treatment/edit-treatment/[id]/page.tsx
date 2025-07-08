@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import router from "next/router";
+// import { NextResponse } from "next/server";
 import { useEffect, useState } from "react";
 
 
@@ -68,7 +69,37 @@ export default function Page(
 
 
 
+const hanldleSubmit = async (e: React.FormEvent)=>{
+  e.preventDefault()
+  if(!formData){
+    return 
+  }
+setLoading(true);
+  try{
+    const editTreatment = await fetch(`/api/treatment/edit-treatment/${id}`,{
+       method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    }) 
 
+    const result = await editTreatment.json()
+    if (!editTreatment.ok) throw new Error(result.error || "Update failed");
+console.log(result)
+
+    alert("Treatment updated successfully!");
+    setFormData({
+                  treatment_name: "",
+                  total_cost: "",
+                  duration_months: "",
+                })
+  }  catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false);
+    }
+  
+
+}
 
 
   return (
@@ -99,7 +130,7 @@ export default function Page(
         </ol>
       </div>
 
-      <form>
+      <form onSubmit={hanldleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">

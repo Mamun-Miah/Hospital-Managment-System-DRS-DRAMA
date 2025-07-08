@@ -15,17 +15,17 @@ try {
     const updatedDoctor = await prisma.doctor.update({
       where: { doctor_id: id },
       data: {
-        doctor_id: data.doctor_id,
-        doctor_image: data.doctor_image,
-        doctor_name: data.doctor_name,
+        // doctor_image: data.doctor_image,
+        doctor_name: data.doctorName,
         specialization: data.specialization,
-        email: data.email,
+        email: data.emailAddress,
         phone_number: data.phone_number,
-        address_line1: data.address_line1,
+        address_line1: data.address,
         city: data.city,
-        state_province: data.state_province,
+        state_province: data.stateProvince,
         postal_code: data.postal_code,
         status: data.status,
+        doctor_fee: data.doctorFee
       },
     });
 

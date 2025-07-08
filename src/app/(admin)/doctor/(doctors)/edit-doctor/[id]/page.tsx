@@ -17,7 +17,7 @@ export default function EditDoctor() {
            address: "",
            city: "",
            stateProvince: "",
-           doctorFee: "", // Optional field for doctor's visit fee
+           doctorFee: "", 
            status: "",
            postal_code: "",
            doctor_image: "",
@@ -117,8 +117,8 @@ const handleRemoveImage = (index: number) => {
            doctor_image: imageUrl,
          };
    
-         const response = await fetch("/api/doctor/add-doctor", {
-           method: "POST",
+         const response = await fetch(`/api/doctor/edit-doctor/${doctorIds}`, {
+           method: "PATCH",
            headers: {
              "Content-Type": "application/json",
            },
@@ -143,7 +143,7 @@ const handleRemoveImage = (index: number) => {
             status: "",
             doctorFee: "", // Optional field for doctor's visit fee
             postal_code: "",
-            doctor_image: "",// Reset image URL
+            doctor_image: "",
          });
          setSelectedImages([]);
        } catch (err) {
@@ -418,14 +418,14 @@ const handleRemoveImage = (index: number) => {
                     Cancel
                   </button>
                   <button
-                    type="submit"
-                    className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
-                  >
+                        type="submit"
+                        className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
+                      >
                     <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
-                      <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                        add
-                      </i>
-                      {loading ? "Submitting..." : "Add Doctor"}
+                          <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                            add
+                          </i>
+                          {loading ? "Submitting..." : "Add Doctor"}
                     </span>
                   </button>
                 </div>

@@ -87,12 +87,19 @@ model Treatment {
   patient         Patient  @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
 }
 
-
 model Treatmentlist {
-  treatment_id    Int      @id @default(autoincrement())
-  treatment_name  String   @db.VarChar(100)
-  total_cost      Decimal  @db.Decimal(10, 2)
+  treatment_id    Int       @id @default(autoincrement())
+  treatment_name  String    @db.VarChar(100)
+  total_cost      Decimal   @db.Decimal(10, 2)
   duration_months Int
-  created_at     DateTime     @default(now())
-  updated_at     DateTime?    @updatedAt
+  created_at      DateTime  @default(now())
+  updated_at      DateTime? @updatedAt
+}
+
+model Medicine {
+  medicine_id Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  quantity    Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
 }
