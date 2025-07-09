@@ -16,7 +16,7 @@ const MedicineList:React.FC = () => {
 useEffect(() => {
  const fetchTreatments = async () => {
     try {
-      const response = await fetch("/api/doctor/add-medicine/medicinelist");
+      const response = await fetch("/api/medicine/medicinelist");
       if (!response.ok) {
         throw new Error("Failed to fetch treatments");
       }
@@ -40,9 +40,9 @@ useEffect(() => {
 
 
   const handleDelete = async (medicine_id: string) => {
-    if (confirm("Are you sure you want to delete this treatment?")) {
+    if (confirm("Are you sure you want to delete this Medicine?")) {
     try {
-      const response = await fetch(`/api/treatment/delete-treatment/${medicine_id}`, {
+      const response = await fetch(`/api/medicine/delete-medicine/${medicine_id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -68,7 +68,7 @@ useEffect(() => {
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             
             <Link
-              href="/doctor/medicine/medicine-list"
+              href="/doctor/medicine/add-medicine"
               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
             >
               <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
@@ -134,7 +134,7 @@ useEffect(() => {
                             </i>
                           </button> */}
 
-                          <Link href={`/doctor/add-treatment/edit-treatment/${medicine.medicine_id}`}>
+                          <Link href={`/doctor/medicine/edit-medicine/${medicine.medicine_id}`}>
                           <button
                             type="button"
                             className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"

@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-const AddMedicineComponent: React.FC = () => {
+const EditMedicineComponent: React.FC = () => {
+  const params = useParams();
+  const medicineId = params?.id as string;
+
   const [formData, setFormData] = useState({
     medicineName: "",
     quantity: "",
@@ -18,55 +22,83 @@ const AddMedicineComponent: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-   e.preventDefault()
-    setLoading(true)
-    setError("") 
-    
-    try {
-      // const formData = new FormData(e.currentTarget)
-      const response = await fetch('/api/medicine/add-medicine', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
+  useEffect(() => {
+    async function fetchMedicine() {
+      if (!medicineId) return;
 
-      console.log(formData)
- 
-       const data = await response.json();
+      try {
+        setLoading(true);
+        const viewMedicine = await fetch(`/api/medicine/view-medicine/${medicineId}`, {
+          cache: "no-store",
+        });
+
+        if (!viewMedicine.ok) {
+          throw new Error("Failed to fetch medicine");
+        }
+
+        const data = await viewMedicine.json();
+
+        // console.log("medicine:", data);
+
+        if (data?.viewMedicine) {
+        setFormData({
+          medicineName: data.viewMedicine.name || "",
+          quantity: data.viewMedicine.quantity?.toString() || "",
+        });
+      }
+      } catch (error) {
+        console.error("Failed to fetch Medicine:", error);
+        setError("Failed to fetch medicine data.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchMedicine();
+  }, [medicineId]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/medicine/edit-medicine/${medicineId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          quantity: parseInt(formData.quantity),
+        }),
+      });
+
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to add patient");
+        throw new Error(data.error || "Failed to update medicine");
       }
 
-      alert("Medicine added successfully!");
-      
+      alert("Medicine updated successfully!");
+
       setFormData({
         medicineName: "",
         quantity: "",
       });
-
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred.')
-      console.error(error)
+      setError(error instanceof Error ? error.message : "An unexpected error occurred.");
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-
-
-
   };
-
-
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
-            
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Medicine Name
@@ -91,12 +123,10 @@ const AddMedicineComponent: React.FC = () => {
                 placeholder="Quantity"
                 value={formData.quantity}
                 onChange={handleChange}
+                required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
-            
-
-            
           </div>
         </div>
 
@@ -134,4 +164,4 @@ const AddMedicineComponent: React.FC = () => {
   );
 };
 
-export default AddMedicineComponent;
+export default EditMedicineComponent;

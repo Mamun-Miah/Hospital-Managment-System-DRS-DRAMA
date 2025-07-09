@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-
 import { useState } from "react";
-import Select from "react-select";
+import Select, { StylesConfig, GroupBase } from "react-select";
 
 // Types
 interface FormData {
@@ -11,6 +11,7 @@ interface FormData {
   doctorName: string;
   doctorFees: number;
   treatmentAmount: number;
+  treatmentDuration: number;
   discountType: string;
   discountAmount: number;
   advise: string;
@@ -27,11 +28,81 @@ interface Medicine {
   dosages: Dosage[];
 }
 
+// Searchable dropdown options
 const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
+  { value: "paracetamol", label: "Paracetamol" },
+  { value: "ibuprofen", label: "Ibuprofen" },
+  { value: "amoxicillin", label: "Amoxicillin" },
+  { value: "cetirizine", label: "Cetirizine" },
+  { value: "metformin", label: "Metformin" },
+  { value: "atorvastatin", label: "Atorvastatin" },
+  { value: "omeprazole", label: "Omeprazole" },
+  { value: "azithromycin", label: "Azithromycin" },
+  { value: "salbutamol", label: "Salbutamol" },
+  { value: "loratadine", label: "Loratadine" },
+  { value: "diclofenac", label: "Diclofenac" },
+  { value: "ranitidine", label: "Ranitidine" },
+  { value: "aspirin", label: "Aspirin" },
+  { value: "prednisone", label: "Prednisone" },
+  { value: "clindamycin", label: "Clindamycin" },
+  { value: "hydrochlorothiazide", label: "Hydrochlorothiazide" },
+  { value: "losartan", label: "Losartan" },
+  { value: "furosemide", label: "Furosemide" },
+  { value: "warfarin", label: "Warfarin" },
+  { value: "alprazolam", label: "Alprazolam" },
+  { value: "diazepam", label: "Diazepam" },
+  { value: "levothyroxine", label: "Levothyroxine" },
+  { value: "insulin", label: "Insulin" },
+  { value: "nifedipine", label: "Nifedipine" },
+  { value: "ciprofloxacin", label: "Ciprofloxacin" },
 ];
+type OptionType = {
+  value: string;
+  label: string;
+};
+// Searchable dropdown styles
+const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
+  control: (base: any, state: any) => ({
+    ...base,
+    height: "55px",
+    borderRadius: "0.375rem",
+    color: "black",
+    backgroundColor: "white",
+    borderColor: state.isFocused ? "#6366f1" : "#e5e7eb",
+    paddingLeft: "17px",
+    boxShadow: "none",
+    outline: "none",
+    width: "100%",
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      borderColor: "#6366f1",
+    },
+  }),
+  singleValue: (base: any) => ({
+    ...base,
+    color: "black",
+  }),
+  placeholder: (base: any) => ({
+    ...base,
+    color: "#6b7280",
+  }),
+  menu: (base: any) => ({
+    ...base,
+    backgroundColor: "white",
+    zIndex: 50,
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    backgroundColor: state.isFocused
+      ? "#ede9fe"
+      : state.isSelected
+      ? "#7c3aed"
+      : "white",
+    color: state.isSelected ? "white" : "black",
+    cursor: "pointer",
+    padding: 10,
+  }),
+};
 
 const AddAppointment: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -40,6 +111,7 @@ const AddAppointment: React.FC = () => {
     doctorName: "Dr. Sanzu",
     doctorFees: 1000,
     treatmentAmount: 1000,
+    treatmentDuration: 1,
     discountType: "",
     discountAmount: 0,
     advise: "",
@@ -70,7 +142,9 @@ const AddAppointment: React.FC = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -85,7 +159,7 @@ const AddAppointment: React.FC = () => {
         duration: 1,
         dosages: [
           { time: "Morning", amount: 0 },
-          { time: "Mid Day", amount: 0 },
+          { time: "Mif of The Day", amount: 0 },
           { time: "Night", amount: 0 },
         ],
       },
@@ -113,9 +187,12 @@ const AddAppointment: React.FC = () => {
     setMedicines(updated);
   };
 
-  //   const calculateTotal = () =>{
+  // Calculate total dosage
+  // const calculateTotal = (dosages: Dosage[], duration: number): number => {
+  //   const dailyTotal = dosages.reduce((sum, dose) => sum + dose.amount, 0);
+  //   return dailyTotal * duration;
+  // };
 
-  //   }
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
@@ -159,19 +236,6 @@ const AddAppointment: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Doctor Fees
-              </label>
-              <input
-                name="doctorFees"
-                type="number"
-                value={formData.doctorFees}
-                disabled
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              />
-            </div>
-
-            <div>
-              <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Treatment List
               </label>
               <select
@@ -191,6 +255,19 @@ const AddAppointment: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Doctor Fees
+              </label>
+              <input
+                name="doctorFees"
+                type="number"
+                value={formData.doctorFees}
+                disabled
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Treatment Amount
               </label>
               <input
@@ -201,6 +278,7 @@ const AddAppointment: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Discount Type
@@ -228,23 +306,36 @@ const AddAppointment: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
               />
             </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Treatment Duration
+              </label>
+              <input
+                type="text"
+                value={
+                  formData.treatmentDuration +
+                  (formData.treatmentDuration > 1 ? " Months" : " Month")
+                }
+                disabled
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
           </div>
         </div>
 
-        <h4 className="text-xl mt-5">Prescriptions</h4>
+        <h5 className="mt-5">Prescriptions</h5>
         {medicines.map((medicine, index) => (
           <div className="flex justify-between gap-8 mt-8" key={index}>
             <div className="w-1/3">
               <label htmlFor="">Medicine Name</label>
-              {/* <input
-                type="text"
-                placeholder="Enter Medicine Name"
-                onChange={(e) =>
-                  handleMedicineChange(index, "name", e.target.value)
+
+              <Select
+                options={options}
+                onChange={(option) =>
+                  handleMedicineChange(index, "name", option?.label ?? "")
                 }
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              /> */}
-              <Select options={options} />
+                styles={customStyles}
+              />
             </div>
             <div className="w-1/3">
               <label htmlFor="dosages">Dosages</label>
@@ -259,7 +350,7 @@ const AddAppointment: React.FC = () => {
                   <input
                     type="number"
                     value={dosage?.amount}
-                    className="border-0 outline-none justify-self-end max-w-[30px] show-spinner"
+                    className="border-0 outline-none justify-self-end max-w-[50px] show-spinner"
                     onChange={(e) =>
                       handleDosageChange(
                         index,
@@ -288,16 +379,16 @@ const AddAppointment: React.FC = () => {
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
               </div>
-              <div className="flex gap-5 mt-5 items-center justify-between  h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500">
+              {/* <div className="flex gap-5 mt-5 items-center justify-between  h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500">
                 <label htmlFor="total">Total</label>
                 <span>-</span>
                 <input
                   type="number"
-                  value={20}
+                  value={calculateTotal(medicine.dosages, medicine.duration)}
                   disabled
                   className="justify-self-end max-w-[40px]"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         ))}
@@ -317,14 +408,13 @@ const AddAppointment: React.FC = () => {
         </div>
         <div className="my-8 last:mb-0">
           <label className="mb-[12px] font-medium block">Advise</label>
-          <input
-         
+          <textarea
             name="advise"
             value={formData.advise}
             onChange={handleChange}
             className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
             placeholder="Write adives"
-          ></input>
+          ></textarea>
         </div>
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
@@ -340,6 +430,7 @@ const AddAppointment: React.FC = () => {
                   doctorName: "Dr. Sanzu",
                   doctorFees: 1000,
                   treatmentAmount: 1000,
+                  treatmentDuration: 0,
                   discountType: "",
                   discountAmount: 0,
                   advise: "",
