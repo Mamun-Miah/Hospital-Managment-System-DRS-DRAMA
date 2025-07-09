@@ -104,11 +104,13 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
   }),
 };
 
+
+//Export Component
 const AddAppointment: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    patientId: "P23798237",
-    patientName: "Arizona Namsur",
-    doctorName: "Dr. Sanzu",
+    patientId: "",
+    patientName: "",
+    doctorName: "",
     doctorFees: 1000,
     treatmentAmount: 1000,
     treatmentDuration: 1,
@@ -191,7 +193,6 @@ const AddAppointment: React.FC = () => {
   // const calculateTotal = (dosages: Dosage[], duration: number): number => {
   //   const dailyTotal = dosages.reduce((sum, dose) => sum + dose.amount, 0);
   //   return dailyTotal * duration;
-  // 
 
   return (
     <form onSubmit={handleSubmit}>
