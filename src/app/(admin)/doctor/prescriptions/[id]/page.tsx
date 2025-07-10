@@ -197,15 +197,38 @@ const AddAppointment: React.FC = () => {
     console.log(data);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    // console.log(name, value);
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
+
+  if (name === "treatment_name") {
+    const selectedTreatment = treatments.find((doc) => doc.treatment_name === value);
+
+    setFormData((prev) => ({
+      ...prev,
+      treatment_name: value,
+      treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
+      treatmentDuration: Number(selectedTreatment?.duration_months) || 0
+    }))};
+
+  if (name === "doctor_name") {
+    const selectedDoctor = doctors.find((doc) => doc.doctor_name === value);
+
+    setFormData((prev) => ({
+      ...prev,
+      doctor_name: value,
+      doctor_fee: Number(selectedDoctor?.doctor_fee) || 0,
+     
+
+    }));
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+};
+
+
 
   const handleAddMedicine = () => {
     setMedicines([
@@ -254,6 +277,10 @@ const AddAppointment: React.FC = () => {
   //   const dailyTotal = dosages.reduce((sum, dose) => sum + dose.amount, 0);
   //   return dailyTotal * duration;
 
+
+
+  
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
@@ -292,12 +319,13 @@ const AddAppointment: React.FC = () => {
               <select
                 name="doctor_name"
                 value={formData.doctor_name}
+              
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
                 <option value="">Select Treatment</option>
-                {doctors.map((doctor, doctor_name) => (
-                  <option key={doctor_name} value={doctor.doctor_name}>
+                {doctors.map((doctor, doctor_id) => (
+                  <option key={doctor_id} value={doctor.doctor_name}>
                     {doctor.doctor_name}
                   </option>
                 ))}
@@ -310,7 +338,7 @@ const AddAppointment: React.FC = () => {
                 Treatment List
               </label>
               <select
-                name="treatmentList"
+                name="treatment_name"
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
@@ -321,18 +349,6 @@ const AddAppointment: React.FC = () => {
                   </option>
                 ))}
               </select>
-            </div>
-            <div>
-              <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Doctor Fees
-              </label>
-              <input
-                name="doctorFees"
-                type="number"
-                value={formData.doctor_fee}
-                disabled
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              />
             </div>
 
             <div>
@@ -347,6 +363,20 @@ const AddAppointment: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Doctor Fees
+              </label>
+              <input
+                name="doctorFees"
+                type="number"
+                value={formData.doctor_fee}
+                disabled
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+
+            
 
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
