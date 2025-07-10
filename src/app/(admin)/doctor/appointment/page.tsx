@@ -331,7 +331,7 @@ const handleViewClick = async (id: number) => {
                           {/* <Link href={`view-patient/${patient.patient_id}`}> */}
 
                            <Link
-                              href="/doctor/prescriptions"
+                              href={`/doctor/prescriptions/${patient.patient_id}`}
                               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
                             >
                               <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
