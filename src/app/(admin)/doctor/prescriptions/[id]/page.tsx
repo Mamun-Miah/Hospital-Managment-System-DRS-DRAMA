@@ -308,6 +308,9 @@ try {
   //   const dailyTotal = dosages.reduce((sum, dose) => sum + dose.amount, 0);
   //   return dailyTotal * duration;
 
+const handleRemoveMedicine = (index: number) => {
+  setMedicines(prev => prev.filter((_, i) => i !== index));
+};
 
 
   
@@ -470,7 +473,20 @@ try {
                 }
                 styles={customStyles}
               />
+              <button
+                  onClick={() => handleRemoveMedicine(index)}
+                  type="button"
+                  className="font-medium mt-5 inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
+                >
+                  <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                    <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                      remove
+                    </i>
+                    Remove Medicine
+                  </span>
+                </button>
             </div>
+            
             <div className="w-1/3">
               <label htmlFor="dosages">Dosages</label>
 
@@ -523,6 +539,8 @@ try {
                   className="justify-self-end max-w-[40px]"
                 />
               </div> */}
+              
+              
             </div>
           </div>
         ))}
@@ -539,6 +557,7 @@ try {
               Add More Medicine
             </span>
           </button>
+          
         </div>
         <div className="my-8 last:mb-0">
           <label className="mb-[12px] font-medium block">Advise</label>

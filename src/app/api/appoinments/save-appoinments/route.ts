@@ -71,7 +71,7 @@ console.log(medicineMap)
 
   } catch (error) {
     console.error('Error creating prescription:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Remove Empty Field. Internal server error' }, { status: 500 });
   }
 }
 
