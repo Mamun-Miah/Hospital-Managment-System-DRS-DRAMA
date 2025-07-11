@@ -310,6 +310,7 @@ try {
 
 const handleRemoveMedicine = (index: number) => {
   setMedicines(prev => prev.filter((_, i) => i !== index));
+  console.log(formData)
 };
 
 
