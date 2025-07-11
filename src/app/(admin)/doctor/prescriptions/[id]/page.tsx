@@ -166,7 +166,7 @@ const AddAppointment: React.FC = () => {
             patient_id: data.patient.patient_id,
             patient_name: data.patient.patient_name,
             doctor_name: data.doctors.length > 0 ? data.doctors[0].doctor_name : "",
-            doctor_fee: data.doctors.length > 0 ? parseFloat(data.doctors[0].doctor_fee) : 0,
+            doctor_fee: data.doctors.length > 0 ? parseInt(data.doctors[0].doctor_fee) : 0,
             treatment_name: data.treatments.length > 0 ? data.treatments[0].treatment_name : "",
             treatmentAmount: data.treatments.length > 0 ? parseFloat(data.treatments[0].total_cost) : 0,
             treatmentDuration: data.treatments.length > 0 ? data.treatments[0].duration_months : 0,
@@ -186,16 +186,47 @@ const AddAppointment: React.FC = () => {
   },[id])
 
 
+//submit data
+//submit data
 
+const handleSubmit = async (e: React.FormEvent) => {
+e.preventDefault();
+setError("");
+setLoading(true);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+try {
+  const prescribedData = { ...formData, medicines: [...medicines] };
+  console.log("Sending:", prescribedData);
 
-    const data = { ...formData, medicines: [...medicines] };
-    console.log(data);
-  };
+  const res = await fetch("/api/appoinments/save-appoinments", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(prescribedData),
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new Error(result.error || "Something went wrong");
+  }
+
+  console.log("Prescription created:", result.prescription);
+  alert("Prescription saved successfully!");
+
+  // Optionally reset form
+  // setFormData(initialFormState);
+  // setMedicines([]);
+
+} catch (err: any) {
+  console.error("Submission error:", err);
+  setError(err.message || "Failed to submit");
+} finally {
+  setLoading(false);
+}
+};
+
 
  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
   const { name, value } = e.target;
