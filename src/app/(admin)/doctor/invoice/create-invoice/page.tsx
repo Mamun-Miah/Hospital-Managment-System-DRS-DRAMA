@@ -10,18 +10,12 @@ type OptionType = {
   label: string;
   value: string;
 };
-const patients = [
-  { label: "John Doe", value: "john_doe" },
-  { label: "Emily Johnson", value: "emily_johnson" },
-  { label: "Michael Lee", value: "michael_lee" },
-  { label: "Sophia Martinez", value: "sophia_martinez" },
-  { label: "David Kim", value: "david_kim" },
-  { label: "Anna White", value: "anna_white" },
-  { label: "Chris Evans", value: "chris_evans" },
-  { label: "Laura Green", value: "laura_green" },
-  { label: "Nathan Scott", value: "nathan_scott" },
-  { label: "Olivia Brown", value: "olivia_brown" },
-];
+
+type Patient = {
+    patient_name: string;
+    [key: string]: any;
+  };
+
 const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
   control: (base: any, state: any) => ({
     ...base,
@@ -64,11 +58,21 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
     padding: 10,
   }),
 };
+
 const CreateInvoice: React.FC = () => {
+
+  const [patients, setPatients] = useState<OptionType[]>([])
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  
+  const [patientData, setPatientData] = useState<Patient[]>([]);
+
   const [formData, setFormData] = useState({
     invoiceNumber: "",
-    patient: "",
+    patient_name: "",
     doctorName: "John Doe",
+    
+    doctorFee:"",
     treatmentName: "Radio Therapy",
     treatmentCost: 200,
     treatmentSession: 1,
@@ -80,8 +84,7 @@ const CreateInvoice: React.FC = () => {
     paymentDate: "",
   });
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,6 +93,8 @@ const CreateInvoice: React.FC = () => {
     console.log(formData);
   };
 
+
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -97,9 +102,34 @@ const CreateInvoice: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePatientChange = (patient: string) => {
-    setFormData((prev) => ({ ...prev, patient }));
-  };
+
+
+  const handlePatientChange = async (patient_name: string) => {
+  const found = patientData.find((p) => p.patient_name === patient_name);
+
+  if (!found) {
+    alert("Patient not found");
+    return;
+  }
+  // setPatientId(found.patient_id)
+  const patient_id = found.patient_id;
+
+  
+  try {
+    const res = await fetch(`/api/invoice/create-invoice/${patient_id}`);
+
+    if (!res.ok) throw new Error("Failed to create invoice");
+
+    const result = await res.json();
+    console.log("Invoice created:", result);
+
+  } catch (error) {
+    console.error("Error creating invoice:", error);
+  }
+};
+
+
+// console.log(selectedPatientId)
 
   useEffect(() => {
     // generate invoice number
@@ -107,14 +137,50 @@ const CreateInvoice: React.FC = () => {
     const year = date.getFullYear();
     const timestamp = Date.now();
     const invoiceNumber = `INV-${year}-${timestamp}`;
-
     // current date
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const today = `${day}-${month}-${year}`;
 
-    setFormData((prev) => ({ ...prev, invoiceNumber, paymentDate: today }));
+    const fetchPatients = async () => {
+      try {
+        const res = await fetch("/api/patient/patientlist");
+        const data = await res.json();
+
+        setPatientData(data)
+        // extract patient_name
+        const filteredPatients: OptionType[] = data.map((p: any) => ({
+          value: p.patient_name.toLowerCase().replace(/\s+/g, "_"),
+          label: p.patient_name,
+        }));
+
+      
+        setPatients(filteredPatients);
+        setFormData({
+          invoiceNumber: invoiceNumber,
+          patient_name: "",
+          doctorName: "John Doe",
+          doctorFee: "",
+          treatmentName: "Radio Therapy",
+          treatmentCost: 200,
+          treatmentSession: 1,
+          treatmentDueSession: 2,
+          totalDueAmount: 300,
+          paidAmount: 200,
+          paymentType: "full",
+          paymentMethod: "bkash",
+          paymentDate: today,
+        })
+        // console.log('Form Data', formData)
+      } catch (error) {
+        console.error("Error fetching patient list:", error);
+      }
+    };
+
+    fetchPatients();
   }, []);
+
+ 
 
   return (
     <>
@@ -166,8 +232,8 @@ const CreateInvoice: React.FC = () => {
 
                 <Select
                   options={patients}
-                  onChange={(patient) =>
-                    handlePatientChange(patient?.label ?? "")
+                  onChange={(patient_name) =>
+                    handlePatientChange(patient_name?.label ?? "")
                   }
                   styles={customStyles}
                 />
@@ -239,16 +305,18 @@ const CreateInvoice: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Paid Amount
-                </label>
-                <input
-                  type="number"
-                  value={formData.paidAmount}
-                  disabled
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                />
-              </div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Paid Amount
+              </label>
+              <input
+                name="doctorFee"
+                type="number"
+                placeholder="Enter Paid Amount"
+                value={formData.doctorFee}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
 
                <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
