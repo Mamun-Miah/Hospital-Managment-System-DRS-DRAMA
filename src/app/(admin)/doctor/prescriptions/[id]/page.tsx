@@ -44,7 +44,7 @@ import Select, { StylesConfig, GroupBase } from "react-select";
           label: string;
         };
         // Searchable dropdown styles
-        const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
+        const   customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
           control: (base: any, state: any) => ({
             ...base,
             height: "55px",
