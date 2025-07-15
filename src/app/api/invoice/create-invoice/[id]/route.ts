@@ -29,9 +29,10 @@ export async function GET(
                 },
                 items: {
                 select: {
-                    treatment_name: true,
+                    treatment_id: true,
                     discount_type: true,
-                    treatmentlist: {
+                    discount_value:true,
+                    treatment: {
                     select: {
                         treatment_id: true,
                         treatment_name: true,

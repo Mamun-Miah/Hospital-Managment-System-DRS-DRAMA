@@ -123,6 +123,21 @@ const CreateInvoice: React.FC = () => {
     const result = await res.json();
     console.log("Invoice created:", result);
 
+    const treatmentName = result.getInvoiceData?.[0]?.items?.[0]?.treatment?.treatment_name || "";
+    const doctorName = result.getInvoiceData?.[0]?.doctor?.doctor_name || "";
+    const treatmentCost = result.getInvoiceData?.[0]?.items?.[0]?.treatment?.total_cost || "";
+    const duration_months = result.getInvoiceData?.[0]?.items?.[0]?.treatment?.duration_months || "";
+    const paidAmount = result.getInvoiceData[0]?.total_cost || "";
+    // console.log(paidAmount)
+
+    setFormData((prev) => ({ ...prev, 
+     treatmentName: treatmentName,
+     doctorName:doctorName,
+     treatmentCost:treatmentCost,
+     treatmentSession:duration_months,
+     paidAmount:paidAmount
+     }));
+
   } catch (error) {
     console.error("Error creating invoice:", error);
   }
@@ -159,16 +174,16 @@ const CreateInvoice: React.FC = () => {
         setFormData({
           invoiceNumber: invoiceNumber,
           patient_name: "",
-          doctorName: "John Doe",
+          doctorName: "",
           doctorFee: "",
-          treatmentName: "Radio Therapy",
-          treatmentCost: 200,
-          treatmentSession: 1,
-          treatmentDueSession: 2,
-          totalDueAmount: 300,
-          paidAmount: 200,
-          paymentType: "full",
-          paymentMethod: "bkash",
+          treatmentName: "",
+          treatmentCost: 0,
+          treatmentSession: 0,
+          treatmentDueSession: 0,
+          totalDueAmount: 0,
+          paidAmount: 0,
+          paymentType: "",
+          paymentMethod: "",
           paymentDate: today,
         })
         // console.log('Form Data', formData)
@@ -181,6 +196,11 @@ const CreateInvoice: React.FC = () => {
   }, []);
 
  
+  const handleDueCalculate = async() => {
+
+  }
+
+
 
   return (
     <>
@@ -255,7 +275,7 @@ const CreateInvoice: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value="Radio Therapy"
+                  value={formData.treatmentName}
                   disabled
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
@@ -323,6 +343,7 @@ const CreateInvoice: React.FC = () => {
                   Total Cost
                 </label>
                 <input
+                name="paidAmount"
                   type="number"
                   value={formData.paidAmount}
                   disabled

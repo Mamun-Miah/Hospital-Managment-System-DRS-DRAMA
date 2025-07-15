@@ -1643,6 +1643,26 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
             </div>  
 
 
+            <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link href="/doctor/view-prescription/">
+              <button
+                className={` flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  openIndex === 15 ? "open" : ""
+                }`}
+                type="button"
+                onClick={() => toggleAccordion(15)}
+              >
+                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
+                  badge
+                </i>
+                <span className="title leading-none">Prescription</span>
+              </button>
+              </Link>
+
+          
+            </div>  
+
+
             {/* Previous Code for further uses */}
              {/* <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <button
