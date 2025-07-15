@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Select, { StylesConfig, GroupBase } from "react-select";
 
-// Types
+
         interface FormData {
           patient_id: string;
           patient_name: string;
@@ -98,8 +98,6 @@ const AddAppointment: React.FC = () => {
 
 
 
-  // console.log('patient id:', id)
-
   const [formData, setFormData] = useState<FormData>({
           patient_id: "",
           patient_name: "",
@@ -113,7 +111,9 @@ const AddAppointment: React.FC = () => {
           medicine_name: "",
           advise: "",
   });
-// const [medicinesdata, setMedicinesdata] = useState([])
+
+
+
   const [medicines, setMedicines] = useState<Medicine[]>([
     {
       name: "Select Medicine",
@@ -132,7 +132,9 @@ const AddAppointment: React.FC = () => {
 
 
   useEffect(() =>{
+    
     async function getPrescribedData() {
+      
       setLoading(true)
       try {
         const res = await fetch(`/api/appoinments/appoinments-data/${id}`,
@@ -165,11 +167,11 @@ const AddAppointment: React.FC = () => {
         setFormData({
             patient_id: data.patient.patient_id,
             patient_name: data.patient.patient_name,
-            doctor_name: data.doctors.length > 0 ? data.doctors[0].doctor_name : "",
-            doctor_fee: data.doctors.length > 0 ? parseInt(data.doctors[0].doctor_fee) : 0,
+            doctor_name: data.doctors.doctor_name,
+            doctor_fee: parseInt(data.doctors.doctor_fee),
             treatment_name: data.treatments.length > 0 ? data.treatments[0].treatment_name : "",
-            treatmentAmount: data.treatments.length > 0 ? parseFloat(data.treatments[0].total_cost) : 0,
-            treatmentDuration: data.treatments.length > 0 ? data.treatments[0].duration_months : 0,
+            treatmentAmount: parseFloat(data.treatments.total_cost),
+            treatmentDuration: data.treatments.duration_months,
             discountType: "",
             discountAmount: 0,
             medicine_name: data.medicines.length > 0 ? data.medicines[0].name : "",
@@ -177,17 +179,18 @@ const AddAppointment: React.FC = () => {
           });
           // console.log("Form Data", setFormData)
         setLoading(false)
+        
       } 
     } catch(error) {
       console.log(error)
     }
   }
+  
     getPrescribedData()
   },[id])
 
 
-//submit data
-//submit data
+
 
 const handleSubmit = async (e: React.FormEvent) => {
 e.preventDefault();
@@ -239,18 +242,17 @@ try {
       treatment_name: value,
       treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
       treatmentDuration: Number(selectedTreatment?.duration_months) || 0
-    }))};
+    }));
 
-  if (name === "doctor_name") {
+  } else if (name === "doctor_name") {
     const selectedDoctor = doctors.find((doc) => doc.doctor_name === value);
 
     setFormData((prev) => ({
       ...prev,
       doctor_name: value,
       doctor_fee: Number(selectedDoctor?.doctor_fee) || 0,
-     
-
     }));
+
   } else {
     setFormData((prev) => ({
       ...prev,
@@ -258,6 +260,7 @@ try {
     }));
   }
 };
+
 
 
 
@@ -303,18 +306,13 @@ try {
     setMedicines(updated);
   };
 
-  // Calculate total dosage
-  // const calculateTotal = (dosages: Dosage[], duration: number): number => {
-  //   const dailyTotal = dosages.reduce((sum, dose) => sum + dose.amount, 0);
-  //   return dailyTotal * duration;
+
 
 const handleRemoveMedicine = (index: number) => {
   setMedicines(prev => prev.filter((_, i) => i !== index));
-  console.log(formData)
+ 
 };
 
-
-  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -393,7 +391,7 @@ const handleRemoveMedicine = (index: number) => {
               <input
                 name="treatmentAmount"
                 type="number"
-                value={formData.treatmentAmount}
+                value={(formData.treatmentAmount > 1 ?  `${formData.treatmentAmount}` : "0")}
                 disabled
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
@@ -406,8 +404,8 @@ const handleRemoveMedicine = (index: number) => {
               <input
                 type="text"
                 value={
-                  formData.treatmentDuration +
-                  (formData.treatmentDuration > 1 ? " Months" : " Month")
+                
+                  (formData.treatmentDuration > 1 ?  `${formData.treatmentDuration}` : "0 Month")
                 }
                 disabled
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -421,7 +419,7 @@ const handleRemoveMedicine = (index: number) => {
               <input
                 name="doctorFees"
                 type="number"
-                value={formData.doctor_fee}
+                value={(formData.doctor_fee > 1 ?  `${formData.doctor_fee}` : "0")}
                 disabled
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />

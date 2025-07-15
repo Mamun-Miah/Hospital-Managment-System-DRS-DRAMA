@@ -14,8 +14,36 @@ export async function GET(
     try{
 
         const getInvoiceData = await prisma.prescription.findMany({
-            where: {patient_id: patient_id}
-        })
+            where: {
+                patient_id: patient_id, // replace with your variable
+            },
+            select: {
+                prescription_id: true,
+                total_cost: true,
+                doctor_id: true,
+                doctor: {
+                select: {
+                    doctor_id: true,
+                    doctor_name: true,
+                },
+                },
+                items: {
+                select: {
+                    treatment_name: true,
+                    discount_type: true,
+                    treatmentlist: {
+                    select: {
+                        treatment_id: true,
+                        treatment_name: true,
+                        total_cost: true,
+                        duration_months: true,
+                    },
+                    },
+                },
+                },
+            },
+            });
+
 
         return NextResponse.json({message: 'Patitient Data Fetch Succesfully', getInvoiceData}, {status: 200})
         

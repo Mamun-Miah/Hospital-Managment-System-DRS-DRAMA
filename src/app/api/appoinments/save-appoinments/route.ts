@@ -27,6 +27,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Doctor not found' }, { status: 404 });
     }
 
+    const treatmentId = await prisma.treatmentlist.findFirst({
+      where: { treatment_name },
+    });
+
+    if (!treatmentId) {
+      return NextResponse.json({ error: 'Treatment not found' }, { status: 404 });
+    }
+
     // 2. Get medicine_ids
     const medicineNames = medicines.map((m: any) => m.name);
     
@@ -58,7 +66,7 @@ console.log(medicineMap)
             dose_mid_day: med.dosages.find((d: any) => d.time === 'Mid Day')?.amount.toString() ?? '0',
             dose_night: med.dosages.find((d: any) => d.time === 'Night')?.amount.toString() ?? '0',
             duration_days: med.duration,
-            treatment_name,
+            treatment_id: treatmentId.treatment_id,
             discount_type: parseDiscountType(discountType),
             discount_value: parseFloat(discountAmount),
             advice: advise || null,

@@ -38,7 +38,6 @@ model Patient {
   image_url               String?        @db.VarChar(255)
   created_at              DateTime       @default(now())
   updated_at              DateTime?      @updatedAt
-  treatments              Treatment[]
   Prescription            Prescription[]
 }
 
@@ -78,33 +77,23 @@ enum DoctorStatus {
   Retired
 }
 
-model Treatment {
-  treatment_id    Int      @id @default(autoincrement())
-  patient_id      Int
-  treatment_name  String   @db.VarChar(100)
-  total_cost      Decimal  @db.Decimal(10, 2)
-  duration_months Int
-  start_date      DateTime @db.Date
-  created_at      DateTime @default(now())
-  patient         Patient  @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-}
-
 model Treatmentlist {
-  treatment_id    Int       @id @default(autoincrement())
-  treatment_name  String    @db.VarChar(100)
-  total_cost      Decimal   @db.Decimal(10, 2)
-  duration_months Int
-  created_at      DateTime  @default(now())
-  updated_at      DateTime? @updatedAt
+  treatment_id      Int                @id @default(autoincrement())
+  treatment_name    String             @db.VarChar(100)
+  total_cost        Decimal            @db.Decimal(10, 2)
+  duration_months   Int
+  created_at        DateTime           @default(now())
+  updated_at        DateTime?          @updatedAt
+  prescriptionItems PrescriptionItem[]
 }
 
 model Medicine {
-  medicine_id      Int                @id @default(autoincrement())
-  name             String             @db.VarChar(100)
-  quantity         Int
-  created_at       DateTime           @default(now())
-  updated_at       DateTime?          @updatedAt
-  PrescriptionItem PrescriptionItem[]
+  medicine_id Int                @id @default(autoincrement())
+  name        String             @db.VarChar(100)
+  quantity    Int
+  created_at  DateTime           @default(now())
+  updated_at  DateTime?          @updatedAt
+  items       PrescriptionItem[]
 }
 
 model Prescription {
@@ -123,17 +112,18 @@ model PrescriptionItem {
   item_id         Int           @id @default(autoincrement())
   prescription_id Int
   medicine_id     Int
+  treatment_id    Int
   dose_morning    String
   dose_mid_day    String
   dose_night      String
   discount_type   DiscountType?
   discount_value  Float?
-  treatment_name  String?
   duration_days   Int
   advice          String?
 
-  prescription Prescription @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
-  medicine     Medicine     @relation(fields: [medicine_id], references: [medicine_id])
+  prescription Prescription  @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
+  medicine     Medicine      @relation(fields: [medicine_id], references: [medicine_id])
+  treatment    Treatmentlist @relation(fields: [treatment_id], references: [treatment_id])
 }
 
 enum DiscountType {

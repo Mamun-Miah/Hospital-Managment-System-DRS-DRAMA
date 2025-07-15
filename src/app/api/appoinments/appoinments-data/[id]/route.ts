@@ -30,6 +30,7 @@ export async function GET(
     // Get all treatments
     const treatments = await prisma.treatmentlist.findMany({
       select: {
+        treatment_id: true,
         treatment_name: true,
         total_cost: true,
         duration_months: true,
