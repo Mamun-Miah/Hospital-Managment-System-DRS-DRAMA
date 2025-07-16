@@ -25,6 +25,7 @@ export async function GET(
                 select: {
                     doctor_id: true,
                     doctor_name: true,
+                    doctor_fee: true,
                 },
                 },
                 items: {

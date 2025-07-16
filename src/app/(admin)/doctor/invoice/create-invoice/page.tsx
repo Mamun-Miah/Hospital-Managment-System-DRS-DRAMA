@@ -68,6 +68,7 @@ const CreateInvoice: React.FC = () => {
   const [patientData, setPatientData] = useState<Patient[]>([]);
 
   const [formData, setFormData] = useState({
+    patient_id: 0,
     invoiceNumber: "",
     patient_name: "",
     doctorName: "John Doe",
@@ -75,9 +76,11 @@ const CreateInvoice: React.FC = () => {
     doctorFee:"",
     treatmentName: "Radio Therapy",
     treatmentCost: 200,
-    treatmentSession: 1,
-    treatmentDueSession: 2,
+    treatmentSession: 0,
+    treatmentDueSession:0,
     totalDueAmount: 300,
+    discountAmount:0,
+    discountType:"",
     paidAmount: "",
     paymentType: "full",
     paymentMethod: "bkash",
@@ -123,24 +126,37 @@ const CreateInvoice: React.FC = () => {
     const result = await res.json();
     console.log("Invoice created:", result);
 
+    const patientId = patient_id;
     const treatmentName = result.getInvoiceData?.[0]?.items?.[0]?.treatment?.treatment_name || "";
     const doctorName = result.getInvoiceData?.[0]?.doctor?.doctor_name || "";
+    const doctorFee = result.getInvoiceData?.[0]?.doctor?.doctor_fee || "";
     const treatmentCost = result.getInvoiceData?.[0]?.items?.[0]?.treatment?.total_cost || "";
     const duration_months = result.getInvoiceData?.[0]?.items?.[0]?.treatment?.duration_months || "";
     const totalCost = result.getInvoiceData[0]?.total_cost || "";
-    // console.log(paidAmount)
-
+    const patient_name = found.patient_name;
+    const treatmentDueSession = duration_months - 1;
+    const discount_value = result.getInvoiceData?.[0]?.items?.[0]?.discount_value || 0;
+    const discount_type = result.getInvoiceData?.[0]?.items?.[0]?.discount_type || 0;
+   
     setFormData((prev) => ({ ...prev, 
+      patient_id:patientId,
      treatmentName: treatmentName,
      doctorName:doctorName,
+     doctorFee:doctorFee,
+     discountAmount:discount_value,
      treatmentCost:treatmentCost,
      treatmentSession:duration_months,
-     totalCost:totalCost
+     treatmentDueSession: treatmentDueSession > 0 ? treatmentDueSession : 0,
+     totalCost:totalCost,
+     patient_name: patient_name,
+     discountType:discount_type,
+    
      }));
 
   } catch (error) {
     console.error("Error creating invoice:", error);
   }
+  
 };
 
 
@@ -149,13 +165,14 @@ const CreateInvoice: React.FC = () => {
   useEffect(() => {
     // generate invoice number
     const date = new Date();
-    const year = date.getFullYear();
-    const timestamp = Date.now();
-    const invoiceNumber = `INV-${year}-${timestamp}`;
+    const year = `${date.getFullYear()}-${date.getMonth()}`;
+    const year2 = date.getFullYear();
+    const random = Math.floor(1000 + Math.random() * 9000); // Generates a 4-digit random number
+    const invoiceNumber = `INV-${year}-${random}`;
     // current date
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const today = `${day}-${month}-${year}`;
+    const today = `${day}-${month}-${year2}`;
 
     const fetchPatients = async () => {
       try {
@@ -172,6 +189,7 @@ const CreateInvoice: React.FC = () => {
       
         setPatients(filteredPatients);
         setFormData({
+          patient_id:0,
           invoiceNumber: invoiceNumber,
           patient_name: "",
           doctorName: "",
@@ -183,6 +201,8 @@ const CreateInvoice: React.FC = () => {
           treatmentDueSession: 0,
           totalDueAmount: 0,
           paidAmount:"",
+          discountAmount:0,
+          discountType:"",
           paymentType: "",
           paymentMethod: "",
           paymentDate: today,
@@ -195,21 +215,20 @@ const CreateInvoice: React.FC = () => {
 
     fetchPatients();
   }, []);
-
+console.log(formData)
 
 const handleCalculateDue = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { value } = e.target;
   const paid = Number(value);
   const due = formData.totalCost - paid;
-  const treamentSession = Number(formData.treatmentSession);
-    
-
-
+  
   setFormData((prev) => ({
     ...prev,
     paidAmount: value,
-    totalDueAmount: due >= 0 ? due : 0, // Prevent negative due
+    totalDueAmount: due >= 0 ? due : 0,
+
   }));
+  
   };
   
 
@@ -320,8 +339,10 @@ const handleCalculateDue = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectEle
                   Treatment Due session
                 </label>
                 <input
-                  type="number"
+                name="treatmentDueSession"
+                  type="text"
                   value={formData.treatmentDueSession}
+                  onChange={handleChange}
                   disabled
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
@@ -374,6 +395,7 @@ const handleCalculateDue = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectEle
                   onChange={handleChange}
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
+                  <option>Select Payment Type</option>
                   <option value="full">Full</option>
                   <option value="partial">Partial</option>
                   <option value="due">Due</option>
@@ -389,6 +411,7 @@ const handleCalculateDue = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectEle
                   onChange={handleChange}
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
+                  <option>Select Payment Method</option>
                   <option value="bkash">Bkash</option>
                   <option value="cash">Cash</option>
                 </select>
