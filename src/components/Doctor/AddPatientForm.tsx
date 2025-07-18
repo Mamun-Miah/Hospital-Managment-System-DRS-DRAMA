@@ -10,6 +10,9 @@ const AddPatientForm: React.FC = () => {
     emailAddress: "",
     dateOfBirth: "",
     address: "",
+    age:"",
+    blood_group:"",
+    weight: "",
     city: "",
     stateProvince: "",
     postalCode: "",
@@ -91,6 +94,9 @@ const AddPatientForm: React.FC = () => {
         mobileNumber: "",
         emailAddress: "",
         dateOfBirth: "",
+         age:"",
+        blood_group:"",
+        weight: "",
         address: "",
         city: "",
         stateProvince: "",
@@ -114,7 +120,7 @@ const AddPatientForm: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Patient Name
+                Patient Name <span className="text-danger-800">*</span>
               </label>
               <input
                 name="patientName"
@@ -128,7 +134,7 @@ const AddPatientForm: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Mobile Number
+                Mobile Number <span className="text-danger-800">*</span>
               </label>
               <input
                 name="mobileNumber"
@@ -162,6 +168,46 @@ const AddPatientForm: React.FC = () => {
                 type="date"
                 placeholder="Enter DOB"
                 value={formData.dateOfBirth}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Age <span className="text-danger-800">*</span>
+              </label>
+              <input
+                name="age"
+                type="number"
+                placeholder="Enter Age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Blood Group
+              </label>
+              <input
+                name="blood_group"
+                type="text"
+                placeholder="Enter Blood Group"
+                value={formData.blood_group}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Weight (KG)
+              </label>
+              <input
+                name="weight"
+                type="number"
+                placeholder="Enter Weight (KG)"
+                value={formData.weight}
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
@@ -338,6 +384,9 @@ const AddPatientForm: React.FC = () => {
                   emailAddress: "",
                   dateOfBirth: "",
                   address: "",
+                   age:"",
+                  blood_group:"",
+                  weight: "",
                   city: "",
                   stateProvince: "",
                   postalCode: "",

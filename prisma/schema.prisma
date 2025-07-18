@@ -28,11 +28,14 @@ model Patient {
   mobile_number           String         @unique @db.VarChar(15)
   email                   String?        @db.VarChar(100)
   date_of_birth           DateTime?      @db.Date
-  gender                  Gender? // Enum defined below
+  gender                  Gender? 
   address_line1           String?        @db.VarChar(255)
   city                    String?        @db.VarChar(100)
   state_province          String?        @db.VarChar(100)
   postal_code             String?        @db.VarChar(20)
+  age                     String?        @db.VarChar(20)
+  blood_group             String?        @db.VarChar(20)
+  weight                  String?        @db.VarChar(20)
   emergency_contact_phone String?        @db.VarChar(15)
   status                  PatientStatus
   image_url               String?        @db.VarChar(255)
