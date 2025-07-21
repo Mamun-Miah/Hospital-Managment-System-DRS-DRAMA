@@ -116,7 +116,7 @@ const AddDoctor: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Doctor Name *
+                Doctor Name <span className="text-danger-800">*</span>
               </label>
               <input
                 name="doctorName"
@@ -130,7 +130,7 @@ const AddDoctor: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Mobile Number *
+                Mobile Number <span className="text-danger-800">*</span>
               </label>
               <input
                 name="phone_number"

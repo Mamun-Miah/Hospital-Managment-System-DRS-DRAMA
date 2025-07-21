@@ -6,8 +6,14 @@ export async function GET() {
   try {
     const patients = await prisma.patient.findMany({
       orderBy: {
-        created_at: 'asc', // or 'desc' for descending order
+        created_at: 'desc', // or 'desc' for descending order
       },
+      include: {
+        Prescription: {
+          select: {
+            is_prescribed: true,
+          },
+        }}
     });
 
     return NextResponse.json(patients, { status: 200 });

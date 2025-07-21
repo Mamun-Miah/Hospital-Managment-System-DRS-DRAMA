@@ -11,6 +11,9 @@ interface Patient {
   email: string;
   date_of_birth: string;
   gender: string;
+   age:string;
+    blood_group:string;
+    weight:string;
   address_line1: string;
   city: string;
   state_province: string;
@@ -163,6 +166,59 @@ const ViewPatientDetails: React.FC = () => {
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
+
+              <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Age <span className="text-danger-800">*</span>
+              </label>
+              <input
+                name="age"
+                type="number"
+                placeholder="Enter Age"
+                value={formData.age}
+                onChange={handleChange}
+                required
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+           
+
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Blood Group
+              </label>
+              <select
+                name="blood_group"
+                value={formData.blood_group}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              >
+                <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Weight (KG)
+              </label>
+              <input
+                name="weight"
+                type="number"
+                placeholder="Enter Weight (KG)"
+                value={formData.weight}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
                   Gender

@@ -7,11 +7,19 @@ import Image from "next/image";
 // import Image from "next/image";
 import Link from "next/link";
 
+interface Prescription {
+  is_prescribed: string;
+  // Add other fields if needed
+}
+
 interface Patient {
   patient_id: number;
   patient_name: string;
   mobile_number: string;
   email: string;
+  age: string;
+  blood_group: string;
+  weight: string;
   date_of_birth: string;
   gender: string;
   address_line1: string;
@@ -23,7 +31,9 @@ interface Patient {
   created_at: string;
   updated_at: string;
   checked?: boolean;
-  image_url?: string; // Optional field for patient image URL 
+  image_url?: string; 
+  Prescription: Prescription[];
+  
 }
 
 const PatientsListTable: React.FC = () => {
@@ -56,6 +66,8 @@ const PatientsListTable: React.FC = () => {
     };
 
     fetchPatients();
+
+   
   }, []);
 
   useEffect(() => {
@@ -332,7 +344,12 @@ const handleViewClick = async (id: number) => {
 
                            <Link
                               href={`/doctor/prescriptions/${patient.patient_id}`}
-                              className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
+                              className={`inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border
+                              ${
+                                patient.Prescription?.some((p) => p.is_prescribed === "Yes")
+                                  ? "bg-red-500 text-white border-red-500 hover:bg-red-600"
+                                  : "text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white"
+                              }`}
                             >
                               <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
                                 <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
@@ -481,6 +498,9 @@ const handleViewClick = async (id: number) => {
               <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
               <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
               <p><strong>State:</strong> {selectedPatient?.state_province}</p>
+              <p><strong>Age:</strong> {selectedPatient?.age}</p>
+              <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
+              <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
           </div>
           <div>
             

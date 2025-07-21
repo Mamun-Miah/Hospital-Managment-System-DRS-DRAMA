@@ -14,6 +14,9 @@ interface Patient {
   email: string;
   date_of_birth: string;
   gender: string;
+   age:string;
+    blood_group:string;
+    weight:string;
   address_line1: string;
   city: string;
   state_province: string;
@@ -29,8 +32,8 @@ interface Patient {
 const PatientsListTable: React.FC = () => {
 
   //modal state
-    const [isOpen, setIsOpen] = useState(false);
-     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
 //end modal state
   const [allPatients, setAllPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
@@ -455,6 +458,9 @@ const handleViewClick = async (id: number) => {
                <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
               <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
               <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
+              <p><strong>Age:</strong> {selectedPatient?.age}</p>
+              <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
+              <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
               <p><strong>State:</strong> {selectedPatient?.state_province}</p>
           </div>
           <div>

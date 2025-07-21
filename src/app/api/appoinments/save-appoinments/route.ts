@@ -59,6 +59,7 @@ console.log(medicineMap)
         doctor_id: doctor.doctor_id,
         total_cost: Math.max(0, Math.floor(total_cost)), // Round down, prevent negative
         prescribed_at: new Date(),
+        is_prescribed: 'Yes',
         items: {
           create: medicines.map((med: any) => ({
             medicine_id: medicineMap.get(med.name),

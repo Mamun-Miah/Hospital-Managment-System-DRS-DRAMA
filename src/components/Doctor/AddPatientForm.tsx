@@ -39,6 +39,33 @@ const AddPatientForm: React.FC = () => {
     }
   };
 
+
+  const handleAgeCalculation = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
+
+  const birthDate = new Date(value);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  const dayDiff = today.getDate() - birthDate.getDate();
+
+  
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age--;  
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+    age: age.toString(),
+  }));
+};
+
+
+
   const handleRemoveImage = (index: number) => {
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
@@ -168,7 +195,7 @@ const AddPatientForm: React.FC = () => {
                 type="date"
                 placeholder="Enter DOB"
                 value={formData.dateOfBirth}
-                onChange={handleChange}
+                onChange={handleAgeCalculation}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
@@ -186,19 +213,30 @@ const AddPatientForm: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+           
+
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Blood Group
               </label>
-              <input
+              <select
                 name="blood_group"
-                type="text"
-                placeholder="Enter Blood Group"
                 value={formData.blood_group}
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              />
+              >
+                <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+              </select>
             </div>
+
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Weight (KG)
