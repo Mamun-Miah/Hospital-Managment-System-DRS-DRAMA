@@ -255,6 +255,15 @@ const AddAppointment: React.FC = () => {
   ) => {
     const { name, value } = e.target;
 
+    if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
+      if (e.target.checked) {
+        console.log("Checked:", e.target.value);
+      } else {
+        console.log("Unchecked:", e.target.value);
+      }
+    }
+
+
     if (name === "treatment_name") {
       const selectedTreatment = treatmentList.find(
         (doc) => doc.treatment_name === value
@@ -445,6 +454,7 @@ const AddAppointment: React.FC = () => {
                   <input
                     className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-1/2 outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     type="date"
+                  
                   />
                 </span>
               </div>
@@ -479,6 +489,8 @@ const AddAppointment: React.FC = () => {
               <div>
                 <input
                   type="checkbox"
+                  // value={patient.patient_id}
+                    onChange={handleChange}
                   className="form-checkbox mt-2 h-4 w-4 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
                 /> Show DRS DERMA in Prescription
               </div>
