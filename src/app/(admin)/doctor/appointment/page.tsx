@@ -370,7 +370,7 @@ const handleViewClick = async (id: number) => {
 
 
                           {/* Edit button */}
-                          <Link href={`edit-patient/${patient.patient_id}`}>
+                          <Link href={`/doctor/patients-list/edit-patient/${patient.patient_id}`}>
                             <button
                               type="button"
                               className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"

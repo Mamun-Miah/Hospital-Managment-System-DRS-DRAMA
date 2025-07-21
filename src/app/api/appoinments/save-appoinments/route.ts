@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       where: { name: { in: medicineNames } },
     });
     const medicineMap = new Map(medicineRecords.map((m) => [m.name, m.medicine_id]));
-console.log(medicineMap)
+
     // 3. Calculate total cost (simplified)
     const doctor_fee = Number(doctor.doctor_fee) ?? 0;
     const discount = parseFloat(discountAmount) || 0;
