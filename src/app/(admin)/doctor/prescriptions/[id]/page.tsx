@@ -294,19 +294,19 @@ const AddAppointment: React.FC = () => {
     ]);
   };
 
-  const hanldeChangeTreatment = (
-    name: string,
-    index: number,
-    value: string | number
-  ) => {
-    // setTreatments((prev) => {
-    //   const updated = [...prev];
-    //   updated[index] = {
-    //     ...updated[index],
-    //     [name]: value,
-    //   };
-    // });
-  };
+  // const hanldeChangeTreatment = (
+  //   name: string,
+  //   index: number,
+  //   value: string | number
+  // ) => {
+  //   // setTreatments((prev) => {
+  //   //   const updated = [...prev];
+  //   //   updated[index] = {
+  //   //     ...updated[index],
+  //   //     [name]: value,
+  //   //   };
+  //   // });
+  // };
 
   const handleRemoveTreatment = (index: number) => {
     setTreatments((prev) => prev.filter((_, i) => index !== i));
@@ -476,6 +476,13 @@ const AddAppointment: React.FC = () => {
                   </option>
                 ))}
               </select>
+              <div>
+                <input
+                  type="checkbox"
+                  className="form-checkbox mt-2 h-4 w-4 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
+                /> Show DRS DERMA in Prescription
+              </div>
+                              
             </div>
 
             <div>
@@ -522,9 +529,9 @@ const AddAppointment: React.FC = () => {
                 Payable Doctor Fees 
               </label>
               <input
-                name="discountAmount"
+                name="doctor_fee"
                 type="number"
-                value={formData.doctor_fee > 1 ? `${formData.doctor_fee}` : "0"}
+                value={formData.doctor_fee > 0 ? `${formData.doctor_fee}` : ""}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -600,9 +607,9 @@ const AddAppointment: React.FC = () => {
                 </label>
                 <select
                   name="discountType"
-                  onChange={(e) =>
-                    hanldeChangeTreatment("discountType", i, e.target.value)
-                  }
+                  // onChange={(e) =>
+                  //   hanldeChangeTreatment("discountType", i, e.target.value)
+                  // }
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
                   <option value="">Select Option</option>
@@ -618,9 +625,9 @@ const AddAppointment: React.FC = () => {
                 <input
                   name="discountAmount"
                   type="number"
-                  onChange={(e) =>
-                    hanldeChangeTreatment("discountAmount", i, e.target.value)
-                  }
+                  // onChange={(e) =>
+                  //   hanldeChangeTreatment("discountAmount", i, e.target.value)
+                  // }
                   placeholder="Dicount Amount"
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
@@ -631,14 +638,15 @@ const AddAppointment: React.FC = () => {
                 </label>
                 <input
                   name="treatmentAmount"
+                  onChange={handleChange}
                   type="number"
                   value={
-                    formData.treatmentAmount > 1
+                    formData.treatmentAmount > 0
                       ? `${formData.treatmentAmount}`
-                      : "0"
+                      : ""
                   }
-                  disabled
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                  
+                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
               <div>
