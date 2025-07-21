@@ -25,6 +25,7 @@ interface FormData {
   city: string;
   weight: string;
   blood_group: string;
+  is_drs_derma: string;
 }
 
 interface Dosage {
@@ -121,6 +122,7 @@ const AddAppointment: React.FC = () => {
     city: "",
     weight: "",
     blood_group: "",
+    is_drs_derma:"",
   });
 
   const [treatments, setTreatments] = useState([
@@ -199,6 +201,7 @@ const AddAppointment: React.FC = () => {
             city: data.patient.city,
             weight: data.patient.weight,
             blood_group: data.patient.blood_group,
+            is_drs_derma: "",
           });
           // console.log("Form Data", setFormData)
           setLoading(false);
@@ -257,13 +260,20 @@ const AddAppointment: React.FC = () => {
 
     if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
       if (e.target.checked) {
-        console.log("Checked:", e.target.value);
+        const data = 'Yes';
+        setFormData((prev) => ({
+        ...prev,
+        is_drs_derma: data,
+       
+      }));
+
+
       } else {
         console.log("Unchecked:", e.target.value);
       }
     }
 
-
+ console.log("checked:", formData);
     if (name === "treatment_name") {
       const selectedTreatment = treatmentList.find(
         (doc) => doc.treatment_name === value
@@ -827,6 +837,7 @@ const AddAppointment: React.FC = () => {
                   city: "",
                   weight: "",
                   blood_group: "",
+                  is_drs_derma:""
                 })
               }
             >
