@@ -15,6 +15,12 @@ export async function GET(
       select: {
         patient_id: true,
         patient_name: true,
+        mobile_number:true,
+        age: true,
+        city: true,
+        gender: true,
+        blood_group: true,
+        weight: true,
       },
     });
 
