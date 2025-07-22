@@ -43,7 +43,7 @@ interface Medicine {
 interface Doctor {
   doctor_name: string;
   doctor_fee: number | string;
-  // add other fields if needed
+  
 }
 
 type OptionType = {
@@ -96,15 +96,9 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
 
 //Export Component
 const AddAppointment: React.FC = () => {
-  const [options, setOptions] = useState<OptionType[]>([]);
-  // const [nextDate, setNextDate] = useState(new Date());
+//Get Id from Params
   const { id } = useParams<{ id: string }>();
-
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [treatmentList, setTreatmentList] = useState<
-    { treatment_name: string; [key: string]: any }[]
-  >([]);
-
+//Set Form Data
   const [formData, setFormData] = useState<FormData>({
     patient_id: "",
     patient_name: "",
@@ -126,17 +120,26 @@ const AddAppointment: React.FC = () => {
     is_drs_derma:"No",
     next_appoinment: "",
   });
+//Set Doctor Data
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
 
+
+ //Set Treatments List 
+  const [treatmentList, setTreatmentList] = useState<
+    { treatment_name: string; [key: string]: any }[]
+  >([]);
   const [treatments, setTreatments] = useState([
     {
-      name: "Select Treatment",
-      treatmentCost: 1,
+      treatment_name: "Select Treatment",
       duration: 1,
       discountType: "",
       discountAmount: 0,
+      treatmentAmount:0,
     },
   ]);
 
+//Set Medicine List 
+  const [options, setOptions] = useState<OptionType[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([
     {
       name: "Select Medicine",
@@ -149,114 +152,118 @@ const AddAppointment: React.FC = () => {
     },
   ]);
 
+//Set Error 
   const [error, setError] = useState("");
+//Set Loading State
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function getPrescribedData() {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/appoinments/appoinments-data/${id}`);
-        if (!res.ok) {
-          throw new Error("Failed to fetch appoinments data");
-        }
-        const result = await res.json();
-        const data = result.data;
-        //get medicines value
-        const medicines = data.medicines;
 
-        const formattedOptions: OptionType[] = medicines.map(
-          (medicine: any) => ({
-            value: medicine.name.toLowerCase().replace(/\s+/g, "_"),
-            label: medicine.name,
-          })
-        );
-
-        setOptions(formattedOptions);
-        //End get medicines value
-
-        // console.log('Patient data:', id, data)
-        if (data) {
-          setDoctors(data.doctors);
-          setTreatmentList(data.treatments);
-          // setMedicinesdata(data.medicines);
-
-          setFormData({
-            patient_id: data.patient.patient_id,
-            patient_name: data.patient.patient_name,
-            doctor_name: data.doctors.doctor_name,
-            doctor_fee: parseInt(data.doctors.doctor_fee),
-            treatment_name:
-              data.treatments.length > 0
-                ? data.treatments.treatment_name
-                : "",
-            mobile_number: data.patient.mobile_number,
-            treatmentAmount: parseFloat(data.treatments.total_cost),
-            treatmentDuration: data.treatments.duration_months,
-            discountType: "",
-            discountAmount: 0,
-            medicine_name:
-              data.medicines.length > 0 ? data.medicines.name : "",
-            advise: "",
-            gender: data.patient.gender,
-            age: data.patient.age,
-            city: data.patient.city,
-            weight: data.patient.weight,
-            blood_group: data.patient.blood_group,
-            is_drs_derma: "",
-            next_appoinment:""
-          });
-       
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    getPrescribedData();
-  }, [id]);
-
-
-//submit Prescription Data to the API
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+//fetch Appointments Data from Api & set Medicine to the SetOptions & Set Doctor List & TreatmentList
+useEffect(() => {
+  async function getPrescribedData() {
     setLoading(true);
-
     try {
-      const prescribedData = { ...formData, medicines: [...medicines] };
-      console.log("Sending:", prescribedData);
-
-      const res = await fetch("/api/appoinments/save-appoinments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(prescribedData),
-      });
-
-      const result = await res.json();
-
+      const res = await fetch(`/api/appoinments/appoinments-data/${id}`);
       if (!res.ok) {
-        throw new Error(result.error || "Something went wrong");
+        throw new Error("Failed to fetch appoinments data");
       }
+      const result = await res.json();
+      const data = result.data;
+      //get medicines value
+      const medicines = data.medicines;
 
-      console.log("Prescription created:", result.prescription);
-      alert("Prescription saved successfully!");
+      const formattedOptions: OptionType[] = medicines.map(
+        (medicine: any) => ({
+          value: medicine.name.toLowerCase().replace(/\s+/g, "_"),
+          label: medicine.name,
+        })
+      );
 
-      // Optionally reset form
-      // setFormData(initialFormState);
-      // setMedicines([]);
-    } catch (err: any) {
-      console.error("Submission error:", err);
-      setError(err.message || "Failed to submit");
-    } finally {
-      setLoading(false);
+      setOptions(formattedOptions);
+      
+      if (data) {
+        setDoctors(data.doctors);
+        setTreatmentList(data.treatments);
+        // setMedicinesdata(data.medicines);
+
+        setFormData({
+          patient_id: data.patient.patient_id,
+          patient_name: data.patient.patient_name,
+          doctor_name: data.doctors.doctor_name,
+          doctor_fee: parseInt(data.doctors.doctor_fee),
+          treatment_name:
+            data.treatments.length > 0
+              ? data.treatments.treatment_name
+              : "",
+          mobile_number: data.patient.mobile_number,
+          treatmentAmount: parseFloat(data.treatments.total_cost),
+          treatmentDuration: data.treatments.duration_months,
+          discountType: "",
+          discountAmount: 0,
+          medicine_name:
+            data.medicines.length > 0 ? data.medicines.name : "",
+          advise: "",
+          gender: data.patient.gender,
+          age: data.patient.age,
+          city: data.patient.city,
+          weight: data.patient.weight,
+          blood_group: data.patient.blood_group,
+          is_drs_derma: "",
+          next_appoinment:""
+        });
+      
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  };
+  }
+
+  getPrescribedData();
+}, [id]);
 
 
+//Submit Prescription Data to the API
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
+
+  try {
+    const prescribedData = { ...formData, medicines: [...medicines] };
+    console.log("Sending:", prescribedData);
+
+    const res = await fetch("/api/appoinments/save-appoinments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(prescribedData),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.error || "Something went wrong");
+    }
+
+    console.log("Prescription created:", result.prescription);
+    alert("Prescription saved successfully!");
+
+    // Optionally reset form
+    // setFormData(initialFormState);
+    // setMedicines([]);
+  } catch (err: any) {
+    console.error("Submission error:", err);
+    setError(err.message || "Failed to submit");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+//Handle Submit Data
 const handleChange = (
   e: React.ChangeEvent<
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -264,6 +271,7 @@ const handleChange = (
 ) => {
   
   const { name, value } = e.target;
+
 
 if(name === "nextdate"){
   setFormData((prev) => ({
@@ -288,20 +296,20 @@ if(name === "nextdate"){
   }
   
   // Handle treatment select
-  if (name === "treatment_name") {
-    const selectedTreatment = treatmentList.find(
-      (doc) => doc.treatment_name === value
-    );
+  // if (name === "treatment_name") {
+  //   const selectedTreatment = treatmentList.find(
+  //     (doc) => doc.treatment_name === value
+  //   );
 
-    setFormData((prev) => ({
-      ...prev,
-      treatment_name: value,
-      treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
-      treatmentDuration: Number(selectedTreatment?.duration_months) || 0,
-    }));
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     treatment_name: value.toString(),
+  //     treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
+  //     treatmentDuration: Number(selectedTreatment?.duration_months) || 0,
+  //   }));
 
-    return;
-  }
+  //   return;
+  // }
 
   //  Handle doctor select
   if (name === "doctor_name") {
@@ -328,30 +336,46 @@ if(name === "nextdate"){
     setTreatments([
       ...treatments,
       {
-        name: "Select Treatment",
-        treatmentCost: 1,
+        treatment_name: "Select Treatment",
         duration: 1,
         discountType: "",
         discountAmount: 0,
+        treatmentAmount:0
       },
     ]);
   };
 
-//  const handleChangeTreatment = (
-//   name: string,
-//   index: number,
-//   value: string | number
-// ) => {
+ const handleChangeTreatment = (
+  name: string,
+  index: number,
+  value: string | number
+) => {
+  setTreatments((prev) => {
+    const updated = [...prev];
 
-//   setTreatments((prev) => {
-//     const updated = [...prev];
-//     updated[index] = {
-//       ...updated[index],
-//       [name]: value,
-//     };
-//     return updated; 
-//   });
-// };
+    // If the treatment name is changed
+    if (name === "treatment_name") {
+      const selected = treatmentList.find(
+        (item) => item.treatment_name === value
+      );
+
+      updated[index] = {
+        ...updated[index],
+        treatment_name: value.toString(),
+        treatmentAmount: selected ? Number(selected.total_cost) : 0,
+        duration: selected ? Number(selected.duration_months) : 0,
+      };
+    } else {
+      updated[index] = {
+        ...updated[index],
+        [name]: value,
+      };
+    }
+
+    return updated;
+  });
+};
+
 
   const handleRemoveTreatment = (index: number) => {
     setTreatments((prev) => prev.filter((_, i) => index !== i));
@@ -406,7 +430,6 @@ if(name === "nextdate"){
   const year = date.getFullYear();
   const month = date.getMonth();
   const day = date.getDay();
-
   const finalDate = `${day}/${month}/${year}`;
 
 console.log(formData)
@@ -606,9 +629,11 @@ console.log(treatments)
                 </label>
                 <select
                   name="treatment_name"
-                  onChange={
-                    handleChange
+                  value={treatments[i].treatment_name}
+                  onChange={(e) =>
+                    handleChangeTreatment("treatment_name", i, e.target.value)
                   }
+
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
                   <option value="">Select Treatment</option>
@@ -629,13 +654,11 @@ console.log(treatments)
                 </label>
                 <input
                   name="treatmentAmount"
-                  type="number"
-                  
-                  value={
-                    formData.treatmentAmount > 1
-                      ? `${formData.treatmentAmount}`
-                      : "0"
-                  }
+                    type="number"
+                    value={treatments[i].treatmentAmount}
+                    onChange={(e) =>
+                      handleChangeTreatment("treatmentAmount", i, e.target.value)
+                    }
                   disabled
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
@@ -647,12 +670,8 @@ console.log(treatments)
                 </label>
                 <input
                   type="text"
-                  value={
-                    formData.treatmentDuration > 1
-                      ? `${formData.treatmentDuration}`
-                      : "0 Month"
-                  }
-                  disabled
+                    value={`${treatments[i].duration} Month`}
+                    disabled
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
@@ -662,9 +681,10 @@ console.log(treatments)
                 </label>
                 <select
                   name="discountType"
-                  // onChange={(e) =>
-                  //   hanldeChangeTreatment("discountType", i, e.target.value)
-                  // }
+                  value={treatments[i].discountType}
+                  onChange={(e) =>
+                    handleChangeTreatment("discountType", i, e.target.value)
+                  }
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
                   <option value="">Select Option</option>
@@ -678,11 +698,12 @@ console.log(treatments)
                   Discount Amount
                 </label>
                 <input
-                  name="discountAmount"
-                  type="number"
-                  // onChange={(e) =>
-                  //   hanldeChangeTreatment("discountAmount", i, e.target.value)
-                  // }
+                 name="discountAmount"
+                    type="number"
+                    value={treatments[i].discountAmount}
+                    onChange={(e) =>
+                      handleChangeTreatment("discountAmount", i, e.target.value)
+                    }
                   placeholder="Dicount Amount"
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
@@ -693,12 +714,16 @@ console.log(treatments)
                 </label>
                 <input
                   name="treatmentAmount"
-                  onChange={handleChange}
+                  onChange={e =>
+                    handleChangeTreatment(
+                      "treatmentAmount",
+                      i,
+                      e.target.value
+                    )
+                  }
                   type="number"
                   value={
-                    formData.treatmentAmount > 0
-                      ? `${formData.treatmentAmount}`
-                      : ""
+                    treatments[i].treatmentAmount
                   }
                   
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
