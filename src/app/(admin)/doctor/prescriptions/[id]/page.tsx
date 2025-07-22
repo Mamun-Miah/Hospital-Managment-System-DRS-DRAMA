@@ -13,7 +13,8 @@ interface FormData {
   doctor_name: string;
   doctor_fee: number;
   treatment_name: string;
-  treatmentAmount: number;
+  treatmentAmount2: number;
+  treatmentCost:number;
   treatmentDuration: number;
   discountType: string;
   discountAmount: number;
@@ -105,8 +106,9 @@ const AddAppointment: React.FC = () => {
     doctor_name: "",
     doctor_fee: 0,
     treatment_name: "",
-    treatmentAmount: 0,
+    treatmentAmount2: 0,
     treatmentDuration: 0,
+    treatmentCost:0,
     discountType: "",
     discountAmount: 0,
     medicine_name: "",
@@ -134,7 +136,8 @@ const AddAppointment: React.FC = () => {
       duration: 1,
       discountType: "",
       discountAmount: 0,
-      treatmentAmount:0,
+      treatmentAmount2:0,
+      treatmentCost:0
     },
   ]);
 
@@ -196,7 +199,8 @@ useEffect(() => {
               ? data.treatments.treatment_name
               : "",
           mobile_number: data.patient.mobile_number,
-          treatmentAmount: parseFloat(data.treatments.total_cost),
+          treatmentAmount2: parseFloat(data.treatments.total_cost),
+          treatmentCost:0,
           treatmentDuration: data.treatments.duration_months,
           discountType: "",
           discountAmount: 0,
@@ -340,41 +344,67 @@ if(name === "nextdate"){
         duration: 1,
         discountType: "",
         discountAmount: 0,
-        treatmentAmount:0
+        treatmentAmount2:0,
+        treatmentCost:0,
       },
     ]);
   };
 
- const handleChangeTreatment = (
+const handleChangeTreatment = (
   name: string,
   index: number,
   value: string | number
 ) => {
   setTreatments((prev) => {
     const updated = [...prev];
+    const current = updated[index];
 
-    // If the treatment name is changed
+    let newData = { ...current, [name]: value };
+
+    // If user selects a treatment
     if (name === "treatment_name") {
       const selected = treatmentList.find(
         (item) => item.treatment_name === value
       );
-
-      updated[index] = {
-        ...updated[index],
+      newData = {
+        ...newData,
         treatment_name: value.toString(),
-        treatmentAmount: selected ? Number(selected.total_cost) : 0,
+        treatmentAmount2: selected ? Number(selected.total_cost) : 0,
         duration: selected ? Number(selected.duration_months) : 0,
-      };
-    } else {
-      updated[index] = {
-        ...updated[index],
-        [name]: value,
       };
     }
 
+    // If user changes discountType or discountAmount
+    if (name === "discountType" || name === "discountAmount") {
+      const { treatmentAmount2, discountType } = {
+        ...current,
+        ...((name === "discountType" && { discountType: value }) ||
+          (name === "discountAmount" && { discountAmount: value })),
+      };
+
+      const discountValue = Number(
+        name === "discountAmount" ? value : current.discountAmount
+      );
+
+      let finalAmount = treatmentAmount2;
+
+      if (discountType === "Percentage") {
+        finalAmount = treatmentAmount2 - (treatmentAmount2 * discountValue) / 100;
+      } else if (discountType === "Flat Rate") {
+        finalAmount = treatmentAmount2 - discountValue;
+      }
+
+      newData = {
+        ...newData,
+        treatmentCost: finalAmount < 0 ? 0 : Number(finalAmount.toFixed(2)),
+      };
+    }
+
+    updated[index] = newData;
     return updated;
   });
 };
+
 
 
   const handleRemoveTreatment = (index: number) => {
@@ -655,7 +685,7 @@ console.log(treatments)
                 <input
                   name="treatmentAmount"
                     type="number"
-                    value={treatments[i].treatmentAmount}
+                    value={treatments[i].treatmentAmount2}
                     onChange={(e) =>
                       handleChangeTreatment("treatmentAmount", i, e.target.value)
                     }
@@ -723,7 +753,7 @@ console.log(treatments)
                   }
                   type="number"
                   value={
-                    treatments[i].treatmentAmount
+                    treatments[i].treatmentCost
                   }
                   
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -883,7 +913,8 @@ console.log(treatments)
                   doctor_name: "",
                   doctor_fee: formData.doctor_fee,
                   treatment_name: "",
-                  treatmentAmount: formData.treatmentAmount,
+                  treatmentAmount2: formData.treatmentAmount2,
+                  treatmentCost:0,
                   treatmentDuration: formData.treatmentDuration,
                   discountType: "",
                   discountAmount: 0,
