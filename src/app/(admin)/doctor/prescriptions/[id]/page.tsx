@@ -26,6 +26,7 @@ interface FormData {
   weight: string;
   blood_group: string;
   is_drs_derma: string;
+  next_appoinment: string;
 }
 
 interface Dosage {
@@ -122,7 +123,8 @@ const AddAppointment: React.FC = () => {
     city: "",
     weight: "",
     blood_group: "",
-    is_drs_derma:"",
+    is_drs_derma:"No",
+    next_appoinment: "",
   });
 
   const [treatments, setTreatments] = useState([
@@ -186,7 +188,7 @@ const AddAppointment: React.FC = () => {
             doctor_fee: parseInt(data.doctors.doctor_fee),
             treatment_name:
               data.treatments.length > 0
-                ? data.treatments[0].treatment_name
+                ? data.treatments.treatment_name
                 : "",
             mobile_number: data.patient.mobile_number,
             treatmentAmount: parseFloat(data.treatments.total_cost),
@@ -194,7 +196,7 @@ const AddAppointment: React.FC = () => {
             discountType: "",
             discountAmount: 0,
             medicine_name:
-              data.medicines.length > 0 ? data.medicines[0].name : "",
+              data.medicines.length > 0 ? data.medicines.name : "",
             advise: "",
             gender: data.patient.gender,
             age: data.patient.age,
@@ -202,6 +204,7 @@ const AddAppointment: React.FC = () => {
             weight: data.patient.weight,
             blood_group: data.patient.blood_group,
             is_drs_derma: "",
+            next_appoinment:""
           });
           // console.log("Form Data", setFormData)
           setLoading(false);
@@ -251,55 +254,73 @@ const AddAppointment: React.FC = () => {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
 
-    if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
-      if (e.target.checked) {
-        const data = 'Yes';
-        setFormData((prev) => ({
-        ...prev,
-        is_drs_derma: data,
-       
-      }));
+const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >
+) => {
+  
+  const { name, value } = e.target;
 
+if(name === "nextdate"){
+  setFormData((prev) => ({
+      ...prev,
+      next_appoinment: value,
+     
+    }));
 
-      } else {
-        console.log("Unchecked:", e.target.value);
-      }
-    }
+    return;
+}
 
- console.log("checked:", formData);
-    if (name === "treatment_name") {
-      const selectedTreatment = treatmentList.find(
-        (doc) => doc.treatment_name === value
-      );
+  //  Handle checkbox
+  if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
+    const isChecked = e.target.checked;
 
-      setFormData((prev) => ({
-        ...prev,
-        treatment_name: value,
-        treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
-        treatmentDuration: Number(selectedTreatment?.duration_months) || 0,
-      }));
-    } else if (name === "doctor_name") {
-      const selectedDoctor = doctors.find((doc) => doc.doctor_name === value);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: isChecked ? "Yes" : "No", 
+    }));
+   
+    return; 
+  }
+  
+  // Handle treatment select
+  if (name === "treatment_name") {
+    const selectedTreatment = treatmentList.find(
+      (doc) => doc.treatment_name === value
+    );
 
-      setFormData((prev) => ({
-        ...prev,
-        doctor_name: value,
-        doctor_fee: Number(selectedDoctor?.doctor_fee) || 0,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
+    setFormData((prev) => ({
+      ...prev,
+      treatment_name: value,
+      treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
+      treatmentDuration: Number(selectedTreatment?.duration_months) || 0,
+    }));
+
+    return;
+  }
+
+  //  Handle doctor select
+  if (name === "doctor_name") {
+    const selectedDoctor = doctors.find((doc) => doc.doctor_name === value);
+
+    setFormData((prev) => ({
+      ...prev,
+      doctor_name: value,
+      doctor_fee: Number(selectedDoctor?.doctor_fee) || 0,
+    }));
+
+    return;
+  }
+
+  // Handle all other inputs
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
   const handleAddTreatments = () => {
     setTreatments([
       ...treatments,
@@ -383,6 +404,7 @@ const AddAppointment: React.FC = () => {
 
   const finalDate = `${day}/${month}/${year}`;
 
+console.log(formData)
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
@@ -464,6 +486,8 @@ const AddAppointment: React.FC = () => {
                   <input
                     className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-1/2 outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     type="date"
+                    name="nextdate"
+                    onChange={handleChange}
                   
                   />
                 </span>
@@ -499,6 +523,8 @@ const AddAppointment: React.FC = () => {
               <div>
                 <input
                   type="checkbox"
+                   name="is_drs_derma"
+                  checked={formData.is_drs_derma === "Yes"}
                   // value={patient.patient_id}
                     onChange={handleChange}
                   className="form-checkbox mt-2 h-4 w-4 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
@@ -837,7 +863,8 @@ const AddAppointment: React.FC = () => {
                   city: "",
                   weight: "",
                   blood_group: "",
-                  is_drs_derma:""
+                  is_drs_derma:"",
+                  next_appoinment:""
                 })
               }
             >
