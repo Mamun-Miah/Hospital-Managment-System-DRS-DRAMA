@@ -16,8 +16,9 @@ interface FormData {
   treatmentAmount2: number;
   treatmentCost:number;
   treatmentDuration: number;
-  discountType: string;
-  discountAmount: number;
+  payableDoctorFee:number;
+  doctorDiscountType: string, 
+  doctorDiscountAmount: number,
   medicine_name: string;
   advise: string;
   mobile_number: number;
@@ -109,8 +110,9 @@ const AddAppointment: React.FC = () => {
     treatmentAmount2: 0,
     treatmentDuration: 0,
     treatmentCost:0,
-    discountType: "",
-    discountAmount: 0,
+    payableDoctorFee: 0, 
+    doctorDiscountType: "", 
+    doctorDiscountAmount: 0, 
     medicine_name: "",
     mobile_number: 0,
     advise: "",
@@ -202,8 +204,10 @@ useEffect(() => {
           treatmentAmount2: parseFloat(data.treatments.total_cost),
           treatmentCost:0,
           treatmentDuration: data.treatments.duration_months,
-          discountType: "",
-          discountAmount: 0,
+          
+          payableDoctorFee: 0, 
+          doctorDiscountType: "", 
+          doctorDiscountAmount: 0, 
           medicine_name:
             data.medicines.length > 0 ? data.medicines.name : "",
           advise: "",
@@ -299,23 +303,39 @@ if(name === "nextdate"){
     return; 
   }
   
-  // Handle treatment select
-  // if (name === "treatment_name") {
-  //   const selectedTreatment = treatmentList.find(
-  //     (doc) => doc.treatment_name === value
-  //   );
 
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     treatment_name: value.toString(),
-  //     treatmentAmount: Number(selectedTreatment?.total_cost) || 0,
-  //     treatmentDuration: Number(selectedTreatment?.duration_months) || 0,
-  //   }));
-
-  //   return;
-  // }
 
   //  Handle doctor select
+
+// Handle doctor discount type or amount change
+if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
+  setFormData((prev) => {
+    const doctor_fee = prev.doctor_fee;
+    const discountType =
+      name === "doctorDiscountType" ? value : prev.doctorDiscountType;
+    const discountAmount = Number(
+      name === "doctorDiscountAmount" ? value : prev.doctorDiscountAmount
+    );
+
+    let payable = doctor_fee;
+
+    if (discountType === "Percentage") {
+      payable = doctor_fee - (doctor_fee * discountAmount) / 100;
+    } else if (discountType === "Flat Rate") {
+      payable = doctor_fee - discountAmount;
+    }
+
+    return {
+      ...prev,
+      [name]: value,
+      payableDoctorFee: payable < 0 ? 0 : Number(payable.toFixed(2)),
+    };
+  });
+  return;
+}
+
+
+
   if (name === "doctor_name") {
     const selectedDoctor = doctors.find((doc) => doc.doctor_name === value);
 
@@ -610,8 +630,9 @@ console.log(treatments)
                 Discount Type
               </label>
               <select
-                name="discountType"
-                onChange={handleChange}
+                name="doctorDiscountType"
+                 value={formData.doctorDiscountType}
+                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
                 <option value="">Select Option</option>
@@ -625,8 +646,9 @@ console.log(treatments)
                 Discount Amount
               </label>
               <input
-                name="discountAmount"
+                name="doctorDiscountAmount"
                 type="number"
+                value={formData.doctorDiscountAmount}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -637,9 +659,9 @@ console.log(treatments)
                 Payable Doctor Fees 
               </label>
               <input
-                name="doctor_fee"
-                type="number"
-                value={formData.doctor_fee > 0 ? `${formData.doctor_fee}` : ""}
+                 name="payableDoctorFee"
+                  type="number"
+                  value={formData.payableDoctorFee || 0}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -916,8 +938,9 @@ console.log(treatments)
                   treatmentAmount2: formData.treatmentAmount2,
                   treatmentCost:0,
                   treatmentDuration: formData.treatmentDuration,
-                  discountType: "",
-                  discountAmount: 0,
+                  payableDoctorFee: 0, 
+                  doctorDiscountType: "", 
+                  doctorDiscountAmount: 0, 
                   medicine_name: "",
                   advise: "",
                   gender: "",
