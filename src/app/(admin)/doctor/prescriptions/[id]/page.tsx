@@ -206,7 +206,7 @@ const AddAppointment: React.FC = () => {
             is_drs_derma: "",
             next_appoinment:""
           });
-          // console.log("Form Data", setFormData)
+       
           setLoading(false);
         }
       } catch (error) {
@@ -217,6 +217,8 @@ const AddAppointment: React.FC = () => {
     getPrescribedData();
   }, [id]);
 
+
+//submit Prescription Data to the API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -334,19 +336,20 @@ if(name === "nextdate"){
     ]);
   };
 
-  // const hanldeChangeTreatment = (
-  //   name: string,
-  //   index: number,
-  //   value: string | number
-  // ) => {
-  //   // setTreatments((prev) => {
-  //   //   const updated = [...prev];
-  //   //   updated[index] = {
-  //   //     ...updated[index],
-  //   //     [name]: value,
-  //   //   };
-  //   // });
-  // };
+ const handleChangeTreatment = (
+  name: string,
+  index: number,
+  value: string | number
+) => {
+  setTreatments((prev) => {
+    const updated = [...prev];
+    updated[index] = {
+      ...updated[index],
+      [name]: value,
+    };
+    return updated; 
+  });
+};
 
   const handleRemoveTreatment = (index: number) => {
     setTreatments((prev) => prev.filter((_, i) => index !== i));
@@ -405,6 +408,8 @@ if(name === "nextdate"){
   const finalDate = `${day}/${month}/${year}`;
 
 console.log(formData)
+console.log(medicines)
+console.log(treatments)
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
@@ -599,8 +604,8 @@ console.log(formData)
                 </label>
                 <select
                   name="treatment_name"
-                  onChange={
-                    handleChange
+                  onChange={e =>
+                    handleChangeTreatment("name", i, e.target.value)
                   }
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
