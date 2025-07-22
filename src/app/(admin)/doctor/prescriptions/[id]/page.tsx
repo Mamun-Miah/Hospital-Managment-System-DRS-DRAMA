@@ -238,7 +238,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   setLoading(true);
 
   try {
-    const prescribedData = { ...formData, medicines: [...medicines] };
+    const prescribedData = { ...formData, medicines: [...medicines], treatments:[...treatments] };
     console.log("Sending:", prescribedData);
 
     const res = await fetch("/api/appoinments/save-appoinments", {
@@ -661,7 +661,7 @@ console.log(treatments)
               <input
                  name="payableDoctorFee"
                   type="number"
-                  value={formData.payableDoctorFee || 0}
+                  value={formData.payableDoctorFee}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -765,10 +765,10 @@ console.log(treatments)
                   Payable Treatment Cost
                 </label>
                 <input
-                  name="treatmentAmount"
+                  name="treatmentCost"
                   onChange={e =>
                     handleChangeTreatment(
-                      "treatmentAmount",
+                      "treatmentCost",
                       i,
                       e.target.value
                     )

@@ -115,7 +115,7 @@ model Prescription {
 model PrescriptionItem {
   item_id                  Int           @id @default(autoincrement())
   prescription_id          Int
-  medicine_id              Int
+  medicine_id              Int?
   treatment_id             Int
   dose_morning             String?
   dose_mid_day             String?
@@ -133,7 +133,7 @@ model PrescriptionItem {
   advice                   String?
 
   prescription Prescription  @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
-  medicine     Medicine      @relation(fields: [medicine_id], references: [medicine_id])
+  medicine     Medicine?      @relation(fields: [medicine_id], references: [medicine_id])
   treatment    Treatmentlist @relation(fields: [treatment_id], references: [treatment_id])
 }
 
