@@ -324,6 +324,7 @@ if(name === "nextdate"){
 };
 
   const handleAddTreatments = () => {
+
     setTreatments([
       ...treatments,
       {
@@ -336,20 +337,21 @@ if(name === "nextdate"){
     ]);
   };
 
- const handleChangeTreatment = (
-  name: string,
-  index: number,
-  value: string | number
-) => {
-  setTreatments((prev) => {
-    const updated = [...prev];
-    updated[index] = {
-      ...updated[index],
-      [name]: value,
-    };
-    return updated; 
-  });
-};
+//  const handleChangeTreatment = (
+//   name: string,
+//   index: number,
+//   value: string | number
+// ) => {
+
+//   setTreatments((prev) => {
+//     const updated = [...prev];
+//     updated[index] = {
+//       ...updated[index],
+//       [name]: value,
+//     };
+//     return updated; 
+//   });
+// };
 
   const handleRemoveTreatment = (index: number) => {
     setTreatments((prev) => prev.filter((_, i) => index !== i));
@@ -604,8 +606,8 @@ console.log(treatments)
                 </label>
                 <select
                   name="treatment_name"
-                  onChange={e =>
-                    handleChangeTreatment("name", i, e.target.value)
+                  onChange={
+                    handleChange
                   }
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
