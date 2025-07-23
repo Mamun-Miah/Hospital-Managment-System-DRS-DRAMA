@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
+import { useRouter } from 'next/navigation';
 // import Image from "next/image";
 import { useParams } from "next/navigation";
 // import { NextResponse } from "next/server";
@@ -100,6 +100,8 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
 const AddAppointment: React.FC = () => {
 //Get Id from Params
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+
 //Set Form Data
   const [formData, setFormData] = useState<FormData>({
     patient_id: "",
@@ -135,7 +137,7 @@ const AddAppointment: React.FC = () => {
   const [treatments, setTreatments] = useState([
     {
       treatment_name: "Select Treatment",
-      duration: 1,
+      duration: 0,
       discountType: "",
       discountAmount: 0,
       treatmentAmount2:0,
@@ -256,11 +258,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     console.log("Prescription created:", result.prescription);
-    alert("Prescription saved successfully!");
-
-    // Optionally reset form
-    // setFormData(initialFormState);
-    // setMedicines([]);
+    // alert("Prescription saved successfully!");
+    router.push('/doctor/appointment/');
+    
   } catch (err: any) {
     console.error("Submission error:", err);
     setError(err.message || "Failed to submit");
@@ -304,8 +304,6 @@ if(name === "nextdate"){
   }
   
 
-
-  //  Handle doctor select
 
 // Handle doctor discount type or amount change
 if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {

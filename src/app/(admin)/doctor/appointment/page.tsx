@@ -112,24 +112,24 @@ const PatientsListTable: React.FC = () => {
   //   setFilteredPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
   // };
 
- const handleDelete = async (id: number) => {
-  if (confirm("Are you sure you want to delete this patient?")) {
-    try {
-      const res = await fetch(`/api/patient/deletepatient/${id}`, {
-        method: "DELETE",
-      });
+//  const handleDelete = async (id: number) => {
+//   if (confirm("Are you sure you want to delete this patient?")) {
+//     try {
+//       const res = await fetch(`/api/patient/deletepatient/${id}`, {
+//         method: "DELETE",
+//       });
 
-      if (res.ok) {
-        setAllPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
-        setFilteredPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
-      } else {
-        console.error("Failed to delete patient");
-      }
-    } catch (error) {
-      console.error("Error deleting patient:", error);
-    }
-  }
-}; 
+//       if (res.ok) {
+//         setAllPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
+//         setFilteredPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
+//       } else {
+//         console.error("Failed to delete patient");
+//       }
+//     } catch (error) {
+//       console.error("Error deleting patient:", error);
+//     }
+//   }
+// }; 
 
 
 //view patient details in modal
@@ -341,25 +341,34 @@ const handleViewClick = async (id: number) => {
                         <div className="flex items-center gap-[9px]">
                           {/* View button */}
                           {/* <Link href={`view-patient/${patient.patient_id}`}> */}
-
-                           <Link
-                              href={`/doctor/prescriptions/${patient.patient_id}`}
-                              className={`inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border
-                              ${
-                                patient.Prescription?.some((p) => p.is_prescribed === "Yes")
-                                  ? "bg-red-500 text-white border-red-500 hover:bg-red-600"
-                                  : "text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white"
-                              }`}
-                            >
-                              <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
-                                <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
-                                  Add
-                                </i>
-                                Prescribed
-                              </span>
-                            </Link>
+                        
+                          {patient.Prescription?.some((p) => p.is_prescribed === "Yes") ? (
+                                <span
+                                  className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border bg-gray-400 text-white border-gray-400 cursor-not-allowed"
+                                >
+                                  <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
+                                    <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
+                                      Check
+                                    </i>
+                                    Prescribed
+                                  </span>
+                                </span>
+                              ) : (
+                                <Link
+                                  href={`/doctor/prescriptions/${patient.patient_id}`}
+                                  className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white"
+                                >
+                                  <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
+                                    <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
+                                      Add
+                                    </i>
+                                    Prescribed
+                                  </span>
+                                </Link>
+                              )}
                             <button
                               type="button"
+                              
                               className="text-primary-500 leading-none custom-tooltip"
                               onClick={() => handleViewClick(patient.patient_id)}
                               
@@ -380,13 +389,13 @@ const handleViewClick = async (id: number) => {
                           </Link>
 
                           {/* Delete button */}
-                          <button
+                          {/* <button
                             type="button"
                             className="text-danger-500 leading-none custom-tooltip"
-                            onClick={() => handleDelete(patient.patient_id)}
+                            // onClick={() => handleDelete(patient.patient_id)}
                           >
                             <i className="material-symbols-outlined !text-md">delete</i>
-                          </button>
+                          </button> */}
                         </div>
                       </td>
 
