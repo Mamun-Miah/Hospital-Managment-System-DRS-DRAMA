@@ -29,19 +29,19 @@ export async function GET(
                 },
                 },
                 items: {
-                select: {
-                    treatment_id: true,
-                    discount_type: true,
-                    discount_value:true,
-                    treatment: {
-                    select: {
-                        treatment_id: true,
-                        treatment_name: true,
-                        total_cost: true,
-                        duration_months: true,
-                    },
-                    },
-                },
+                // select: {
+                    
+                   
+                   
+                //     treatment: {
+                //     select: {
+                //         treatment_id: true,
+                //         treatment_name: true,
+                //         total_cost: true,
+                //         duration_months: true,
+                //     },
+                //     },
+                // },
                 },
             },
             });

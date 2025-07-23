@@ -12,9 +12,6 @@ export default async function  (
 )   {
 
     const { id } = useParams<{ id: string }>();
-    console.log(id)
-
-
     const [formData, setFormData] = useState({
         treatment_name: "",
         total_cost: "",
@@ -67,49 +64,6 @@ export default async function  (
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//    e.preventDefault()
-//     setLoading(true)
-//     setError("") 
-    
-//     try {
-//       // const formData = new FormData(e.currentTarget)
-//       const response = await fetch('/api/treatment/add-treatment', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(formData),
-//       })
- 
-//        const data = await response.json();
-
-//       if (!response.ok) {
-//         throw new Error(data.error || "Failed to add patient");
-//       }
-
-//       alert("Treatment added successfully!");
-      
-//       setFormData({
-//         treatment_name: "",
-//         total_cost: "",
-//         duration_months: "",
-//       });
-
-//     } catch (error) {
-//       setError(error instanceof Error ? error.message : 'An unexpected error occurred.')
-//       console.error(error)
-//     } finally {
-//       setLoading(false)
-//     }
-
-
-
-//   };
-
-
-
 
 
 
