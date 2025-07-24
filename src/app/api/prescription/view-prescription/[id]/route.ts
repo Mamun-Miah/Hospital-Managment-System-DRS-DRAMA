@@ -20,10 +20,20 @@ export async function GET(
         patient_id: true,
         doctor_id: true,
         patient: {
-          select: { patient_name: true },
+          select: { patient_name: true,
+            city: true,
+            mobile_number: true,
+            gender:true,
+            age:true,
+            blood_group:true,
+            weight:true,
+           },
         },
         doctor: {
-          select: { doctor_name: true },
+          select: { doctor_name: true,
+            phone_number: true,
+           },
+          
         },
         items: {
           select: {
@@ -55,6 +65,7 @@ export async function GET(
             treatment: {
               select: {
                 treatment_name: true,
+                duration_months:true,
               },
             },
           },
@@ -81,6 +92,7 @@ export async function GET(
       treatmentItems: prescription.treatmentItems.map((treat) => ({
         ...treat,
         treatment_name: treat.treatment?.treatment_name ?? null,
+        duration_months: treat.treatment?.duration_months ?? null,
         treatment: undefined,
       })),
     };

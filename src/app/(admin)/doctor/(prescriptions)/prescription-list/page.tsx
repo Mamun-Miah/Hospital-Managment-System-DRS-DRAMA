@@ -6,9 +6,9 @@ interface Prescription {
   prescription_id: number;
   patient_id: number;
   patient_name: string;
-  prescribed_at: string;
+  prescribed_at: number;
   doctor_name: string;
-  mobile_number: string;
+  mobile_number: number;
 }
 const InvoiceList: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
@@ -52,7 +52,7 @@ useEffect(() => {
 
   const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const order = e.target.value;
-    console.log(order);
+    // console.log(order);
     const sortedPrescriptins = currentPrescriptions.sort((a, b) => {
       const dateA = new Date(a.prescribed_at).getTime();
       const dateB = new Date(b.prescribed_at).getTime();
@@ -63,19 +63,19 @@ useEffect(() => {
     });
 
     setFilteredPrescriptions(sortedPrescriptins);
-    console.log(sortedPrescriptins);
+    // console.log(sortedPrescriptins);
   };
   useEffect(() => {
     const result: Prescription[] = prescriptions.filter(
       (prescription) =>
         prescription.patient_name.toLowerCase().includes(search.toLowerCase()) ||
         prescription.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
-        prescription.prescription_id.toString().includes(search)  ||
-        prescription.mobile_number.toString().includes(search)  ||
-        prescription.prescribed_at.toString().includes(search)  ||
+        prescription.prescription_id.toString().includes(search) ||
+        prescription.mobile_number.toString().includes(search) ||
+        prescription.prescribed_at.toString().includes(search) ||
         prescription.patient_id.toString().includes(search)
     );
-    console.log(result);
+    // console.log(result);
     setFilteredPrescriptions(result);
     setCurrentPage(1);
   }, [search, prescriptions]);

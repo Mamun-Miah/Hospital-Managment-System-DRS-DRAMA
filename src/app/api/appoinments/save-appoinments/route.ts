@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
       data: {
         patient_id,
         doctor_id: doctor.doctor_id,
-        total_cost: 0, // you can calculate later
+        total_cost: 0, // You can calculate later
         is_drs_derma: is_drs_derma || "No",
         prescribed_at: new Date(),
         is_prescribed: "Yes",
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
 
     const prescriptionId = prescription.prescription_id;
 
-    //Save doctor info (even if others not selected)
+    // Save doctor info (even if others not selected)
     if (doctor_fee || doctorDiscountAmount) {
       await prisma.prescriptionItem.create({
         data: {
@@ -64,7 +63,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    //Save medicines if any
+    // Save medicines if any
     if (Array.isArray(medicines)) {
       for (const med of medicines) {
         const medicine = await prisma.medicine.findFirst({
@@ -73,14 +72,25 @@ export async function POST(req: NextRequest) {
 
         if (!medicine) continue;
 
-        const dosages = med.dosages.reduce(
-          (acc: any, cur: any) => {
-            const key = cur.time.toLowerCase().replace(" ", "_"); // morning/mid_day/night
-            acc[key] = String(cur.amount);
-            return acc;
-          },
-          { dose_morning: null, dose_mid_day: null, dose_night: null }
-        );
+        // ✅ Fixed dosage mapping
+        const dosages = {
+          dose_morning: "",
+          dose_mid_day: "",
+          dose_night: "",
+        };
+
+        for (const d of med.dosages) {
+          const time = d.time.toLowerCase();
+          const amount = String(d.amount);
+
+          if (time === "morning") {
+            dosages.dose_morning = amount;
+          } else if (time === "mid day" || time === "midday") {
+            dosages.dose_mid_day = amount;
+          } else if (time === "night") {
+            dosages.dose_night = amount;
+          }
+        }
 
         await prisma.prescriptionItem.create({
           data: {
@@ -116,8 +126,7 @@ export async function POST(req: NextRequest) {
                 ? "Percentage"
                 : "None",
             discount_value: parseFloat(treat.discountAmount || "0"),
-            payable_treatment_amount: parseFloat( treat.treatmentCost || "0"
-            ),
+            payable_treatment_amount: parseFloat(treat.treatmentCost || "0"),
           },
         });
       }
@@ -129,7 +138,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
-

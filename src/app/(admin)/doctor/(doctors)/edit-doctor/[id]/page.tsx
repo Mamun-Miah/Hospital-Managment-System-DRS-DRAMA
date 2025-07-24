@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 export default function EditDoctor() {
   const params = useParams();
    const doctorIds = params?.id;
-   console.log("Fetched doctor ID:", doctorIds);
+  //  console.log("Fetched doctor ID:", doctorIds);
    const [formData, setFormData] = useState({
            doctorName: "",
            phone_number: "",

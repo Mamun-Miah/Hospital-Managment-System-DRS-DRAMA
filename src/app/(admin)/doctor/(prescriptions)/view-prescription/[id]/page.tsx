@@ -3,6 +3,55 @@
 import Image from "next/image";
 import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
 import PrescriptionPDF from "./PrescriptionPDF";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+
+
+
+// export interface Prescription {
+//   prescription_id: number;
+//   prescribed_at: string;
+//   is_prescribed: string;
+//   is_drs_derma: string;
+//   total_cost: number;
+//   patient_id: number;
+//   doctor_id: number;
+//   patient: {
+//     patient_name: string;
+//     city: string;
+//   };
+//   doctor: {
+//     doctor_name: string;
+//     phone_number: string;
+//   };
+//   items: PrescriptionItem[];
+//   treatmentItems: TreatmentItem[];
+// }
+
+// export interface PrescriptionItem {
+//   item_id: number;
+//   prescribed_doctor_name: string;
+//   doctor_discount_type: string | null;
+//   doctor_discount_value: number | null;
+//   payable_doctor_amount: number | null;
+//   advice: string | null;
+//   next_visit_date: string | null;
+//   dose_morning: string | null;
+//   dose_mid_day: string | null;
+//   dose_night: string | null;
+//   duration_days: number | null;
+//   is_prescribed: string;
+//   medicine_name: string | null;
+// }
+
+// export interface TreatmentItem {
+//   id: number;
+//   discount_type: string;
+//   discount_value: number;
+//   payable_treatment_amount: number;
+//   treatment_name: string;
+// }
+
 
 const sampleData = {
   medicines: [
@@ -159,6 +208,12 @@ const sampleData = {
   ],
 };
 export default function Page() {
+
+const [prescriptionsData, setPrescriptionsData] = useState([])
+
+const params = useParams();
+const prescriptionId = params?.id;
+
   const handlePrint = async () => {
     const blob = await pdf(<PrescriptionPDF data={sampleData} />).toBlob();
     const blobURL = URL.createObjectURL(blob);
@@ -168,6 +223,40 @@ export default function Page() {
       printWindow.print();
     });
   };
+
+
+  const [loading, setLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+useEffect(() => {
+  if (!prescriptionId) return;
+
+  const fetchPrescriptionData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/prescription/view-prescription/${prescriptionId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch prescription");
+      }
+      const data = await response.json();
+      setPrescriptionsData(data);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPrescriptionData();
+}, [prescriptionId]);
+
+if (loading) return <p>Loading prescription...</p>;
+if (error) return <p>Error: {error}</p>;
+if (!prescriptionsData || !prescriptionsData.patient) {
+  return <div>Loading...</div>; // or any loading state you want
+}
+console.log(prescriptionsData)
 
   return (
     <>
@@ -217,13 +306,13 @@ export default function Page() {
           <div className="sm:flex justify-between">
             <div>
               <h4 className="!mb-[7px] !text-[20px] !font-semibold">
-                Dr. Walter White
+                 {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
               </h4>
               <span className="block md:text-md mt-[5px]">
-                MBBS, MD, MS (Reg No: 321456)
+                {prescriptionsData?.doctor?.specialization ?? ""}
               </span>
               <span className="block md:text-md mt-[5px] text-black dark:text-white">
-                Mobile No: +321 4567 5643
+               {prescriptionsData?.doctor?.phone_number ?? ""}
               </span>
             </div>
 
@@ -245,9 +334,9 @@ export default function Page() {
 
               <h3>DRS DERMA</h3>
               <span className="block md:text-md mt-[5px]">
-                S. Arrowhead Court Branford9
+                Dhaka, Bangladesh
               </span>
-              <span className="block md:text-md mt-[5px]">+1 444 266 5599</span>
+              <span className="block md:text-md mt-[5px]">+880 1234567891</span>
             </div>
           </div>
 
@@ -260,44 +349,44 @@ export default function Page() {
           <div className="sm:flex justify-between mt-[10px]">
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] last:mb-0">
-                ID: <span className="text-black dark:text-white">321456</span>
+                ID: <span className="text-black dark:text-white">{prescriptionsData?.patient_id?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Name:{" "}
-                <span className="text-black dark:text-white">Jane Ronan</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.patient_name?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Address:{" "}
-                <span className="text-black dark:text-white">Bradford, UK</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.city?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Mobile Number:{" "}
-                <span className="text-black dark:text-white">+8801723847</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.mobile_number?? ""}</span>
               </li>
             </ul>
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] last:mb-0">
                 Gender :{" "}
-                <span className="text-black dark:text-white">Male</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.gender?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
-                Age: <span className="text-black dark:text-white">24</span>
+                Age: <span className="text-black dark:text-white">{prescriptionsData?.patient.age?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Blood Group:{" "}
-                <span className="text-black dark:text-white">O+</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.blood_group?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Weight:
-                <span className="text-black dark:text-white">55 kg</span>
+                <span className="text-black dark:text-white"> {prescriptionsData?.patient.weight?? ""} KG</span>
               </li>
             </ul>
             <div>
               <span className="block text-black dark:text-white font-semibold">
-                Date: 07 November, 2025
+                Date: {prescriptionsData?.prescribed_at?? ""}
               </span>
               <span className="block text-black dark:text-white font-semibold mt-3">
-                Next Date: 07 November, 2025
+                Next Date: {prescriptionsData?.items[0].next_visit_date?? ""}
               </span>
             </div>
           </div>
@@ -308,53 +397,33 @@ export default function Page() {
 
           <div className="lg:w-3/5 -mx-[20px] md:-mx-[25px] px-2">
             <div className="table-responsive overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th className=" text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c] max-w-1/3">
-                      Treatment Name
-                      <div className="absolute top-0 left-0 right-0 bottom-0 -z-[1] bg-gray-50 dark:bg-[#15203c] my-[4px]"></div>
-                    </th>
-                    <th className="min-w-[170px] text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
-                      <div className="absolute top-0 left-0 right-0 bottom-0 -z-[1] bg-gray-50 dark:bg-[#15203c] my-[4px]"></div>
-                    </th>
-                    <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
-                      Duration
-                      <div className="absolute top-0 left-0 right-0 bottom-0 -z-[1] bg-gray-50 dark:bg-[#15203c] my-[4px]"></div>
-                    </th>
-                  </tr>
-                </thead>
+            <table className="w-full mb-16 border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 dark:bg-[#15203c]">
+                      <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
+                        Treatment Name
+                      </th>
+                      <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
+                        Duration
+                      </th>
+                    </tr>
+                  </thead>
 
-                <tbody className="text-black dark:text-white">
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top  whitespace-nowrap px-[20px] py-[10px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      Chemotherapy
-                    </td>
-                    <td className="whitespace-nowrap px-[20px]"></td>
-                    <td className="ltr:text-left rtl:text-right align-top  whitespace-nowrap px-[20px] py-[10px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      6 Months
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top whitespace-nowrap px-[20px] py-[10px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      Chemotherapy
-                    </td>
-                    <td className="whitespace-nowrap px-[20px]"></td>
-                    <td className="ltr:text-left rtl:text-right align-top whitespace-nowrap px-[20px] py-[10px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      6 Months
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top whitespace-nowrap px-[20px] py-[10px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      Chemotherapy
-                    </td>
-                    <td className="whitespace-nowrap px-[20px]"></td>
-                    <td className="ltr:text-left rtl:text-right align-top whitespace-nowrap px-[20px] py-[10px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      6 Months
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  <tbody className="text-sm text-black dark:text-white">
+                    {prescriptionsData.treatmentItems.map((treatment, index) => (
+                      <tr key={index} className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#1b253b] dark:even:bg-[#1e2a47]">
+                        <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
+                          {treatment.treatment_name}
+                        </td>
+                        <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
+                          {treatment.duration_months} Months
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+
             </div>
           </div>
           <span className="block font-semibold text-black dark:text-white text-[20px] mt-[10px] mb-2">
@@ -382,63 +451,31 @@ export default function Page() {
                 </thead>
 
                 <tbody className="text-black dark:text-white">
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      1. Tab. Ibuprofen
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      1 Morning - 1 Night
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      10 Days
-                    </td>
-                  </tr>
+                  {prescriptionsData.items
+                    .filter((item) => item.medicine_name !== null) // Only render medicines
+                    .map((item, index) => {
+                      const dosageParts = [];
+                      if (item.dose_morning) dosageParts.push(`${item.dose_morning} Morning`);
+                      if (item.dose_mid_day) dosageParts.push(`${item.dose_mid_day} Midday`);
+                      if (item.dose_night) dosageParts.push(`${item.dose_night} Night`);
+                      const dosage = dosageParts.join(" - ") || "N/A";
 
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      2. Cap. Acetaminophen
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      1 Morning - 1 Midday - 1 Night
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      10 Days
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      3. Cap. Acetaminophen
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      1 Morning - 1 Midday - 1 Night
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      10 Days
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      4. Cap. Acetaminophen
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      1 Morning - 1 Midday - 1 Night
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      10 Days
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      5. Cap. Acetaminophen
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      1 Morning - 1 Midday - 1 Night
-                    </td>
-                    <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                      10 Days
-                    </td>
-                  </tr>
+                      return (
+                        <tr key={item.item_id}>
+                          <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
+                            {index + 1}. {item.medicine_name}
+                          </td>
+                          <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
+                            {dosage}
+                          </td>
+                          <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
+                            {item.duration_days ? `${item.duration_days} Days` : "N/A"}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
+
               </table>
             </div>
           </div>

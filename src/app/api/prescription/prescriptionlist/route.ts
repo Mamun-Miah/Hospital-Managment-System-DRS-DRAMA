@@ -6,7 +6,6 @@ export async function GET() {
     const prescriptionList = await prisma.prescription.findMany({
   where: {
     is_prescribed: "Yes",
-    
   },
   select: {
     prescription_id: true,
@@ -36,10 +35,10 @@ export async function GET() {
       is_prescribed: item.is_prescribed,
       is_drs_derma: item.is_drs_derma,
       patient_id: item.patient_id,
-      patient_name: item.patient?.patient_name ?? null,
-      mobile_number: item.patient?.mobile_number ?? null,
+      patient_name: item.patient?.patient_name ?? "",
+      mobile_number: item.patient?.mobile_number ?? "",
       doctor_id: item.doctor_id,
-      doctor_name: item.doctor?.doctor_name ?? null,
+      doctor_name: item.doctor?.doctor_name ?? "",
     }));
 
 
