@@ -17,6 +17,7 @@ export async function GET() {
     patient: {
       select: {
         patient_name: true,
+        mobile_number:true,
       },
     },
     doctor_id: true,
@@ -28,7 +29,24 @@ export async function GET() {
   },
 });
 
-    return NextResponse.json({ prescriptionlist: prescriptionList });
+
+ const prescriptionListData = prescriptionList.map((item) => ({
+      prescription_id: item.prescription_id,
+      prescribed_at: item.prescribed_at.toISOString().slice(0, 10),
+      is_prescribed: item.is_prescribed,
+      is_drs_derma: item.is_drs_derma,
+      patient_id: item.patient_id,
+      patient_name: item.patient?.patient_name ?? null,
+      mobile_number: item.patient?.mobile_number ?? null,
+      doctor_id: item.doctor_id,
+      doctor_name: item.doctor?.doctor_name ?? null,
+    }));
+
+
+
+
+
+    return NextResponse.json({ prescriptionlist: prescriptionListData });
   } catch (error) {
     console.error("Error fetching prescriptions:", error);
     return NextResponse.json(

@@ -152,7 +152,7 @@ model PrescriptionTreatmentItem {
   updated_at DateTime? @updatedAt
 
   prescription            Prescription      @relation(fields: [prescription_id], references: [prescription_id])
-  treatment               Treatmentlist     @relation(fields: [treatment_id], references: [treatment_id])
+  treatment               Treatmentlist?    @relation(fields: [treatment_id], references: [treatment_id])
   PrescriptionItem        PrescriptionItem? @relation(fields: [prescriptionItemItem_id], references: [item_id])
   prescriptionItemItem_id Int?
 }

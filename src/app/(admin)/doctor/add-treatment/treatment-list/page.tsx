@@ -60,9 +60,7 @@ const TreatmentList: React.FC = () => {
     }
   };
 
-  if (allTreatment.length <= 0) {
-    return;
-  }
+  
 
   const handleDelete = async (treatmentId: string) => {
     if (confirm("Are you sure you want to delete this treatment?")) {

@@ -14,6 +14,7 @@
     "@fullcalendar/react": "^6.1.17",
     "@headlessui/react": "^2.2.2",
     "@prisma/client": "^6.10.1",
+    "@react-pdf/renderer": "^4.3.0",
     "apexcharts": "^4.7.0",
     "bcrypt": "^6.0.0",
     "material-symbols": "^0.31.2",

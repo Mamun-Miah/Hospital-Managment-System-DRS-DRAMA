@@ -42,9 +42,7 @@ const DoctorListTable: React.FC = () => {
     }, []);
   
 
- if (allDoctors.length <= 0) {
-    return;
-  }
+
 
   const handleDeleteDoctor = async (doctor_id: number) => {
       if(confirm("Are you sure you want to delete this doctor?")) {

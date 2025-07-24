@@ -1507,7 +1507,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 <div className="pt-[4px]">
                   <ul className="sidebar-sub-menu">
                     
-                    {role === "admin" ? (
+                    {/* {role === "admin" ? (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/add-doctor/"
@@ -1517,7 +1517,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       >
                         Add Doctor
                       </Link>
-                    </li>) : ""}
+                    </li>) : ""} */}
 
                         
 
@@ -1654,7 +1654,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
             </div>  
 
 
-            <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+            {/* <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link href="/doctor/view-prescription/">
               <button
                 className={` flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
@@ -1671,7 +1671,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
               </Link>
 
           
-            </div>  
+            </div>   */}
 
 
             {/* Previous Code for further uses */}
