@@ -66,164 +66,164 @@ export interface TreatmentItem {
 
 
 
-// const sampleData = {
-//   medicines: [
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+const sampleData = {
+  medicines: [
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//     {
-//       name: "Cap. Acetaminophen",
-//       dosage: "1 Morning - 1 Midday - 1 Night",
-//       duration: "10 Days",
+    },
+    {
+      name: "Cap. Acetaminophen",
+      dosage: "1 Morning - 1 Midday - 1 Night",
+      duration: "10 Days",
       
-//     },
-//   ],
-// };
+    },
+  ],
+};
 export default function Page() {
 
 const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null)
-const [sampleData, setSampleData] = useState([])
+
 
 const params = useParams();
 const prescriptionId = params?.id;
@@ -254,9 +254,7 @@ useEffect(() => {
         throw new Error("Failed to fetch prescription");
       }
       const data = await response.json();
-      const sampleData = data.items[0];
-      setSampleData(sampleData);
-      console.log('sample DAta',sampleData)
+      
       setPrescriptionsData(data);
     } catch (err) {
       setError((err as Error).message);

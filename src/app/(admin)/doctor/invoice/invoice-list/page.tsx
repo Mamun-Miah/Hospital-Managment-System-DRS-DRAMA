@@ -346,7 +346,7 @@ const InvoiceList: React.FC = () => {
       status: "Paid",
     },
   ]);
-
+console.log(setInvoices)
   // console.log("allTreatment", allTreatment);
   const [filteredInvoice, setFilteredInvoice] = useState<Invoice[]>(invoices);
 
