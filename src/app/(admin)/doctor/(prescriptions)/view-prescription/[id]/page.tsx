@@ -8,208 +8,222 @@ import { useParams } from "next/navigation";
 
 
 
-// export interface Prescription {
-//   prescription_id: number;
-//   prescribed_at: string;
-//   is_prescribed: string;
-//   is_drs_derma: string;
-//   total_cost: number;
-//   patient_id: number;
-//   doctor_id: number;
-//   patient: {
-//     patient_name: string;
-//     city: string;
-//   };
-//   doctor: {
-//     doctor_name: string;
-//     phone_number: string;
-//   };
-//   items: PrescriptionItem[];
-//   treatmentItems: TreatmentItem[];
-// }
+export interface Prescription {
+  prescription_id: number;
+  prescribed_at: string; // ISO date string, e.g., "2025-07-24"
+  is_prescribed: "Yes" | "No";
+  is_drs_derma: "Yes" | "No";
+  total_cost: number;
+  patient_id: number;
+  doctor_id: number;
+  patient: Patient;
+  doctor: Doctor;
+  items: PrescriptionItem[];
+  treatmentItems: TreatmentItem[];
+}
 
-// export interface PrescriptionItem {
-//   item_id: number;
-//   prescribed_doctor_name: string;
-//   doctor_discount_type: string | null;
-//   doctor_discount_value: number | null;
-//   payable_doctor_amount: number | null;
-//   advice: string | null;
-//   next_visit_date: string | null;
-//   dose_morning: string | null;
-//   dose_mid_day: string | null;
-//   dose_night: string | null;
-//   duration_days: number | null;
-//   is_prescribed: string;
-//   medicine_name: string | null;
-// }
+export interface Patient {
+  patient_name: string;
+  city: string;
+  mobile_number: string;
+  gender: "Male" | "Female" | "Other";
+  age: string; // or number if age is numeric
+  blood_group: string;
+  weight: string; // or number if weight is numeric
+}
 
-// export interface TreatmentItem {
-//   id: number;
-//   discount_type: string;
-//   discount_value: number;
-//   payable_treatment_amount: number;
-//   treatment_name: string;
-// }
+export interface Doctor {
+  doctor_name: string;
+  phone_number: string;
+  specialization: string;
+}
+
+export interface PrescriptionItem {
+  item_id: number;
+  prescribed_doctor_name: string;
+  doctor_discount_type: "Flat" | "Percentage" | "None" | null;
+  doctor_discount_value: number | null;
+  payable_doctor_amount: number | null;
+  advice: string | null;
+  next_visit_date: string | null; // ISO date string or null
+  dose_morning: string | null;
+  dose_mid_day: string | null;
+  dose_night: string | null;
+  duration_days: number | null;
+  is_prescribed: "Yes" | "No";
+  medicine_name: string | null;
+  advise:string | null;
+}
+
+export interface TreatmentItem {
+  id: number;
+  discount_type: "Flat" | "Percentage" | "None";
+  discount_value: number;
+  payable_treatment_amount: number;
+  treatment_name: string;
+  duration_months: number;
+}
 
 
-const sampleData = {
-  medicines: [
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+
+// const sampleData = {
+//   medicines: [
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
+//     },
+//     {
+//       name: "Cap. Acetaminophen",
+//       dosage: "1 Morning - 1 Midday - 1 Night",
+//       duration: "10 Days",
       
-    },
-  ],
-};
+//     },
+//   ],
+// };
 export default function Page() {
 
-const [prescriptionsData, setPrescriptionsData] = useState([])
+const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null)
+const [sampleData, setSampleData] = useState([])
 
 const params = useParams();
 const prescriptionId = params?.id;
@@ -240,6 +254,9 @@ useEffect(() => {
         throw new Error("Failed to fetch prescription");
       }
       const data = await response.json();
+      const sampleData = data.items[0];
+      setSampleData(sampleData);
+      console.log('sample DAta',sampleData)
       setPrescriptionsData(data);
     } catch (err) {
       setError((err as Error).message);
@@ -304,12 +321,12 @@ console.log(prescriptionsData)
       >
         <div className="trezo-card-content">
           <div className="sm:flex justify-between">
-            <div>
+            <div className="mt-8">
               <h4 className="!mb-[7px] !text-[20px] !font-semibold">
-                 {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
+                {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
               </h4>
               <span className="block md:text-md mt-[5px]">
-                {prescriptionsData?.doctor?.specialization ?? ""}
+                {prescriptionsData?.doctor?.specialization ?? "MBBS, Medicine"}
               </span>
               <span className="block md:text-md mt-[5px] text-black dark:text-white">
                {prescriptionsData?.doctor?.phone_number ?? ""}
@@ -317,7 +334,7 @@ console.log(prescriptionsData)
             </div>
 
             <div className="mt-[20px] sm:mt-0">
-              {/* <Image
+              <Image
                 src="/images/logo.png"
                 alt="logo"
                 className="mb-[10px] dark:hidden"
@@ -330,9 +347,9 @@ console.log(prescriptionsData)
                 className="mb-[10px] hidden dark:block"
                 width={100}
                 height={26}
-              /> */}
+              />
 
-              <h3>DRS DERMA</h3>
+            
               <span className="block md:text-md mt-[5px]">
                 Dhaka, Bangladesh
               </span>
@@ -391,15 +408,15 @@ console.log(prescriptionsData)
             </div>
           </div>
 
-          <span className="block font-semibold text-black dark:text-white text-[20px] mt-[20px] mb-3">
+          <span className="block mt-16 font-semibold text-black dark:text-white text-[20px]  mb-3">
             Treatments:
           </span>
 
-          <div className="lg:w-3/5 -mx-[20px] md:-mx-[25px] px-2">
+          <div className="lg:w-4/5 ] md:-mx-[25px] px-2  ">
             <div className="table-responsive overflow-x-auto">
-            <table className="w-full mb-16 border-collapse">
+            <table className="w-full  mb-12 border-collapse">
                   <thead>
-                    <tr className="bg-gray-50 dark:bg-[#15203c]">
+                    <tr className="bg-gray-50  dark:bg-[#15203c]">
                       <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
                         Treatment Name
                       </th>
@@ -489,7 +506,7 @@ console.log(prescriptionsData)
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
               <span className="w-[7px] h-[7px] bg-gray-400 dark:bg-gray-600 absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 rounded-full"></span>
-              Avoid oily and spicy food.
+               {prescriptionsData.items[0]?.advise || ""}
             </li>
           </ul>
 
@@ -505,7 +522,7 @@ console.log(prescriptionsData)
             </div>
 
             <span className="block text-black dark:text-white font-semibold">
-              Dr. Walter White
+              {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
             </span>
 
             <span className="block text-xs mt-[5px]">

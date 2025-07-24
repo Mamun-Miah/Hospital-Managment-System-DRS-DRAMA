@@ -196,17 +196,17 @@ const PrescriptionPDF = ({ data }: { data: any }) => {
           </View>
           <View style={styles.hr} />
 
-          {data.medicines.map((med:any, index: number) => (
+          {data.map((med:any, index: number) => (
             <View style={styles.tableRow} key={index}>
               <Text style={styles.col1}>
-                {index + 1}. {med.name}
+                {index + 1}. {med.medicine_name}
               </Text>
               <Text style={styles.col2}>
-                {med.dosage}
+                {med.dose_morning}
                 
               </Text>
               <Text style={styles.col3}>
-                {med.duration}
+                {med.duration_days}
                 
               </Text>
             </View>
