@@ -496,17 +496,15 @@ const handleChangeTreatment = (
 
   const handleMouseEnter = (fieldName: string) => {
   if (!clearedFields[fieldName]) {
-    setFormData((prev) => ({ ...prev, [fieldName]: "" }));
-    // setMedicines((prev) => ({ ...prev, [fieldName]: "" }));
-    // setTreatments((prev) => ({ ...prev, [fieldName]: "" }));  
+    setFormData((prev) => ({ ...prev, [fieldName]: "" })); 
     setClearedFields((prev) => ({ ...prev, [fieldName]: true }));
   }
 };
 
   const date = new Date();
   const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDay();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');  
   const finalDate = `${day}/${month}/${year}`;
 
 console.log(formData)
