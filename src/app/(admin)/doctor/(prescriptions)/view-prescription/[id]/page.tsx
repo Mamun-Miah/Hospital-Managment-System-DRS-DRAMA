@@ -2,7 +2,7 @@
 "use client";
 import Image from "next/image";
 import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
-import PrescriptionPDF from "./PrescriptionPDF";
+import PrescriptionPDF from "./prescriptionpdf";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
@@ -67,160 +67,7 @@ export interface TreatmentItem {
 
 
 
-const sampleData = {
-  medicines: [
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-    {
-      name: "Cap. Acetaminophen",
-      dosage: "1 Morning - 1 Midday - 1 Night",
-      duration: "10 Days",
-      
-    },
-  ],
-};
+
 export default function Page() {
 
 const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null)
@@ -230,12 +77,12 @@ const params = useParams();
 const prescriptionId = params?.id;
 
   const handlePrint = async () => {
-    const blob = await pdf(<PrescriptionPDF data={sampleData} />).toBlob();
+    const blob = await pdf(<PrescriptionPDF data={prescriptionsData} />).toBlob();
     const blobURL = URL.createObjectURL(blob);
     const printWindow = window.open(blobURL);
     printWindow?.addEventListener("load", () => {
       printWindow.focus();
-      printWindow.print();
+      // printWindow.print();
     });
   };
 
@@ -274,7 +121,7 @@ if (!prescriptionsData || !prescriptionsData.patient) {
 }
 
 
-console.log(prescriptionsData)
+console.log('prescriptionsData',prescriptionsData)
 
   return (
     <>
@@ -296,7 +143,7 @@ console.log(prescriptionsData)
           </button>
 
           <PDFDownloadLink
-            document={<PrescriptionPDF data={sampleData} />}
+            document={<PrescriptionPDF data={prescriptionsData} />}
             fileName="prescription.pdf"
             className="font-medium inline-block transition-all rounded-md md:text-md py-[8px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 mx-[8px]"
           >

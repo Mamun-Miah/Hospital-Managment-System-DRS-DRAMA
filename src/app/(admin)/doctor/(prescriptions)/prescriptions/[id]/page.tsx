@@ -154,15 +154,15 @@ const AddAppointment: React.FC = () => {
 //Set Medicine List 
   const [options, setOptions] = useState<OptionType[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([
-    {
-      name: "Select Medicine",
-      duration: "",
-      dosages: [
-        { time: "Morning", amount: "" },
-        { time: "Mid Day", amount: "" },
-        { time: "Night", amount: "" },
-      ],
-    },
+    // {
+    //   name: "Select Medicine",
+    //   duration: "",
+    //   dosages: [
+    //     { time: "Morning", amount: "" },
+    //     { time: "Mid Day", amount: "" },
+    //     { time: "Night", amount: "" },
+    //   ],
+    // },
   ]);
 
 //Set Error 
@@ -854,6 +854,7 @@ console.log(treatments)
               <Select
                 options={options}
                 value={{ label: medicine.name, value: medicine.name }}
+                required
                 onChange={(option) =>
                   handleMedicineChange(index, "name", option?.label ?? "")
                 }

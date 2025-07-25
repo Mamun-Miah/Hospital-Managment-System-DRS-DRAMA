@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   Document,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   header1: {
     flexDirection: "row",
     backgroundColor: "#f1f5f9",
-    paddingVertical: 4,
+    paddingVertical: 5,
     paddingHorizontal: 6,
     borderBottom: "1px solid #ccc",
   },
@@ -76,15 +76,16 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #eee",
   },
   tablCol1: {
-    width: "75%",
+    width: "60%",
   },
   tablCol2: {
-    width: "25%",
+    width: "40%",
     textAlign: "left",
+    marginLeft: 284,
   },
   text: {
     fontSize: 10,
-    color: "#1e293b", // Tailwind: text-slate-800
+    color: "#1e293b",
   },
   table: {
     width: "100%",
@@ -92,15 +93,15 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: "row",
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 5,
   },
   tableHeader: {
     fontWeight: "semibold",
   },
   col1: { width: "40%" },
-  col2: { width: "40%" },
-  col3: { width: "20%" },
+  col2: { width: "42%" },
+  col3: { width: "18%" },
   footer: {
     marginTop: 20,
     flexDirection: "row",
@@ -119,15 +120,25 @@ const styles = StyleSheet.create({
 });
 
 const PrescriptionPDF = ({ data }: { data: any }) => {
+  const {
+    prescribed_at,
+    next_visit_date,
+    advise,
+    patient,
+    doctor,
+    is_drs_derma,
+    items,
+    treatmentItems,
+  } = data;
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.doctorInfo}>
-            <Text style={styles.doctorName}>Dr. Walter White</Text>
-            <Text>MBBS, MD, MS (Reg No: 321456)</Text>
-            <Text>Mobile No: +321 4567 5643</Text>
+            <Text style={styles.doctorName}>{is_drs_derma === "Yes" ? "DRS DERMA" : doctor?.doctor_name}</Text>
+             <Text>{is_drs_derma === "Yes" ? "" : doctor?.designation}</Text>
+           
           </View>
           <View style={styles.hospitalInfo}>
             <Image style={styles.logo} src="/images/logo.png" />
@@ -141,22 +152,22 @@ const PrescriptionPDF = ({ data }: { data: any }) => {
         <Text style={styles.sectionTitle}>Patient</Text>
         <View style={styles.patientInfo}>
           <View>
-            <Text>ID: 321456</Text>
-            <Text>Name: Jane Ronan</Text>
-            <Text>Address: Bradford, UK</Text>
-            <Text>Mobile Number: +8801723847</Text>
+            <Text>ID: {data?.patient_id}</Text>
+            <Text>Name: {patient?.patient_name}</Text>
+            <Text>Address: {patient?.city}</Text>
+            <Text>Mobile Number: {patient?.mobile_number}</Text>
           </View>
           <View>
-            <Text>Gender: Male</Text>
-            <Text>Age: 24</Text>
-            <Text>Blood Group: O+</Text>
+            <Text>Gender: {patient?.gender}</Text>
+            <Text>Age: {patient?.age}</Text>
+            <Text>Blood Group: {patient?.blood_group}</Text>
             <Text>
-              Weight: 55 <keygen />
+              Weight: {patient?.weight} <keygen />
             </Text>
           </View>
           <View>
-            <Text>Date: 07 November, 2025</Text>
-            <Text>Next Date: 07 November, 2025</Text>
+            <Text>Date: {prescribed_at}</Text>
+            <Text>Next Date: {next_visit_date}</Text>
           </View>
         </View>
 
@@ -170,22 +181,20 @@ const PrescriptionPDF = ({ data }: { data: any }) => {
             <Text style={[styles.tablCol2, styles.text]}>Duration</Text>
           </View>
 
-          {/* Static Data Rows */}
-          <View style={styles.row}>
-            <Text style={[styles.tablCol1, styles.text]}>Chemotherapy</Text>
-            <Text style={[styles.tablCol2, styles.text]}>6 Months</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.tablCol1, styles.text]}>Chemotherapy</Text>
-            <Text style={[styles.tablCol2, styles.text]}>6 Months</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.tablCol1, styles.text]}>Chemotherapy</Text>
-            <Text style={[styles.tablCol2, styles.text]}>6 Months</Text>
-          </View>
+          {/* Treatments Rows */}
+          {treatmentItems?.map((treatment:any) => (
+            <View key={treatment.id} style={styles.row}>
+              <Text style={[styles.tablCol1, styles.text]}>
+                {treatment?.treatment_name}
+              </Text>
+              <Text style={[styles.tablCol2, styles.text]}>
+                {treatment?.duration_months}
+              </Text>
+            </View>
+          ))}
         </View>
 
-        {/* Medicine Table */}
+        {/* Medicines*/}
         <View style={styles.table}>
           <Text style={[styles.title, { marginTop: "10px" }]}>Medicines:</Text>
           <View style={styles.hr} />
@@ -196,19 +205,16 @@ const PrescriptionPDF = ({ data }: { data: any }) => {
           </View>
           <View style={styles.hr} />
 
-          {data.map((med:any, index: number) => (
+          {items.map((med:any, index: number) => (
             <View style={styles.tableRow} key={index}>
               <Text style={styles.col1}>
                 {index + 1}. {med.medicine_name}
               </Text>
               <Text style={styles.col2}>
-                {med.dose_morning}
-                
+                {med?.dose_morning} Morning - {med?.dose_mid_day} Midday -{" "}
+                {med?.dose_night} Night
               </Text>
-              <Text style={styles.col3}>
-                {med.duration_days}
-                
-              </Text>
+              <Text style={styles.col3}>{med.duration_days}</Text>
             </View>
           ))}
         </View>
@@ -219,7 +225,7 @@ const PrescriptionPDF = ({ data }: { data: any }) => {
         <View style={styles.footer}>
           <Text>
             <Text style={{ fontWeight: "bold" }}>Advice Given:</Text>
-            {"\n"}• Avoid oily and spicy food.
+            {"\n"}• {advise}
           </Text>
           {/* <View style=} /> */}
           <View style={styles.signature}>
@@ -232,10 +238,9 @@ const PrescriptionPDF = ({ data }: { data: any }) => {
                 width: "100%",
                 borderBottom: "1px",
                 borderColor: "#eee",
-                marginVertical: "10px",
               }}
             />
-            <Text>Dr. Walter White</Text>
+            <Text>{doctor.doctor_name}</Text>
             <Text style={{ marginTop: 5 }}>MBBS, MD, MS (Reg No: 321456)</Text>
           </View>
         </View>
