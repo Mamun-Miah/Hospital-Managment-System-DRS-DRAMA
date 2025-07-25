@@ -13,8 +13,8 @@ interface FormData {
   doctor_name: string;
   doctor_fee: number;
   treatment_name: string;
-  treatmentAmount2: number;
-  treatmentCost:number;
+  treatmentAmount2: string;
+  treatmentCost:string;
   treatmentDuration: number;
   payableDoctorFee:number;
   doctorDiscountType: string, 
@@ -33,12 +33,12 @@ interface FormData {
 
 interface Dosage {
   time: string;
-  amount: number;
+  amount: string;
 }
 
 interface Medicine {
   name: string;
-  duration: number;
+  duration: string;
   dosages: Dosage[];
 }
 
@@ -105,6 +105,8 @@ const AddAppointment: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
+  const [clearedFields, setClearedFields] = useState<{ [key: string]: boolean }>({});
+  
 //Set Form Data
   const [formData, setFormData] = useState<FormData>({
     patient_id: "",
@@ -112,9 +114,9 @@ const AddAppointment: React.FC = () => {
     doctor_name: "",
     doctor_fee: 0,
     treatment_name: "",
-    treatmentAmount2: 0,
+    treatmentAmount2: "",
     treatmentDuration: 0,
-    treatmentCost:0,
+    treatmentCost:"",
     payableDoctorFee: 0, 
     doctorDiscountType: "", 
     doctorDiscountAmount: 0, 
@@ -143,9 +145,9 @@ const AddAppointment: React.FC = () => {
       treatment_name: "Select Treatment",
       duration: 0,
       discountType: "",
-      discountAmount: 0,
-      treatmentAmount2:0,
-      treatmentCost:0
+      discountAmount: "",
+      treatmentAmount2:"",
+      treatmentCost:""
     },
   ]);
 
@@ -154,11 +156,11 @@ const AddAppointment: React.FC = () => {
   const [medicines, setMedicines] = useState<Medicine[]>([
     {
       name: "Select Medicine",
-      duration: 0,
+      duration: "",
       dosages: [
-        { time: "Morning", amount: 0 },
-        { time: "Mid Day", amount: 0 },
-        { time: "Night", amount: 0 },
+        { time: "Morning", amount: "" },
+        { time: "Mid Day", amount: "" },
+        { time: "Night", amount: "" },
       ],
     },
   ]);
@@ -207,8 +209,8 @@ useEffect(() => {
               ? data.treatments.treatment_name
               : "",
           mobile_number: data.patient.mobile_number,
-          treatmentAmount2: parseFloat(data.treatments.total_cost),
-          treatmentCost:0,
+          treatmentAmount2: data.treatments.total_cost,
+          treatmentCost:"",
           treatmentDuration: data.treatments.duration_months,
           
           payableDoctorFee: 0, 
@@ -369,9 +371,9 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
         treatment_name: "Select Treatment",
         duration: 1,
         discountType: "",
-        discountAmount: 0,
-        treatmentAmount2:0,
-        treatmentCost:0,
+        discountAmount: "",
+        treatmentAmount2:"",
+        treatmentCost:"",
       },
     ]);
   };
@@ -384,53 +386,60 @@ const handleChangeTreatment = (
   setTreatments((prev) => {
     const updated = [...prev];
     const current = updated[index];
-
     let newData = { ...current, [name]: value };
 
-    // If user selects a treatment
+    // Handle treatment selection
     if (name === "treatment_name") {
       const selected = treatmentList.find(
         (item) => item.treatment_name === value
       );
+
       newData = {
         ...newData,
         treatment_name: value.toString(),
-        treatmentAmount2: selected ? Number(selected.total_cost) : 0,
+        treatmentAmount2: selected ? selected.total_cost : "",
         duration: selected ? Number(selected.duration_months) : 0,
       };
     }
 
-    // If user changes discountType or discountAmount
+    // Handle discount logic
     if (name === "discountType" || name === "discountAmount") {
-      const { treatmentAmount2, discountType } = {
-        ...current,
-        ...((name === "discountType" && { discountType: value }) ||
-          (name === "discountAmount" && { discountAmount: value })),
-      };
+      const treatmentAmount2 = Number(
+        name === "discountType"
+          ? current.treatmentAmount2
+          : newData.treatmentAmount2 ?? current.treatmentAmount2
+      );
 
-      const discountValue = Number(
-        name === "discountAmount" ? value : current.discountAmount
+      const discountType =
+        name === "discountType"
+          ? value
+          : current.discountType;
+
+      const discountAmount = Number(
+        name === "discountAmount"
+          ? value
+          : current.discountAmount
       );
 
       let finalAmount = treatmentAmount2;
 
       if (discountType === "Percentage") {
-        finalAmount = treatmentAmount2 - (treatmentAmount2 * discountValue) / 100;
+        finalAmount = treatmentAmount2 - (treatmentAmount2 * discountAmount) / 100;
       } else if (discountType === "Flat Rate") {
-        finalAmount = treatmentAmount2 - discountValue;
+        finalAmount = treatmentAmount2 - discountAmount;
       }
 
       newData = {
         ...newData,
-        treatmentCost: finalAmount < 0 ? 0 : Number(finalAmount.toFixed(2)),
+        treatmentCost: finalAmount < 0 ? "" : Math.round(finalAmount).toString(), // Remove `.toFixed(2)` to avoid trailing .00
       };
     }
-    
 
     updated[index] = newData;
     return updated;
   });
 };
+
 
 
 
@@ -442,12 +451,12 @@ const handleChangeTreatment = (
     setMedicines([
       ...medicines,
       {
-        name: "",
-        duration: 0,
+        name: "Select Medicine",
+        duration: "",
         dosages: [
-          { time: "Morning", amount: 0 },
-          { time: "Mid Day", amount: 0 },
-          { time: "Night", amount: 0 },
+          { time: "Morning", amount: "" },
+          { time: "Mid Day", amount: "" },
+          { time: "Night", amount: "" },
         ],
       },
     ]);
@@ -482,6 +491,17 @@ const handleChangeTreatment = (
   const handleRemoveMedicine = (index: number) => {
     setMedicines((prev) => prev.filter((_, i) => i !== index));
   };
+
+
+
+  const handleMouseEnter = (fieldName: string) => {
+  if (!clearedFields[fieldName]) {
+    setFormData((prev) => ({ ...prev, [fieldName]: "" }));
+    // setMedicines((prev) => ({ ...prev, [fieldName]: "" }));
+    // setTreatments((prev) => ({ ...prev, [fieldName]: "" }));  
+    setClearedFields((prev) => ({ ...prev, [fieldName]: true }));
+  }
+};
 
   const date = new Date();
   const year = date.getFullYear();
@@ -640,6 +660,7 @@ console.log(treatments)
               <select
                 name="doctorDiscountType"
                  value={formData.doctorDiscountType}
+                 required
                  onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
@@ -657,6 +678,7 @@ console.log(treatments)
                 name="doctorDiscountAmount"
                 type="number"
                 value={formData.doctorDiscountAmount}
+                onClick={() => handleMouseEnter("doctorDiscountAmount")}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -670,6 +692,7 @@ console.log(treatments)
                  name="payableDoctorFee"
                   type="number"
                   value={formData.payableDoctorFee}
+                  onClick={() => handleMouseEnter("payableDoctorFee")}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -761,9 +784,11 @@ console.log(treatments)
                  name="discountAmount"
                     type="number"
                     value={treatments[i].discountAmount}
+                    
                     onChange={(e) =>
                       handleChangeTreatment("discountAmount", i, e.target.value)
                     }
+                    onClick={() => handleMouseEnter("discountAmount")}
                   placeholder="Dicount Amount"
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
@@ -782,6 +807,7 @@ console.log(treatments)
                     )
                   }
                   type="number"
+                  placeholder='Payable Treatment Cost'
                   value={
                     treatments[i].treatmentCost
                   }
@@ -863,12 +889,13 @@ console.log(treatments)
                     type="number"
                     value={dosage?.amount}
                     className="border-0 outline-none justify-self-end max-w-[50px] show-spinner"
+                    placeholder='0'
                     onChange={(e) =>
                       handleDosageChange(
                         index,
                         doseIndex,
                         "amount",
-                        Number(e.target.value)
+                        e.target.value
                       )
                     }
                   />
@@ -885,9 +912,11 @@ console.log(treatments)
                     handleMedicineChange(
                       index,
                       "duration",
-                      Number(e.target.value)
+                      e.target.value
                     )
                   }
+                  placeholder='0'
+                  onClick={() => handleMouseEnter("duration")}
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
               </div>
@@ -944,7 +973,7 @@ console.log(treatments)
                   doctor_fee: formData.doctor_fee,
                   treatment_name: "",
                   treatmentAmount2: formData.treatmentAmount2,
-                  treatmentCost:0,
+                  treatmentCost:"",
                   treatmentDuration: formData.treatmentDuration,
                   payableDoctorFee: 0, 
                   doctorDiscountType: "", 
