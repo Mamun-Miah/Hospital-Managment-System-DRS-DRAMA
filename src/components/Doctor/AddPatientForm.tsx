@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const AddPatientForm: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     patientName: "",
     mobileNumber: "",
@@ -44,7 +46,7 @@ const AddPatientForm: React.FC = () => {
   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 ) => {
   const { name, value } = e.target;
-
+  
   const birthDate = new Date(value);
   const today = new Date();
 
@@ -115,7 +117,9 @@ const AddPatientForm: React.FC = () => {
         throw new Error(data.error || "Failed to add patient");
       }
 
-      alert("Patient added successfully!");
+      // alert("Patient added successfully!");
+      router.push('/doctor/patients-list/');
+
       setFormData({
         patientName: "",
         mobileNumber: "",
