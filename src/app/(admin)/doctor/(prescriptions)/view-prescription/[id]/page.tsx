@@ -271,6 +271,11 @@ if (error) return <p>Error: {error}</p>;
 if (!prescriptionsData || !prescriptionsData.patient) {
   return <div>Loading...</div>; // or any loading state you want
 }
+
+const advice =
+  prescriptionsData.items.find((item) => item?.advice)?.advice || "";
+
+
 console.log(prescriptionsData)
 
   return (
@@ -504,7 +509,7 @@ console.log(prescriptionsData)
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
               <span className="w-[7px] h-[7px] bg-gray-400 dark:bg-gray-600 absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 rounded-full"></span>
-               {prescriptionsData.items[0]?.advise || ""}
+               {advice} 
             </li>
           </ul>
 

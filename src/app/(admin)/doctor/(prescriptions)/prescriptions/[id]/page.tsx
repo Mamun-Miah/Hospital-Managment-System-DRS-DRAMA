@@ -52,6 +52,9 @@ type OptionType = {
   value: string;
   label: string;
 };
+
+
+
 // Searchable dropdown styles
 const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
   control: (base: any, state: any) => ({
@@ -128,6 +131,7 @@ const AddAppointment: React.FC = () => {
   });
 //Set Doctor Data
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+
 
 
  //Set Treatments List 
@@ -278,6 +282,8 @@ const handleChange = (
   >
 ) => {
   
+
+
   const { name, value } = e.target;
 
 
@@ -345,6 +351,8 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
 
     return;
   }
+
+  
 
   // Handle all other inputs
   setFormData((prev) => ({
@@ -417,6 +425,7 @@ const handleChangeTreatment = (
         treatmentCost: finalAmount < 0 ? 0 : Number(finalAmount.toFixed(2)),
       };
     }
+    
 
     updated[index] = newData;
     return updated;
@@ -483,6 +492,7 @@ const handleChangeTreatment = (
 console.log(formData)
 console.log(medicines)
 console.log(treatments)
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
@@ -922,7 +932,7 @@ console.log(treatments)
 
         <div className="trezo-card mt-[25px]">
           <div className="trezo-card-content">
-            <p className="font-bold">Total Payable Amount: $4483</p>
+            <p className="font-bold">Total Payable Amount: $4483</p> 
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
