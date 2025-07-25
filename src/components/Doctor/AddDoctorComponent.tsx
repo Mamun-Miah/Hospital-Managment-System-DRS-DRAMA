@@ -13,7 +13,7 @@ const AddDoctor: React.FC = () => {
     city: "",
     stateProvince: "",
     status: "",
-    doctorFee: "", // Optional field for doctor's visit fee
+    doctorFee: 0, // Optional field for doctor's visit fee
     postal_code: "",
     doctor_image: "", // Optional field for image URL
   });
@@ -94,7 +94,7 @@ const AddDoctor: React.FC = () => {
         city: "",
         stateProvince: "",
         specialization: "",
-        doctorFee: "", // Reset doctor fee
+        doctorFee: 0, // Reset doctor fee
         status: "",
         postal_code: "",
         doctor_image: "", // Reset image URL
@@ -331,7 +331,7 @@ const AddDoctor: React.FC = () => {
                   city: "",
                   stateProvince: "",
                   specialization: "",
-                  doctorFee: "", // Reset doctor fee
+                  doctorFee: 0, // Reset doctor fee
                   status: "",
                   postal_code: "",
                   doctor_image: "", // Reset image URL

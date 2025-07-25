@@ -41,7 +41,7 @@ export async function POST(req: Request) {
             city,
             state_province: stateProvince,
             postal_code: postal_code || null,
-            doctor_fee: doctorFee, 
+            doctor_fee: parseInt(doctorFee), 
             status,
             doctor_image 
         },
