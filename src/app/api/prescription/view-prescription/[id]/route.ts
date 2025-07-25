@@ -35,6 +35,7 @@ export async function GET(
         doctor: {
           select: { doctor_name: true,
             phone_number: true,
+            designation: true,
            },
           
         },

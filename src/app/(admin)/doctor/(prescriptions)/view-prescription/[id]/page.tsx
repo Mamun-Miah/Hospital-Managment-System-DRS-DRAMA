@@ -39,6 +39,7 @@ export interface Doctor {
   doctor_name: string;
   phone_number: string;
   specialization: string;
+  designation:string
 }
 
 export interface PrescriptionItem {
@@ -326,7 +327,7 @@ console.log(prescriptionsData)
                Doctor Name: {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
               </h4>
               <span className="block md:text-md mt-[5px]">
-             {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.specialization ?? "MBBS, Medicine"}
+             {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.designation}
               </span>
               {/* <span className="block md:text-md mt-[5px] text-black dark:text-white">
                {prescriptionsData?.doctor?.phone_number ?? ""}
@@ -360,7 +361,7 @@ console.log(prescriptionsData)
           <div className="h-[1px] bg-gray-100 dark:bg-[#172036] my-[20px]"></div>
 
           <span className="block font-semibold text-black dark:text-white text-[20px]">
-            Patient:
+            Patient Info:
           </span>
 
           <div className="sm:flex justify-between mt-[10px]">

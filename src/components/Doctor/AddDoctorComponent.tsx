@@ -11,6 +11,7 @@ const AddDoctor: React.FC = () => {
     specialization: "",
     address: "",
     city: "",
+    designation:"",
     stateProvince: "",
     status: "",
     doctorFee: 0, // Optional field for doctor's visit fee
@@ -94,10 +95,11 @@ const AddDoctor: React.FC = () => {
         city: "",
         stateProvince: "",
         specialization: "",
-        doctorFee: 0, // Reset doctor fee
+        designation:"",
+        doctorFee: 0,
         status: "",
         postal_code: "",
-        doctor_image: "", // Reset image URL
+        doctor_image: "", 
       });
       setSelectedImages([]);
     } catch (err) {
@@ -215,6 +217,21 @@ const AddDoctor: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+
+              <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Designation
+              </label>
+              <input
+                name="designation"
+                type="text"
+                placeholder="Enter Designation"
+                value={formData.designation}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Postal Code
@@ -334,6 +351,7 @@ const AddDoctor: React.FC = () => {
                   doctorFee: 0, // Reset doctor fee
                   status: "",
                   postal_code: "",
+                  designation:"",
                   doctor_image: "", // Reset image URL
                 })
               }
