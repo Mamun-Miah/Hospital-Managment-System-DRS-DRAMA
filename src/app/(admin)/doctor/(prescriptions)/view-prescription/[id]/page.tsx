@@ -18,6 +18,9 @@ export interface Prescription {
   doctor_id: number;
   patient: Patient;
   doctor: Doctor;
+  prescribed_doctor_name: string;
+  advise: string | null;
+  next_visit_date: string | null;
   items: PrescriptionItem[];
   treatmentItems: TreatmentItem[];
 }
@@ -40,19 +43,16 @@ export interface Doctor {
 
 export interface PrescriptionItem {
   item_id: number;
-  prescribed_doctor_name: string;
+  
   doctor_discount_type: "Flat" | "Percentage" | "None" | null;
   doctor_discount_value: number | null;
   payable_doctor_amount: number | null;
-  advice: string | null;
-  next_visit_date: string | null; // ISO date string or null
   dose_morning: string | null;
   dose_mid_day: string | null;
   dose_night: string | null;
   duration_days: number | null;
-  is_prescribed: "Yes" | "No";
   medicine_name: string | null;
-  advise:string | null;
+  
 }
 
 export interface TreatmentItem {
@@ -272,9 +272,6 @@ if (!prescriptionsData || !prescriptionsData.patient) {
   return <div>Loading...</div>; // or any loading state you want
 }
 
-const advice =
-  prescriptionsData.items.find((item) => item?.advice)?.advice || "";
-
 
 console.log(prescriptionsData)
 
@@ -326,7 +323,7 @@ console.log(prescriptionsData)
           <div className="sm:flex justify-between">
             <div className="mt-8">
               <h4 className="!mb-[7px] !text-[20px] !font-semibold">
-                {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
+                {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
               </h4>
               <span className="block md:text-md mt-[5px]">
                 {prescriptionsData?.doctor?.specialization ?? "MBBS, Medicine"}
@@ -406,7 +403,7 @@ console.log(prescriptionsData)
                 Date: {prescriptionsData?.prescribed_at?? ""}
               </span>
               <span className="block text-black dark:text-white font-semibold mt-3">
-                Next Date: {prescriptionsData?.items[0].next_visit_date?? ""}
+                Next Date: {prescriptionsData?.next_visit_date?? ""}
               </span>
             </div>
           </div>
@@ -509,7 +506,7 @@ console.log(prescriptionsData)
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
               <span className="w-[7px] h-[7px] bg-gray-400 dark:bg-gray-600 absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 rounded-full"></span>
-               {advice} 
+               {prescriptionsData?.advise?? ""} 
             </li>
           </ul>
 

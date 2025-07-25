@@ -19,6 +19,9 @@ export async function GET(
         total_cost: true,
         patient_id: true,
         doctor_id: true,
+        prescribed_doctor_name: true,
+        next_visit_date: true,
+        advise: true,
         patient: {
           select: { patient_name: true,
             city: true,
@@ -38,17 +41,13 @@ export async function GET(
         items: {
           select: {
             item_id: true,
-            prescribed_doctor_name: true,
             doctor_discount_type: true,
             doctor_discount_value: true,
             payable_doctor_amount: true,
-            advice: true,
-            next_visit_date: true,
             dose_morning: true,
             dose_mid_day: true,
             dose_night: true,
             duration_days: true,
-            is_prescribed: true,
             medicine: {
               select: {
                 name: true,
@@ -77,18 +76,29 @@ export async function GET(
       return NextResponse.json({ error: "Prescription not found" }, { status: 404 });
     }
 
-    // Format date to 'YYYY-MM-DD'
+    //Change date formate
+    const prescribedDate = new Date(prescription.prescribed_at);
+const formattedPrescribedDate = `${String(prescribedDate.getDate()).padStart(2, "0")}.${String(prescribedDate.getMonth() + 1).padStart(2, "0")}.${prescribedDate.getFullYear()}`;
+
+const nextVisitDate = prescription.next_visit_date
+  ? new Date(prescription.next_visit_date)
+  : null;
+
+const formattedNextVisitDate = nextVisitDate
+  ? `${String(nextVisitDate.getDate()).padStart(2, "0")}.${String(nextVisitDate.getMonth() + 1).padStart(2, "0")}.${nextVisitDate.getFullYear()}`
+  : null;
+    
     const formatted = {
       ...prescription,
-      prescribed_at: prescription.prescribed_at.toISOString().slice(0, 10),
-      items: prescription.items.map((item) => ({
-        ...item,
-        next_visit_date: item.next_visit_date
-          ? item.next_visit_date.toISOString().slice(0, 10)
-          : null,
-        medicine_name: item.medicine?.name ?? null,
-        medicine: undefined, // remove nested object after extracting name
-      })),
+      prescribed_at: formattedPrescribedDate,   
+      next_visit_date: formattedNextVisitDate,
+      items: prescription.items.map((item) => {
+        return {
+          ...item,
+          medicine_name: item.medicine?.name ?? null,
+          medicine: undefined, // remove nested object after extracting name
+        };
+      }),
       treatmentItems: prescription.treatmentItems.map((treat) => ({
         ...treat,
         treatment_name: treat.treatment?.treatment_name ?? null,

@@ -101,16 +101,18 @@ model Medicine {
 }
 
 model Prescription {
-  prescription_id Int      @id @default(autoincrement())
+  prescription_id Int       @id @default(autoincrement())
   patient_id      Int?
   doctor_id       Int?
   total_cost      Int
-  prescribed_at   DateTime @default(now())
-  is_prescribed   String   @default("No")
-  is_drs_derma    String   @default("No")
-
-  patient Patient? @relation(fields: [patient_id], references: [patient_id])
-  doctor  Doctor?  @relation(fields: [doctor_id], references: [doctor_id])
+  prescribed_at   DateTime  @default(now())
+  is_prescribed   String    @default("No")
+  is_drs_derma    String    @default("No")
+  next_visit_date DateTime? @db.Date
+  advise          String?
+  prescribed_doctor_name String        @default("N/A")
+  patient         Patient?  @relation(fields: [patient_id], references: [patient_id])
+  doctor          Doctor?   @relation(fields: [doctor_id], references: [doctor_id])
 
   items          PrescriptionItem[]
   treatmentItems PrescriptionTreatmentItem[]
@@ -126,11 +128,7 @@ model PrescriptionItem {
   doctor_discount_type   DiscountType?
   doctor_discount_value  Float?
   payable_doctor_amount  Float?
-  prescribed_doctor_name String        @default("N/A")
-  next_visit_date        DateTime?     @db.Date
   duration_days          Int?
-  is_prescribed          String        @default("No")
-  advice                 String?
 
   prescription Prescription @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
   medicine     Medicine?    @relation(fields: [medicine_id], references: [medicine_id])

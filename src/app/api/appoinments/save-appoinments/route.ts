@@ -36,7 +36,10 @@ export async function POST(req: NextRequest) {
         total_cost: 0, // You can calculate later
         is_drs_derma: is_drs_derma || "No",
         prescribed_at: new Date(),
+        next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
         is_prescribed: "Yes",
+        advise: advise,
+        prescribed_doctor_name: doctor_name,
       },
     });
 
@@ -55,10 +58,8 @@ export async function POST(req: NextRequest) {
               : "None",
           doctor_discount_value: parseFloat(doctorDiscountAmount || "0"),
           payable_doctor_amount: parseFloat(payableDoctorFee || "0"),
-          prescribed_doctor_name: doctor_name,
-          is_prescribed: "Yes",
-          next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
-          advice: advise,
+          
+          
         },
       });
     }
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
 
         if (!medicine) continue;
 
-        // ✅ Fixed dosage mapping
+        //  Fixed dosage mapping
         const dosages = {
           dose_morning: "",
           dose_mid_day: "",
@@ -100,7 +101,6 @@ export async function POST(req: NextRequest) {
             dose_mid_day: dosages.dose_mid_day,
             dose_night: dosages.dose_night,
             duration_days: med.duration,
-            is_prescribed: "Yes",
           },
         });
       }
