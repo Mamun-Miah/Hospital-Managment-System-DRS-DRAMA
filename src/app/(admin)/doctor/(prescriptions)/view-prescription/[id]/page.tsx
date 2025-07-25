@@ -322,15 +322,15 @@ console.log(prescriptionsData)
         <div className="trezo-card-content">
           <div className="sm:flex justify-between">
             <div className="mt-8">
-              <h4 className="!mb-[7px] !text-[20px] !font-semibold">
-                {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
+              <h4 className="!mb-[7px] !text-[16px] !font-semibold">
+               Doctor Name: {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
               </h4>
               <span className="block md:text-md mt-[5px]">
-                {prescriptionsData?.doctor?.specialization ?? "MBBS, Medicine"}
+             {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.specialization ?? "MBBS, Medicine"}
               </span>
-              <span className="block md:text-md mt-[5px] text-black dark:text-white">
+              {/* <span className="block md:text-md mt-[5px] text-black dark:text-white">
                {prescriptionsData?.doctor?.phone_number ?? ""}
-              </span>
+              </span> */}
             </div>
 
             <div className="mt-[20px] sm:mt-0">

@@ -78,15 +78,15 @@ export async function GET(
 
     //Change date formate
     const prescribedDate = new Date(prescription.prescribed_at);
-const formattedPrescribedDate = `${String(prescribedDate.getDate()).padStart(2, "0")}.${String(prescribedDate.getMonth() + 1).padStart(2, "0")}.${prescribedDate.getFullYear()}`;
+    const formattedPrescribedDate = `${String(prescribedDate.getDate()).padStart(2, "0")}.${String(prescribedDate.getMonth() + 1).padStart(2, "0")}.${prescribedDate.getFullYear()}`;
 
-const nextVisitDate = prescription.next_visit_date
-  ? new Date(prescription.next_visit_date)
-  : null;
+    const nextVisitDate = prescription.next_visit_date
+      ? new Date(prescription.next_visit_date)
+      : null;
 
-const formattedNextVisitDate = nextVisitDate
-  ? `${String(nextVisitDate.getDate()).padStart(2, "0")}.${String(nextVisitDate.getMonth() + 1).padStart(2, "0")}.${nextVisitDate.getFullYear()}`
-  : null;
+    const formattedNextVisitDate = nextVisitDate
+      ? `${String(nextVisitDate.getDate()).padStart(2, "0")}.${String(nextVisitDate.getMonth() + 1).padStart(2, "0")}.${nextVisitDate.getFullYear()}`
+      : null;
     
     const formatted = {
       ...prescription,

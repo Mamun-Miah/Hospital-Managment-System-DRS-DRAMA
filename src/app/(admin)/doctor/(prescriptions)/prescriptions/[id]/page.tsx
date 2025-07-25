@@ -154,7 +154,7 @@ const AddAppointment: React.FC = () => {
   const [medicines, setMedicines] = useState<Medicine[]>([
     {
       name: "Select Medicine",
-      duration: 1,
+      duration: 0,
       dosages: [
         { time: "Morning", amount: 0 },
         { time: "Mid Day", amount: 0 },
@@ -443,7 +443,7 @@ const handleChangeTreatment = (
       ...medicines,
       {
         name: "",
-        duration: 1,
+        duration: 0,
         dosages: [
           { time: "Morning", amount: 0 },
           { time: "Mid Day", amount: 0 },
