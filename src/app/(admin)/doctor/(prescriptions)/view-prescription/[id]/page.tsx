@@ -10,7 +10,7 @@ import { useParams } from "next/navigation";
 
 export interface Prescription {
   prescription_id: number;
-  prescribed_at: string; // ISO date string, e.g., "2025-07-24"
+  prescribed_at: string; 
   is_prescribed: "Yes" | "No";
   is_drs_derma: "Yes" | "No";
   total_cost: number;
