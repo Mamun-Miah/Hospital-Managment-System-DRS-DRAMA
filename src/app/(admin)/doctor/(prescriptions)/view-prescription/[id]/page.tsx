@@ -1,8 +1,8 @@
 // import Prescriptions from "@/components/Doctor/Prescriptions";
 "use client";
 import Image from "next/image";
-import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
-import PrescriptionPDF from "./prescriptionpdf";
+// import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
+// import PrescriptionPDF from "./prescriptionpdf";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
@@ -77,13 +77,13 @@ const params = useParams();
 const prescriptionId = params?.id;
 
   const handlePrint = async () => {
-    const blob = await pdf(<PrescriptionPDF data={prescriptionsData} />).toBlob();
-    const blobURL = URL.createObjectURL(blob);
-    const printWindow = window.open(blobURL);
-    printWindow?.addEventListener("load", () => {
-      printWindow.focus();
-      // printWindow.print();
-    });
+    // const blob = await pdf(<PrescriptionPDF data={prescriptionsData} />).toBlob();
+    // const blobURL = URL.createObjectURL(blob);
+    // const printWindow = window.open(blobURL);
+    // printWindow?.addEventListener("load", () => {
+    //   printWindow.focus();
+    //   // printWindow.print();
+    // });
   };
 
 
@@ -142,7 +142,7 @@ console.log('prescriptionsData',prescriptionsData)
             </span>
           </button>
 
-          <PDFDownloadLink
+          {/* <PDFDownloadLink
             document={<PrescriptionPDF data={prescriptionsData} />}
             fileName="prescription.pdf"
             className="font-medium inline-block transition-all rounded-md md:text-md py-[8px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 mx-[8px]"
@@ -159,7 +159,7 @@ console.log('prescriptionsData',prescriptionsData)
                 </span>
               )
             }
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
         </div>
       </div>
 
