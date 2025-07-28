@@ -3,22 +3,29 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 
 const SignInForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
- const handleLogin = async () => {
-  const res = await signIn("credentials", {
-    email,
-    password,
-    redirect: true,
-    callbackUrl: "http://69.57.163.171:3000/dashboard/hospital/",
-  });
-  console.log(res);
-};
+  const handleLogin = async () => {
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: true,
+      callbackUrl: "/dashboard/ecommerce/",
+    });
+    console.log(res);
+  };
+
+   const { data: session, status } = useSession()
+  console.log('Session:', session, 'Status:', status) 
+    if (status === 'loading') return <div>Loading...</div>
+    if (!session) return redirect('http://69.57.163.171:3000/dashboard/hospital/')
+
   return (
     <>
       <div className="auth-main-content bg-white dark:bg-[#0a0e19] py-[60px] md:py-[80px] lg:py-[135px]">
