@@ -10,15 +10,15 @@ const SignInForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: true,
-      callbackUrl: "/dashboard/ecommerce/",
-    });
-    console.log(res);
-  };
+ const handleLogin = async () => {
+  const res = await signIn("credentials", {
+    email,
+    password,
+    redirect: true,
+    callbackUrl: "http://69.57.163.171:3000/dashboard/hospital/",
+  });
+  console.log(res);
+};
   return (
     <>
       <div className="auth-main-content bg-white dark:bg-[#0a0e19] py-[60px] md:py-[80px] lg:py-[135px]">
