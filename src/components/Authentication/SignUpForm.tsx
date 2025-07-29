@@ -55,7 +55,7 @@ const SignUpForm: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[25px] items-center">
             <div className="xl:ltr:-mr-[25px] xl:rtl:-ml-[25px] 2xl:ltr:-mr-[45px] 2xl:rtl:-ml-[45px] rounded-[25px] order-2 lg:order-1">
               <Image
-                src="/images/sign-up.jpg"
+                src="/images/logo.png"
                 alt="sign-up-image"
                 className="rounded-[25px]"
                 width={646}
@@ -64,7 +64,7 @@ const SignUpForm: React.FC = () => {
             </div>
 
             <div className="xl:ltr:pl-[90px] xl:rtl:pr-[90px] 2xl:ltr:pl-[120px] 2xl:rtl:pr-[120px] order-1 lg:order-2">
-              <Image
+              {/* <Image
                 src="/images/logo-big.svg"
                 alt="logo"
                 className="inline-block dark:hidden"
@@ -77,18 +77,18 @@ const SignUpForm: React.FC = () => {
                 className="hidden dark:inline-block"
                 width={142}
                 height={38}
-              />
+              /> */}
 
               <div className="my-[17px] md:my-[25px]">
                 <h1 className="!font-semibold !text-[22px] md:!text-xl lg:!text-2xl !mb-[5px] md:!mb-[7px]">
-                  Sign Up to Trezo Dashboard
+                  Sign Up to DRS DERMA Dashboard
                 </h1>
-                <p className="font-medium lg:text-md text-[#445164] dark:text-gray-400">
+                {/* <p className="font-medium lg:text-md text-[#445164] dark:text-gray-400">
                   Sign Up with social account or enter your details
-                </p>
+                </p> */}
               </div>
 
-              <div className="flex items-center justify-between mb-[20px] md:mb-[23px] gap-[12px]">
+              {/* <div className="flex items-center justify-between mb-[20px] md:mb-[23px] gap-[12px]">
                 <div className="grow">
                   <button
                     type="button"
@@ -133,7 +133,7 @@ const SignUpForm: React.FC = () => {
                     />
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-[15px] relative">

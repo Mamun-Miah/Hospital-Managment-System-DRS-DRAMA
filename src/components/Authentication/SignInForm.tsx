@@ -43,13 +43,13 @@ const SignInForm: React.FC = () => {
                 width={142}
                 height={38}
               /> */}
-              <Image
+              {/* <Image
                 src="/images/white-logo-big.svg"
                 alt="logo"
                 className="hidden dark:inline-block"
                 width={142}
                 height={38}
-              />
+              /> */}
 
               <div className="my-[17px] md:my-[25px]">
                 <h1 className="!font-semibold !text-[22px] md:!text-xl lg:!text-2xl !mb-[5px] md:!mb-[7px]">
