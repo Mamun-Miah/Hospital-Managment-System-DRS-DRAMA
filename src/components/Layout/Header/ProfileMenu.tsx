@@ -78,7 +78,7 @@ const ProfileMenu: React.FC = () => {
               <span className="block text-black dark:text-white font-medium">
                 {user?.name}
               </span>
-              <span className="block text-xs">Marketing Manager</span>
+              {/* <span className="block text-xs">Marketing Manager</span> */}
             </div>
           </div>
 

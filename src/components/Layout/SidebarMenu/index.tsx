@@ -36,12 +36,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
             className="transition-none relative flex items-center outline-none"
           >
             <Image
-              src="/images/logo-icon.svg"
+              src="/images/logo.png"
               alt="logo-icon"
-              width={26}
-              height={26}
+              width={30}
+              height={30}
             />
-            <span className="font-bold text-black dark:text-white relative ltr:ml-[8px] rtl:mr-[8px] top-px text-xl">
+            <span className="font-bold text-[#7126A8] dark:text-white relative ltr:ml-[8px] rtl:mr-[8px] top-px text-xl">
               DRS DERMA
             </span>
           </Link>

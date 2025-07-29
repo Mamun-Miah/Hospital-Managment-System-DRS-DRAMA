@@ -197,7 +197,7 @@ const handleRemoveImage = (index: number) => {
                     <input
                       name="doctorName"
                       type="text"
-                      placeholder="Enter Patient Name"
+                      placeholder="Enter Doctor Name"
                       value={formData.doctorName}
                       onChange={handleChange}
                       required
