@@ -28,12 +28,17 @@ const handler = NextAuth({
   ],
   session: {
     strategy: 'jwt',
+    maxAge: 6 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.role = user.role
-      return token
-    },
+  if (user) {
+    token.role = user.role;
+    token.iat = Math.floor(Date.now() / 1000);
+    token.exp = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
+  }
+  return token;
+  },
     async session({ session, token }) {
       if (token) session.user.role = token.role
       return session
@@ -44,5 +49,5 @@ const handler = NextAuth({
     signOut: '/authentication/signout',
   }
 })
-// console.log(" NEXTAUTH_URL loaded:", process.env.NEXTAUTH_URL)
+
 export { handler as GET, handler as POST }

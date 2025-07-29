@@ -30,7 +30,7 @@ export default function Home() {
     }
   }, [status, session, router]);
 
-  if (redirecting) return <div>Loading...</div>;
+  if (redirecting) return <div>Loading Dashboard...</div>;
 
 
   return (
