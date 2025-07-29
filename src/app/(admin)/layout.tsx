@@ -18,7 +18,7 @@ export default function ProtectedLayout({
     if (!session) {
       router.push('/authentication/sign-in/');
     }
-    //Do not force redirect to /dashboard/hospital/ here
+    
   }, [session, status, router]);
 
   if (status === 'loading') {
