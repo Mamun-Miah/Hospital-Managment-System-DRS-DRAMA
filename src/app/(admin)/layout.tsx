@@ -13,7 +13,7 @@ console.log('Session:', session, 'Status:', status)
 
   if (status === 'loading') return <div>Loading...</div>
 
-  if (!session) return redirect('/authentication/sign-in/')
+  if (!session) return redirect('http://69.57.163.171:3000/authentication/sign-in/')
 
   return <>{children}</>;
 }

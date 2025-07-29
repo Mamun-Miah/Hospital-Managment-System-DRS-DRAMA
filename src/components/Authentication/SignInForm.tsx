@@ -15,7 +15,7 @@ const SignInForm: React.FC = () => {
       email,
       password,
       redirect: true,
-      callbackUrl: "http://69.57.163.171:3000/dashboard/hospital/",
+      callbackUrl: "/dashboard/hospital/",
     });
     console.log(res);
   };
