@@ -12,17 +12,25 @@ import Testimonials from "@/components/FrontPage/Testimonials";
 import Widgets from "@/components/FrontPage/Widgets";
 
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { useEffect } from "react";
 
 export default function Home() {
-   const { data: session, status } = useSession()
-console.log('Session:', session, 'Status:', status) 
+   const { data: session, status } = useSession();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (status === 'loading') return;
 
-  if (status === 'loading') return <div>Loading...</div>
+    if (!session) {
+      router.push('/authentication/sign-in/');
+    } else {
+      router.push('/dashboard/hospital/');
+    }
+  }, [session, status, router]);
 
-  if (!session) return redirect('/authentication/sign-in/');
-  if (session ) return redirect('/dashboard/hospital/');
+  return <div>Loading...</div>;
+
 
   return (
     <>

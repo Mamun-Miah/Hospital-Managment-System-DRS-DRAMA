@@ -4,14 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
 
 export default function NotFound() {
-  const { data: session, status } = useSession()
-
-  if (status === 'loading') return <div>Loading...</div>
-
-  if (!session) return redirect('/authentication/sign-in/')
+  const { data: session, status } = useSession();
+    const router = useRouter();
+  
+    useEffect(() => {
+      if (status === 'loading') return;
+  
+      if (!session) {
+        router.push('/authentication/sign-in/');
+      } else {
+        router.push('/dashboard/hospital/');
+      }
+    }, [session, status, router]);
+  
+    return <div>Loading...</div>;
   return (
     <>
       <div className="bg-white dark:bg-[#0a0e19] py-[30px] h-screen overflow-x-hidden mb-[25px]">

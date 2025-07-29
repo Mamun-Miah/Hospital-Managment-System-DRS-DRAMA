@@ -1,19 +1,27 @@
 'use client'
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
 
 export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-   const { data: session, status } = useSession()
-console.log('Session:', session, 'Status:', status) 
-
-
-  if (status === 'loading') return <div>Loading...</div>
-
-  if (!session) return redirect('http://69.57.163.171:3000/authentication/sign-in/')
+   const { data: session, status } = useSession();
+     const router = useRouter();
+   
+     useEffect(() => {
+       if (status === 'loading') return;
+   
+       if (!session) {
+         router.push('/authentication/sign-in/');
+       } else {
+         router.push('/dashboard/hospital/');
+       }
+     }, [session, status, router]);
+   
+     return <div>Loading...</div>;
 
   return <>{children}</>;
 }

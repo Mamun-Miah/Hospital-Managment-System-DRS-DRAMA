@@ -1,28 +1,32 @@
- 
 'use client';
+
 import AddDoctor from "@/components/Doctor/AddDoctorComponent";
 import Link from "next/link";
-
-import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
-
-
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
-  const { data: session, status } = useSession()
-  console.log('Session from doctor:', session, 'Status:', status) 
- 
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [allowed, setAllowed] = useState(false);
 
-  if (status === 'loading') return <div>Loading...</div>
+  useEffect(() => {
+    if (status === 'loading') return;
 
-  if (!session) return redirect('/authentication/sign-in/')
+    if (!session) {
+      router.replace('/authentication/sign-in/');
+    } else if (session.user?.role !== 'admin') {
+      router.replace('/dashboard/ecommerce/');
+    } else {
+      setAllowed(true);
+    }
+  }, [session, status, router]);
 
-  const role = session.user?.role;
-
-  if (role !== 'admin') {
-    return redirect('/dashboard/ecommerce/');
+  if (status === 'loading' || !allowed) {
+    return <div>Loading...</div>;
   }
-  
+
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
@@ -46,7 +50,7 @@ export default function Page() {
           </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-          Add Doctor
+            Add Doctor
           </li>
         </ol>
       </div>
