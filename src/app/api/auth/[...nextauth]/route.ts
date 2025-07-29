@@ -44,5 +44,5 @@ const handler = NextAuth({
     signOut: '/authentication/signout',
   }
 })
-
+// console.log(" NEXTAUTH_URL loaded:", process.env.NEXTAUTH_URL)
 export { handler as GET, handler as POST }
