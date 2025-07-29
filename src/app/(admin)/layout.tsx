@@ -22,7 +22,7 @@ export default function ProtectedLayout({
   }, [session, status, router]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div>Loading Dashboard...</div>;
   }
 
   //Wait until session is loaded and valid

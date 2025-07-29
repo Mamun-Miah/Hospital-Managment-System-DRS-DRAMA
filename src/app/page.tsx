@@ -13,23 +13,24 @@ import Widgets from "@/components/FrontPage/Widgets";
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
    const { data: session, status } = useSession();
   const router = useRouter();
+  const [redirecting, setRedirecting] = useState(true);
 
   useEffect(() => {
     if (status === 'loading') return;
-
-    if (!session) {
-      router.push('/authentication/sign-in/');
-    } else {
+    if (session) {
       router.push('/dashboard/hospital/');
+      
+    } else {
+      setRedirecting(false); // show homepage to guests
     }
-  }, [session, status, router]);
+  }, [status, session, router]);
 
-  return <div>Loading...</div>;
+  if (redirecting) return <div>Loading...</div>;
 
 
   return (

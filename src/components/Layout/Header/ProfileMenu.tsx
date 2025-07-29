@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SignOutButton from '@/components/SignOutButton';
 
 const ProfileMenu: React.FC = () => {
   const { data: session } = useSession();
@@ -179,8 +180,8 @@ const ProfileMenu: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link
-                href="/authentication/logout/"
+              <button
+              
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
                   pathname === "/authentication/logout/" ? "text-primary-500" : ""
                 }`}
@@ -188,8 +189,8 @@ const ProfileMenu: React.FC = () => {
                 <i className="material-symbols-outlined top-1/2 -translate-y-1/2 !text-[22px] absolute ltr:left-[20px] rtl:right-[20px]">
                   logout
                 </i>
-                Logout
-              </Link>
+                <SignOutButton/>
+              </button>
             </li>
           </ul>
         </div>
