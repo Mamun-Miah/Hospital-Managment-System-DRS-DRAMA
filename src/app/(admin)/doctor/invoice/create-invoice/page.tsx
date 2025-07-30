@@ -309,10 +309,13 @@ const CreateInvoice: React.FC = () => {
               />
             </div>
             <p className="md:text-md mt-[5px]">
-              Previous Session Date: 07 Nov, 2025
+              Patient Id: 01
             </p>
-            <p className="mb-[8px] dark:text-white font-medium block">
-              Next Session Date : 07 Dec, 2025
+            <p className="md:text-md mt-[5px]">
+              Previous Session: 07 Nov, 2025
+            </p>
+            <p className="mb-[8px] dark:text-white text-md block">
+              Next Session: 07 Dec, 2025
             </p>
           </div>
         </div>
@@ -420,9 +423,9 @@ const CreateInvoice: React.FC = () => {
                 <td className="p-3 pl-6">
                   <input
                     type="number"
-                    placeholder="Paid amount"
+                    placeholder="Amount"
                     onChange={(e) => setPaidAmount(Number(e.target.value))}
-                    className="h-[30px] rounded-md text-black text-[10px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[100px]"
+                    className="h-[30px] rounded-md text-black text-[14px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[100px]"
                   />
                 </td>
               </tr>
