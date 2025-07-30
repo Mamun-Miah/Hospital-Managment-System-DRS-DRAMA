@@ -28,6 +28,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
+
+    const date = new Date();
+    const year_date = date.getFullYear();
+    const createInvoice = `INV-${year_date}-${patient_id}-`
+
     // Create the prescription
     const prescription = await prisma.prescription.create({
       data: {
@@ -38,6 +43,7 @@ export async function POST(req: NextRequest) {
         prescribed_at: new Date(),
         next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
         is_prescribed: "Yes",
+        invoice_id: "",
         advise: advise,
         prescribed_doctor_name: doctor_name,
       },

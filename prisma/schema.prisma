@@ -42,6 +42,7 @@ model Patient {
   created_at              DateTime       @default(now())
   updated_at              DateTime?      @updatedAt
   Prescription            Prescription[]
+  Invoice                 Invoice[]
 }
 
 enum Gender {
@@ -73,6 +74,7 @@ model Doctor {
   created_at     DateTime       @default(now())
   updated_at     DateTime?      @updatedAt
   Prescription   Prescription[]
+  Invoice        Invoice[]
 }
 
 enum DoctorStatus {
@@ -111,13 +113,13 @@ model Prescription {
   is_drs_derma           String    @default("No")
   next_visit_date        DateTime? @db.Date
   advise                 String?
-  invoice_id             String    @default("N/A")
   prescribed_doctor_name String    @default("N/A")
   patient                Patient?  @relation(fields: [patient_id], references: [patient_id])
   doctor                 Doctor?   @relation(fields: [doctor_id], references: [doctor_id])
 
   items          PrescriptionItem[]
   treatmentItems PrescriptionTreatmentItem[]
+  Invoice        Invoice[]
 }
 
 model PrescriptionItem {
@@ -161,4 +163,38 @@ enum DiscountType {
   None
   Flat
   Percentage
+}
+
+enum PaymentMethod {
+  Partial
+  Full
+  Due
+}
+
+enum PaymentType {
+  Bkash
+  Cash
+}
+
+model Invoice {
+  invoice_id      Int    @id @default(autoincrement())
+  invoice_number  String @unique
+  patient_id      Int
+  doctor_id       Int?
+  prescription_id Int
+
+  payment_method        PaymentMethod
+  payment_type          PaymentType
+  previous_due          Int?          @default(0)
+  invoice_creation_date DateTime      @default(now())
+  total_treatment_cost  Int?
+  paid_amount           Int?
+  doctor_fee            Int?
+  due_amount            Int?
+  next_session_date     DateTime?
+  previous_session_date DateTime?
+
+  patient      Patient       @relation(fields: [patient_id], references: [patient_id])
+  doctor       Doctor?       @relation(fields: [doctor_id], references: [doctor_id])
+  prescription Prescription? @relation(fields: [prescription_id], references: [prescription_id])
 }
