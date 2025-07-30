@@ -25,7 +25,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
   };
     const { data: session } = useSession()
     if (!session) return ""
-    const role = session.user?.role;
+    // const role = session.user?.role;
 
   return (
     <>
@@ -1441,10 +1441,13 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 type="button"
                 onClick={() => toggleAccordion(12)}
               >
-                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
-                  badge
-                </i>
-                <span className="title leading-none">Patient</span>
+                 <Image
+                  src="/images/patient.png"
+                  alt="logo-icon"
+                  width={24}
+                  height={24}
+                />
+                <span className="title ms-3 leading-none">Patient</span>
               </button>
 
               <div
@@ -1493,10 +1496,13 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 type="button"
                 onClick={() => toggleAccordion(13)}
               >
-                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
-                  badge
-                </i>
-                <span className="title leading-none">Doctor</span>
+                 <Image
+                  src="/images/doctor1.png"
+                  alt="logo-icon"
+                  width={22}
+                  height={22}
+                />
+                <span className="title ms-3 leading-none">Doctor</span>
               </button>
 
               <div
@@ -1595,10 +1601,13 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 type="button"
                 onClick={() => toggleAccordion(14)}
               >
-                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
-                  badge
-                </i>
-                <span className="title leading-none">Invoice</span>
+                 <Image
+                  src="/images/invoice.png"
+                  alt="logo-icon"
+                  width={18}
+                  height={18}
+                />
+                <span className="title ms-4 leading-none">Invoice</span>
               </button>
 
               <div
@@ -1633,7 +1642,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       </Link>
                     </li>
 
-                    {role === "admin" ? (
+                    {/* {role === "admin" ? (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/add-doctor/"
@@ -1643,7 +1652,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       >
                         Invoice Details
                       </Link>
-                    </li>) : ""}
+                    </li>) : ""} */}
 
                         
 

@@ -131,7 +131,7 @@ const InvoiceList: React.FC = () => {
           </div>
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
-              href="/doctor/add-invoice"
+              href="/doctor/invoice/create-invoice"
               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
             >
               <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
