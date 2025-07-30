@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
       doctorDiscountType,
       doctorDiscountAmount,
       payableDoctorFee,
+      totalPayableAmount,
       advise,
       next_appoinment,
       is_drs_derma,
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
       data: {
         patient_id,
         doctor_id: doctor.doctor_id,
-        total_cost: 0, // optional total calculation
+        total_cost: parseInt(totalPayableAmount || "0"), // optional total calculation
         is_drs_derma: is_drs_derma || "No",
         prescribed_at: new Date(),
         next_visit_date: next_appoinment ? new Date(next_appoinment) : null,

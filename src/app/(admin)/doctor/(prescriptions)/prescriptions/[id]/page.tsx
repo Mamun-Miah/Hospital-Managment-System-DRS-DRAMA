@@ -27,6 +27,7 @@ interface FormData {
   city: string;
   weight: string;
   blood_group: string;
+  totalPayableAmount: string,
   is_drs_derma: string;
   next_appoinment: string;
 }
@@ -105,6 +106,8 @@ const AddAppointment: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
+  const [totalPayableAmount, setTotalPayableAmount] = useState(0);
+
   const [clearedFields, setClearedFields] = useState<{ [key: string]: boolean }>({});
   
 //Set Form Data
@@ -128,6 +131,7 @@ const AddAppointment: React.FC = () => {
     city: "",
     weight: "",
     blood_group: "",
+    totalPayableAmount: "",
     is_drs_derma:"No",
     next_appoinment: "",
   });
@@ -214,6 +218,7 @@ useEffect(() => {
           treatmentDuration: data.treatments.duration_months,
           
           payableDoctorFee: 0, 
+          totalPayableAmount: "",
           doctorDiscountType: "", 
           doctorDiscountAmount: 0, 
           medicine_name:
@@ -507,10 +512,27 @@ const handleChangeTreatment = (
   const day = String(date.getDate()).padStart(2, '0');  
   const finalDate = `${day}/${month}/${year}`;
 
-console.log(formData)
-console.log(medicines)
-console.log(treatments)
 
+  
+useEffect(() => {
+  const treatmentTotal = treatments.reduce((sum, t) => {
+    const cost = Number(t.treatmentCost) || 0;
+    return sum + cost;
+  }, 0);
+  const doctorFee = Number(formData.payableDoctorFee) || 0;
+  const totalPayable = doctorFee + treatmentTotal;
+  setTotalPayableAmount(totalPayable);
+
+
+
+  setFormData((prev) => ({
+    ...prev,
+    totalPayableAmount: totalPayable.toString(),
+  }));
+}, [formData.payableDoctorFee, treatments]);
+
+
+console.log("Total Payable Amount:", formData);
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
@@ -960,7 +982,7 @@ console.log(treatments)
 
         <div className="trezo-card mt-[25px]">
           <div className="trezo-card-content">
-            <p className="font-bold">Total Payable Amount: $4483</p> 
+            <p className="font-bold">Total Payable Amount: BDT {totalPayableAmount}</p> 
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
@@ -979,6 +1001,7 @@ console.log(treatments)
                   doctorDiscountAmount: 0, 
                   medicine_name: "",
                   advise: "",
+                  totalPayableAmount: "",
                   gender: "",
                   mobile_number:0,
                   age: 0,

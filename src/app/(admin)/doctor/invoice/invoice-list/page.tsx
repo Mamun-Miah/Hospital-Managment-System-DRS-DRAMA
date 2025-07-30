@@ -3,350 +3,32 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Invoice {
-  SL: number;
-  invoiceNumber: string;
-  patientName: string;
-  doctorName: string;
-  appointmentDate: string;
-  treatmentName: string;
-  treatmentCost: number;
-  session: number;
-  status: string;
+  invoice_id: number;
+  invoice_number: string;
+  patient_id: number;
+  doctor_id: number;
+  prescription_id: number;
+  payment_method: string | null;
+  payment_type: "Full" | "Paid" | "Unpaid";
+  previous_due: number;
+  invoice_creation_date: string; // ISO date string
+  total_treatment_cost: number;
+  paid_amount: number;
+  doctor_fee: number;
+  due_amount: number;
+  next_session_date: string ; // ISO date string or null
+  previous_session_date: string | null; // ISO date string or null
+  doctor_name: string;
+  patient_name: string;
+  mobile_number: string;
 }
+
+
 const InvoiceList: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([
-    {
-      SL: 1,
-      invoiceNumber: "INV-1001",
-      patientName: "John Doe",
-      doctorName: "Dr. Sarah Smith",
-      appointmentDate: "2025-07-01",
-      treatmentName: "Root Canal",
-      treatmentCost: 250,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 2,
-      invoiceNumber: "INV-1002",
-      patientName: "Emily Johnson",
-      doctorName: "Dr. Robert Brown",
-      appointmentDate: "2025-07-02",
-      treatmentName: "Tooth Extraction",
-      treatmentCost: 150,
-      session: 1,
-      status: "Unpaid",
-    },
-    {
-      SL: 3,
-      invoiceNumber: "INV-1003",
-      patientName: "Michael Lee",
-      doctorName: "Dr. Angela Davis",
-      appointmentDate: "2025-07-03",
-      treatmentName: "Teeth Whitening",
-      treatmentCost: 200,
-      session: 2,
-      status: "Paid",
-    },
-    {
-      SL: 4,
-      invoiceNumber: "INV-1004",
-      patientName: "Sophia Martinez",
-      doctorName: "Dr. James Wilson",
-      appointmentDate: "2025-07-04",
-      treatmentName: "Dental Implant",
-      treatmentCost: 1200,
-      session: 3,
-      status: "Failed",
-    },
-    {
-      SL: 5,
-      invoiceNumber: "INV-1005",
-      patientName: "David Kim",
-      doctorName: "Dr. Lisa Wong",
-      appointmentDate: "2025-07-05",
-      treatmentName: "Braces Installation",
-      treatmentCost: 800,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 6,
-      invoiceNumber: "INV-1006",
-      patientName: "Anna White",
-      doctorName: "Dr. Henry Clark",
-      appointmentDate: "2025-07-06",
-      treatmentName: "Veneers",
-      treatmentCost: 500,
-      session: 1,
-      status: "Unpaid",
-    },
-    {
-      SL: 7,
-      invoiceNumber: "INV-1007",
-      patientName: "Chris Evans",
-      doctorName: "Dr. Nina Patel",
-      appointmentDate: "2025-07-07",
-      treatmentName: "Deep Cleaning",
-      treatmentCost: 180,
-      session: 1,
-      status: "Failed",
-    },
-    {
-      SL: 8,
-      invoiceNumber: "INV-1008",
-      patientName: "Laura Green",
-      doctorName: "Dr. Edward King",
-      appointmentDate: "2025-07-08",
-      treatmentName: "Braces Adjustment",
-      treatmentCost: 300,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 9,
-      invoiceNumber: "INV-1009",
-      patientName: "Nathan Scott",
-      doctorName: "Dr. Rachel Lee",
-      appointmentDate: "2025-07-09",
-      treatmentName: "Crown Fitting",
-      treatmentCost: 650,
-      session: 1,
-      status: "Unpaid",
-    },
-    {
-      SL: 10,
-      invoiceNumber: "INV-1010",
-      patientName: "Olivia Brown",
-      doctorName: "Dr. Victor Hugo",
-      appointmentDate: "2025-07-10",
-      treatmentName: "Gum Surgery",
-      treatmentCost: 700,
-      session: 2,
-      status: "Paid",
-    },
-    {
-      SL: 11,
-      invoiceNumber: "INV-1011",
-      patientName: "Daniel Adams",
-      doctorName: "Dr. Susan Young",
-      appointmentDate: "2025-07-11",
-      treatmentName: "Tooth Filling",
-      treatmentCost: 120,
-      session: 1,
-      status: "Failed",
-    },
-    {
-      SL: 12,
-      invoiceNumber: "INV-1012",
-      patientName: "Ella Turner",
-      doctorName: "Dr. Jack Allen",
-      appointmentDate: "2025-07-12",
-      treatmentName: "Wisdom Tooth Removal",
-      treatmentCost: 400,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 13,
-      invoiceNumber: "INV-1013",
-      patientName: "Liam Walker",
-      doctorName: "Dr. Monica Reyes",
-      appointmentDate: "2025-07-13",
-      treatmentName: "Mouth Guard",
-      treatmentCost: 180,
-      session: 1,
-      status: "Unpaid",
-    },
-    {
-      SL: 14,
-      invoiceNumber: "INV-1014",
-      patientName: "Grace Hill",
-      doctorName: "Dr. Kevin Brooks",
-      appointmentDate: "2025-07-14",
-      treatmentName: "Gum Treatment",
-      treatmentCost: 250,
-      session: 2,
-      status: "Paid",
-    },
-    {
-      SL: 15,
-      invoiceNumber: "INV-1015",
-      patientName: "Jacob Hall",
-      doctorName: "Dr. Amanda Carter",
-      appointmentDate: "2025-07-15",
-      treatmentName: "Orthodontics",
-      treatmentCost: 900,
-      session: 3,
-      status: "Unpaid",
-    },
-    {
-      SL: 16,
-      invoiceNumber: "INV-1016",
-      patientName: "Sophie Allen",
-      doctorName: "Dr. Brian Lewis",
-      appointmentDate: "2025-07-16",
-      treatmentName: "Dental Checkup",
-      treatmentCost: 100,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 17,
-      invoiceNumber: "INV-1017",
-      patientName: "Luke Bennett",
-      doctorName: "Dr. Karen Morgan",
-      appointmentDate: "2025-07-17",
-      treatmentName: "Scaling",
-      treatmentCost: 160,
-      session: 1,
-      status: "Failed",
-    },
-    {
-      SL: 18,
-      invoiceNumber: "INV-1018",
-      patientName: "Mia Carter",
-      doctorName: "Dr. Steve Murphy",
-      appointmentDate: "2025-07-18",
-      treatmentName: "Tooth Bonding",
-      treatmentCost: 230,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 19,
-      invoiceNumber: "INV-1019",
-      patientName: "Noah Cox",
-      doctorName: "Dr. Rachel Lee",
-      appointmentDate: "2025-07-19",
-      treatmentName: "Retainers",
-      treatmentCost: 210,
-      session: 1,
-      status: "Unpaid",
-    },
-    {
-      SL: 20,
-      invoiceNumber: "INV-1020",
-      patientName: "Ava Diaz",
-      doctorName: "Dr. Henry Clark",
-      appointmentDate: "2025-07-20",
-      treatmentName: "Teeth Polishing",
-      treatmentCost: 90,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 21,
-      invoiceNumber: "INV-1021",
-      patientName: "Ethan Evans",
-      doctorName: "Dr. Sarah Smith",
-      appointmentDate: "2025-07-21",
-      treatmentName: "Fluoride Treatment",
-      treatmentCost: 75,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 22,
-      invoiceNumber: "INV-1022",
-      patientName: "Isabella Foster",
-      doctorName: "Dr. Robert Brown",
-      appointmentDate: "2025-07-22",
-      treatmentName: "Smile Design",
-      treatmentCost: 950,
-      session: 2,
-      status: "Failed",
-    },
-    {
-      SL: 23,
-      invoiceNumber: "INV-1023",
-      patientName: "Logan Garcia",
-      doctorName: "Dr. Angela Davis",
-      appointmentDate: "2025-07-23",
-      treatmentName: "Teeth Alignment",
-      treatmentCost: 1100,
-      session: 3,
-      status: "Unpaid",
-    },
-    {
-      SL: 24,
-      invoiceNumber: "INV-1024",
-      patientName: "Chloe Harris",
-      doctorName: "Dr. Lisa Wong",
-      appointmentDate: "2025-07-24",
-      treatmentName: "Cavity Filling",
-      treatmentCost: 140,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 25,
-      invoiceNumber: "INV-1025",
-      patientName: "Jayden Hill",
-      doctorName: "Dr. James Wilson",
-      appointmentDate: "2025-07-25",
-      treatmentName: "Oral Surgery",
-      treatmentCost: 1300,
-      session: 2,
-      status: "Failed",
-    },
-    {
-      SL: 26,
-      invoiceNumber: "INV-1026",
-      patientName: "Zoe Jenkins",
-      doctorName: "Dr. Nina Patel",
-      appointmentDate: "2025-07-26",
-      treatmentName: "Gum Reshaping",
-      treatmentCost: 400,
-      session: 1,
-      status: "Unpaid",
-    },
-    {
-      SL: 27,
-      invoiceNumber: "INV-1027",
-      patientName: "Matthew Kelly",
-      doctorName: "Dr. Victor Hugo",
-      appointmentDate: "2025-07-27",
-      treatmentName: "Dental Sealants",
-      treatmentCost: 110,
-      session: 1,
-      status: "Paid",
-    },
-    {
-      SL: 28,
-      invoiceNumber: "INV-1028",
-      patientName: "Lily Lopez",
-      doctorName: "Dr. Rachel Lee",
-      appointmentDate: "2025-07-28",
-      treatmentName: "Smile Correction",
-      treatmentCost: 850,
-      session: 2,
-      status: "Unpaid",
-    },
-    {
-      SL: 29,
-      invoiceNumber: "INV-1029",
-      patientName: "Samuel Miller",
-      doctorName: "Dr. Kevin Brooks",
-      appointmentDate: "2025-07-29",
-      treatmentName: "Jaw Alignment",
-      treatmentCost: 1350,
-      session: 3,
-      status: "Failed",
-    },
-    {
-      SL: 30,
-      invoiceNumber: "INV-1030",
-      patientName: "Victoria Nelson",
-      doctorName: "Dr. Amanda Carter",
-      appointmentDate: "2025-07-30",
-      treatmentName: "Teeth Contouring",
-      treatmentCost: 310,
-      session: 1,
-      status: "Paid",
-    },
+   
   ]);
-console.log(setInvoices)
+
   // console.log("allTreatment", allTreatment);
   const [filteredInvoice, setFilteredInvoice] = useState<Invoice[]>(invoices);
 
@@ -361,29 +43,18 @@ console.log(setInvoices)
 
   const currentInvoice = filteredInvoice.slice(startIndex, endIndex);
 
-  //   useEffect(() => {
-  //     const fetchTreatments = async () => {
-  //       try {
-  //         const response = await fetch("/api/treatment/treatment-list");
-  //         if (!response.ok) {
-  //           throw new Error("Failed to fetch treatments");
-  //         }
-  //         const data = await response.json();
-  //         setAllTreatment(data.treatments);
-  //       } catch (error) {
-  //         console.error("Error fetching treatments:", error);
-  //       }
-  //     };
 
-  //     fetchTreatments();
-  //   }, []);
+
+
+
 
   useEffect(() => {
     const result: Invoice[] = invoices.filter(
       (invoice) =>
-        invoice.patientName.toLowerCase().includes(search.toLowerCase()) ||
-        invoice.doctorName.toLowerCase().includes(search.toLowerCase()) ||
-        invoice.treatmentName.toLowerCase().includes(search.toLowerCase())
+        invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
+        invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
+        invoice.invoice_number.toLowerCase().includes(search) ||
+        invoice.mobile_number.includes(search)
     );
     // console.log(result);
     setFilteredInvoice(result);
@@ -397,32 +68,22 @@ console.log(setInvoices)
     }
   };
 
-  if (invoices.length <= 0) {
-    return;
-  }
-
-  //   const handleDelete = async (treatmentId: string) => {
-  //     if (confirm("Are you sure you want to delete this treatment?")) {
-  //       try {
-  //         const response = await fetch(
-  //           `/api/treatment/delete-treatment/${treatmentId}`,
-  //           {
-  //             method: "DELETE",
-  //           }
-  //         );
-  //         if (!response.ok) {
-  //           throw new Error("Failed to delete treatment");
-  //         }
-  //         const data = await response.json();
-  //         setInvoices((prev) =>
-  //           prev.filter((treatment) => treatment.treatment_id !== treatmentId)
-  //         );
-  //         console.log(data.message);
-  //       } catch (error) {
-  //         console.error("Error deleting treatment:", error);
-  //       }
-  //     }
-  //   };
+ useEffect(() => {
+     const fetchInvoiceList = async () => {
+       try {
+         const res = await fetch("/api/invoice/invoice-list");
+         const data = await res.json();
+ 
+         
+           setInvoices(data.formattedinvoiceList);
+        console.log("Fetched Invoices:", data.formattedinvoiceList);
+       } catch (error) {
+         console.error("Error fetching invoices:", error);
+       }
+     };
+ 
+     fetchInvoiceList();
+   }, []);
 
   return (
     <>
@@ -469,7 +130,7 @@ console.log(setInvoices)
           </div>
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
-              href="/doctor/invoice/create-invoice"
+              href="/doctor/add-invoice"
               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
             >
               <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
@@ -497,19 +158,26 @@ console.log(setInvoices)
                     Patient Name
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                    Mobile Number
+                  </th>
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Doctor Name
                   </th>
+                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                    Treatment Name
+                  </th> */}
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Appointment Date
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Treatment Name
+                    Next Appointment Date
+                  </th>
+
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                    Total Cost
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Treatment Cost
-                  </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Session
+                    Due
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Status
@@ -524,59 +192,70 @@ console.log(setInvoices)
               <tbody className="text-black dark:text-white">
                 {currentInvoice.length > 0 ? (
                   currentInvoice.map((treatment) => (
-                    <tr key={treatment.SL}>
+                    <tr key={treatment.invoice_id}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-primary-500">
-                          {treatment.SL}
+                          {treatment.invoice_id}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.invoiceNumber}
+                          {treatment.invoice_number}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.patientName}
+                          {treatment.patient_name}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.doctorName}
+                          {treatment.mobile_number}
+                        </span>
+                      </td>
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                          {treatment.doctor_name}
                         </span>
                       </td>
 
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                          {treatment.treatmentName}
+                        </span>
+                      </td> */}
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.appointmentDate}{" "}
+                          {new Date(treatment?.invoice_creation_date).toLocaleDateString()}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.treatmentName}{" "}
+                          {new Date(treatment?.next_session_date).toLocaleDateString()}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="font-bold block text-xs text-gray-500 dark:text-gray-400">
-                          ${treatment.treatmentCost}{" "}
+                          ${treatment.total_treatment_cost}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.session}{" "}
+                          {treatment.due_amount}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span
                           className={`${
-                            treatment.status.toLowerCase() === "paid"
+                            treatment.payment_type === "Full"
                               ? "bg-green-600"
-                              : treatment.status.toLowerCase() === "unpaid"
+                              : treatment.payment_type === "Paid"
                               ? "bg-yellow-600"
                               : "bg-red-500"
+                              
                           } px-2 py-1 rounded text-xs font-semibold text-gray-100`}
                         >
-                          {treatment.status}{" "}
+                          {treatment.payment_type? treatment.payment_type : "Unpaid"}
                         </span>
                       </td>
 

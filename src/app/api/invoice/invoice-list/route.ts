@@ -8,6 +8,7 @@ export async function GET() {
         patient: {
           select: {
             patient_name: true,
+            mobile_number: true,
           },
         },
         doctor: {
@@ -23,8 +24,9 @@ export async function GET() {
 
     const formattedinvoiceList = invoiceList.map((invoice) => ({
       ...invoice,
-      doctor_name: invoice.doctor?.doctor_name || null,
-      patient_name: invoice.patient?.patient_name || null,
+      doctor_name: invoice.doctor?.doctor_name || "",
+      patient_name: invoice.patient?.patient_name || "",
+      mobile_number: invoice.patient?.mobile_number || "",
       doctor: undefined,
       patient: undefined,
     }));
