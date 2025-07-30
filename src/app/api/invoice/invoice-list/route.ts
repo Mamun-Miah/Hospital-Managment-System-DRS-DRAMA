@@ -3,53 +3,37 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const prescriptionList = await prisma.prescription.findMany({
-  where: {
-    is_prescribed: "Yes",
-  },
-  select: {
-    prescription_id: true,
-    prescribed_at: true,
-    is_prescribed: true,
-    is_drs_derma: true,
-    patient_id: true,
-    patient: {
-      select: {
-        patient_name: true,
-        mobile_number:true,
+    const invoiceList = await prisma.invoice.findMany({
+      include: {
+        patient: {
+          select: {
+            patient_name: true,
+          },
+        },
+        doctor: {
+          select: {
+            doctor_name: true,
+          },
+        },
       },
-    },
-    doctor_id: true,
-    doctor: {
-      select: {
-        doctor_name: true,
+      orderBy: {
+        invoice_creation_date: "desc",
       },
-    },
-  },
-});
+    });
 
-
- const prescriptionListData = prescriptionList.map((item) => ({
-      prescription_id: item.prescription_id,
-      prescribed_at: item.prescribed_at.toISOString().slice(0, 10),
-      is_prescribed: item.is_prescribed,
-      is_drs_derma: item.is_drs_derma,
-      patient_id: item.patient_id,
-      patient_name: item.patient?.patient_name ?? "",
-      mobile_number: item.patient?.mobile_number ?? "",
-      doctor_id: item.doctor_id,
-      doctor_name: item.doctor?.doctor_name ?? "",
+    const formattedinvoiceList = invoiceList.map((invoice) => ({
+      ...invoice,
+      doctor_name: invoice.doctor?.doctor_name || null,
+      patient_name: invoice.patient?.patient_name || null,
+      doctor: undefined,
+      patient: undefined,
     }));
 
-
-
-
-
-    return NextResponse.json({ prescriptionlist: prescriptionListData });
+    return NextResponse.json({ formattedinvoiceList }, { status: 200 });
   } catch (error) {
-    console.error("Error fetching prescriptions:", error);
+    console.error("Error fetching invoices:", error);
     return NextResponse.json(
-      { error: "An error occurred while fetching prescriptions." },
+      { error: "An error occurred while fetching invoices." },
       { status: 500 }
     );
   }
