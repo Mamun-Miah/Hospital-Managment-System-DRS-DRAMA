@@ -16,6 +16,11 @@ export async function GET() {
             doctor_name: true,
           },
         },
+        prescription: {
+          select: {
+            total_cost: true,
+          },
+        },
       },
       orderBy: {
         invoice_creation_date: "desc",
@@ -27,8 +32,10 @@ export async function GET() {
       doctor_name: invoice.doctor?.doctor_name || "",
       patient_name: invoice.patient?.patient_name || "",
       mobile_number: invoice.patient?.mobile_number || "",
+      total_cost: invoice.prescription?.total_cost || 0,
       doctor: undefined,
       patient: undefined,
+      prescription: undefined,
     }));
 
     return NextResponse.json({ formattedinvoiceList }, { status: 200 });

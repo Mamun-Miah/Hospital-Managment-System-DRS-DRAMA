@@ -15,6 +15,7 @@ interface Invoice {
   total_treatment_cost: number;
   paid_amount: number;
   doctor_fee: number;
+  total_cost: number;
   due_amount: number;
   next_session_date: string ; // ISO date string or null
   previous_session_date: string | null; // ISO date string or null
@@ -236,7 +237,7 @@ const InvoiceList: React.FC = () => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="font-bold block text-xs text-gray-500 dark:text-gray-400">
-                          ${treatment.total_treatment_cost}
+                          ${treatment.total_cost}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
@@ -252,6 +253,7 @@ const InvoiceList: React.FC = () => {
                               : treatment.payment_type === "Paid"
                               ? "bg-yellow-600"
                               : "bg-red-500"
+                    
                               
                           } px-2 py-1 rounded text-xs font-semibold text-gray-100`}
                         >

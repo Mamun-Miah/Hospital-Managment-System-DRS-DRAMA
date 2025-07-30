@@ -532,7 +532,7 @@ useEffect(() => {
 }, [formData.payableDoctorFee, treatments]);
 
 
-console.log("Total Payable Amount:", formData);
+// console.log("Total Payable Amount:", formData);
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
