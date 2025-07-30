@@ -1,27 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-
-// Utility to generate invoice number
-export async function generateInvoiceNumber(patientId: number): Promise<string> {
-  const currentYear = new Date().getFullYear();
-
-  // Get the latest invoice (by auto-incremented primary key: invoice_id)
-  const lastInvoice = await prisma.invoice.findFirst({
-    orderBy: {
-      invoice_id: "desc",
-    },
-    select: {
-      invoice_id: true,
-    },
-  });
-
-  const lastInvoiceId = lastInvoice?.invoice_id ?? 0;
-
-  const increment = lastInvoiceId + 1;
-  const combinedNumber = patientId + increment;
-
-  return `INV-${currentYear}-${patientId}-${combinedNumber}`;
-}
+import { generateInvoiceNumber } from "@/lib/invoice";
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,6 +21,7 @@ export async function POST(req: NextRequest) {
       treatments,
     } = data;
 
+    // Find doctor by name
     const doctor = await prisma.doctor.findFirst({
       where: { doctor_name },
     });
@@ -50,11 +30,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
+    // Create prescription
     const prescription = await prisma.prescription.create({
       data: {
         patient_id,
         doctor_id: doctor.doctor_id,
-        total_cost: parseInt(totalPayableAmount || "0"), // optional total calculation
+        total_cost: parseInt(totalPayableAmount || "0"),
         is_drs_derma: is_drs_derma || "No",
         prescribed_at: new Date(),
         next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
@@ -146,30 +127,25 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ➕ Generate invoice number
+    // Generate invoice number
     const invoiceNumber = await generateInvoiceNumber(patient_id);
 
-    // ➕ Create Invoice record
+    // Create Invoice record
     const invoice = await prisma.invoice.create({
       data: {
         invoice_number: invoiceNumber,
         patient_id: patient_id,
         doctor_id: doctor.doctor_id,
-        // payment_method: "Full", // or derive from input if available
-        // payment_type: "Cash",   // or "BKASH"
         previous_due: 0,
-        total_treatment_cost: 0, // optional: calculate total cost
+        total_treatment_cost: 0,
         paid_amount: 0,
         doctor_fee: parseInt(doctor_fee || "0"),
         due_amount: 0,
         invoice_creation_date: new Date(),
         next_session_date: next_appoinment ? new Date(next_appoinment) : null,
-        // previous_session_date: null,
         prescription_id: prescriptionId,
       },
     });
-
-    
 
     return NextResponse.json({
       message: "Prescription and Invoice saved successfully",
