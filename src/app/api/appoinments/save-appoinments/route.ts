@@ -1,6 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+// Utility to generate invoice number
+export async function generateInvoiceNumber(patientId: number): Promise<string> {
+  const currentYear = new Date().getFullYear();
+
+  // Get the latest invoice (by auto-incremented primary key: invoice_id)
+  const lastInvoice = await prisma.invoice.findFirst({
+    orderBy: {
+      invoice_id: "desc",
+    },
+    select: {
+      invoice_id: true,
+    },
+  });
+
+  const lastInvoiceId = lastInvoice?.invoice_id ?? 0;
+
+  const increment = lastInvoiceId + 1;
+  const combinedNumber = patientId + increment;
+
+  return `INV-${currentYear}-${patientId}-${combinedNumber}`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
@@ -19,7 +41,6 @@ export async function POST(req: NextRequest) {
       treatments,
     } = data;
 
-    // Resolve doctor ID by name
     const doctor = await prisma.doctor.findFirst({
       where: { doctor_name },
     });
@@ -28,22 +49,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
-
-    const date = new Date();
-    const year_date = date.getFullYear();
-    const createInvoice = `INV-${year_date}-${patient_id}-`
-
-    // Create the prescription
     const prescription = await prisma.prescription.create({
       data: {
         patient_id,
         doctor_id: doctor.doctor_id,
-        total_cost: 0, // You can calculate later
+        total_cost: 0, // optional total calculation
         is_drs_derma: is_drs_derma || "No",
         prescribed_at: new Date(),
         next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
         is_prescribed: "Yes",
-        invoice_id: "",
         advise: advise,
         prescribed_doctor_name: doctor_name,
       },
@@ -51,7 +65,7 @@ export async function POST(req: NextRequest) {
 
     const prescriptionId = prescription.prescription_id;
 
-    // Save doctor info (even if others not selected)
+    // Save doctor info
     if (doctor_fee || doctorDiscountAmount) {
       await prisma.prescriptionItem.create({
         data: {
@@ -62,24 +76,20 @@ export async function POST(req: NextRequest) {
               : doctorDiscountType === "Percentage"
               ? "Percentage"
               : "None",
-          doctor_discount_value: parseFloat(doctorDiscountAmount || "0"),
-          payable_doctor_amount: parseFloat(payableDoctorFee || "0"),
-          
-          
+          doctor_discount_value: parseInt(doctorDiscountAmount || "0"),
+          payable_doctor_amount: parseInt(payableDoctorFee || "0"),
         },
       });
     }
 
-    // Save medicines if any
+    // Save medicines
     if (Array.isArray(medicines)) {
       for (const med of medicines) {
         const medicine = await prisma.medicine.findFirst({
           where: { name: med.name },
         });
-
         if (!medicine) continue;
 
-        //  Fixed dosage mapping
         const dosages = {
           dose_morning: "",
           dose_mid_day: "",
@@ -90,13 +100,10 @@ export async function POST(req: NextRequest) {
           const time = d.time.toLowerCase();
           const amount = String(d.amount);
 
-          if (time === "morning") {
-            dosages.dose_morning = amount;
-          } else if (time === "mid day" || time === "midday") {
+          if (time === "morning") dosages.dose_morning = amount;
+          else if (time === "mid day" || time === "midday")
             dosages.dose_mid_day = amount;
-          } else if (time === "night") {
-            dosages.dose_night = amount;
-          }
+          else if (time === "night") dosages.dose_night = amount;
         }
 
         await prisma.prescriptionItem.create({
@@ -112,7 +119,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Save treatments if any
+    // Save treatments
     if (Array.isArray(treatments)) {
       for (const treat of treatments) {
         const treatment = await prisma.treatmentlist.findFirst({
@@ -131,16 +138,43 @@ export async function POST(req: NextRequest) {
                 : treat.discountType === "Percentage"
                 ? "Percentage"
                 : "None",
-            discount_value: parseFloat(treat.discountAmount || "0"),
-            payable_treatment_amount: parseFloat(treat.treatmentCost || "0"),
+            discount_value: parseInt(treat.discountAmount || "0"),
+            payable_treatment_amount: parseInt(treat.treatmentCost || "0"),
           },
         });
       }
     }
 
+    // ➕ Generate invoice number
+    const invoiceNumber = await generateInvoiceNumber(patient_id);
+
+    // ➕ Create Invoice record
+    const invoice = await prisma.invoice.create({
+      data: {
+        invoice_number: invoiceNumber,
+        patient_id: patient_id,
+        doctor_id: doctor.doctor_id,
+        // payment_method: "Full", // or derive from input if available
+        // payment_type: "Cash",   // or "BKASH"
+        previous_due: 0,
+        total_treatment_cost: 0, // optional: calculate total cost
+        paid_amount: 0,
+        doctor_fee: parseInt(doctor_fee || "0"),
+        due_amount: 0,
+        invoice_creation_date: new Date(),
+        next_session_date: next_appoinment ? new Date(next_appoinment) : null,
+        // previous_session_date: null,
+        prescription_id: prescriptionId,
+      },
+    });
+
+    
+
     return NextResponse.json({
-      message: "Prescription saved successfully",
+      message: "Prescription and Invoice saved successfully",
       prescription_id: prescriptionId,
+      invoice_id: invoice.invoice_id,
+      invoice_number: invoice.invoice_number,
     });
   } catch (err) {
     console.error(err);
