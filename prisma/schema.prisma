@@ -183,10 +183,10 @@ model Invoice {
   doctor_id       Int?
   prescription_id Int
 
-  payment_method        PaymentMethod
-  payment_type          PaymentType
-  previous_due          Int?          @default(0)
-  invoice_creation_date DateTime      @default(now())
+  payment_method        PaymentMethod?
+  payment_type          PaymentType?
+  previous_due          Int?           @default(0)
+  invoice_creation_date DateTime?      @default(now())
   total_treatment_cost  Int?
   paid_amount           Int?
   doctor_fee            Int?
