@@ -111,6 +111,7 @@ model Prescription {
   is_drs_derma           String    @default("No")
   next_visit_date        DateTime? @db.Date
   advise                 String?
+  invoice_id             String    @default("N/A")
   prescribed_doctor_name String    @default("N/A")
   patient                Patient?  @relation(fields: [patient_id], references: [patient_id])
   doctor                 Doctor?   @relation(fields: [doctor_id], references: [doctor_id])
