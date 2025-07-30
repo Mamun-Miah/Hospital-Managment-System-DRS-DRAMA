@@ -26,11 +26,12 @@ export default function Home() {
       router.push('/dashboard/hospital/');
       
     } else {
-      setRedirecting(false); // show homepage to guests
+      setRedirecting(true);
+      router.push('/dashboard/hospital/'); // show homepage to guests
     }
   }, [status, session, router]);
 
-  if (redirecting) return <div>Loading Dashboard...</div>;
+  if (redirecting) return <div>Loading Admin Panel...</div>;
 
 
   return (
