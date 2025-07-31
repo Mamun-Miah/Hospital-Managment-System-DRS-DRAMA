@@ -532,18 +532,17 @@ useEffect(() => {
 }, [formData.payableDoctorFee, treatments]);
 
 
-// console.log("Total Payable Amount:", formData);
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <div>
-            <div className="sm:flex flex justify-between">
+            <div className="sm:flex ">
               <div className="mt-[20px] sm:mt-0">
                 <Image
                   src="/images/logo.png"
                   alt="logo"
-                  className="mb-[10px] dark:hidden"
+                  className="mb-[30px] dark:hidden"
                   width={100}
                   height={26}
                 />
