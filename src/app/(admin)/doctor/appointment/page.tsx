@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-
 // import Image from "next/image";
 import Link from "next/link";
 
@@ -31,17 +30,15 @@ interface Patient {
   created_at: string;
   updated_at: string;
   checked?: boolean;
-  image_url?: string; 
+  image_url?: string;
   Prescription: Prescription[];
-  
 }
 
 const PatientsListTable: React.FC = () => {
-
   //modal state
-    const [isOpen, setIsOpen] = useState(false);
-     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-//end modal state
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  //end modal state
   const [allPatients, setAllPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,11 +48,14 @@ const PatientsListTable: React.FC = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const res = await fetch("/api/patient/patientlist");
+        const res = await fetch("/api/appoinments/appointmentlist/");
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          const dataWithCheck = data.map((patient: Patient) => ({ ...patient, checked: false }));
+          const dataWithCheck = data.map((patient: Patient) => ({
+            ...patient,
+            checked: false,
+          }));
           setAllPatients(dataWithCheck);
         } else {
           console.error("Invalid data format:", data);
@@ -66,8 +66,6 @@ const PatientsListTable: React.FC = () => {
     };
 
     fetchPatients();
-
-   
   }, []);
 
   useEffect(() => {
@@ -112,40 +110,38 @@ const PatientsListTable: React.FC = () => {
   //   setFilteredPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
   // };
 
-//  const handleDelete = async (id: number) => {
-//   if (confirm("Are you sure you want to delete this patient?")) {
-//     try {
-//       const res = await fetch(`/api/patient/deletepatient/${id}`, {
-//         method: "DELETE",
-//       });
+  //  const handleDelete = async (id: number) => {
+  //   if (confirm("Are you sure you want to delete this patient?")) {
+  //     try {
+  //       const res = await fetch(`/api/patient/deletepatient/${id}`, {
+  //         method: "DELETE",
+  //       });
 
-//       if (res.ok) {
-//         setAllPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
-//         setFilteredPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
-//       } else {
-//         console.error("Failed to delete patient");
-//       }
-//     } catch (error) {
-//       console.error("Error deleting patient:", error);
-//     }
-//   }
-// }; 
+  //       if (res.ok) {
+  //         setAllPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
+  //         setFilteredPatients((prev) => prev.filter((patient) => patient.patient_id !== id));
+  //       } else {
+  //         console.error("Failed to delete patient");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error deleting patient:", error);
+  //     }
+  //   }
+  // };
 
-
-//view patient details in modal
-const handleViewClick = async (id: number) => {
-  try {
-    const res = await fetch(`/api/patient/viewpatient/${id}`); // Adjust path based on your route
-    if (!res.ok) throw new Error('Failed to fetch');
-    const data = await res.json();
-    setSelectedPatient(data);
-    setIsOpen(true);
-  } catch (error) {
-    console.error("Error fetching patient:", error);
-  }
-};
-console.log(allPatients, "all patients");
-
+  //view patient details in modal
+  const handleViewClick = async (id: number) => {
+    try {
+      const res = await fetch(`/api/patient/viewpatient/${id}`); // Adjust path based on your route
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      setSelectedPatient(data);
+      setIsOpen(true);
+    } catch (error) {
+      console.error("Error fetching patient:", error);
+    }
+  };
+  console.log(allPatients, "all patients");
 
   return (
     <>
@@ -303,17 +299,17 @@ console.log(allPatients, "all patients");
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         ---
+                          ---
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         {new Date(patient?.created_at).toLocaleDateString()}
+                          {new Date(patient?.created_at).toLocaleDateString()}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         ---
+                          ---
                         </span>
                       </td>
                       {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
@@ -326,7 +322,7 @@ console.log(allPatients, "all patients");
                          ---
                         </span>
                       </td> */}
-                      
+
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {patient?.gender}
@@ -341,50 +337,41 @@ console.log(allPatients, "all patients");
                         <div className="flex items-center gap-[9px]">
                           {/* View button */}
                           {/* <Link href={`view-patient/${patient.patient_id}`}> */}
-                        {/* / */}
-                          {patient.status === "Deactivated" ? (
-                                <span
-                                  className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border bg-gray-400 text-white border-gray-400 cursor-not-allowed"
-                                >
-                                  <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
-                                    <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
-                                      Check
-                                    </i>
-                                    Prescribed
-                                  </span>
-                                </span>
-                              ) : (
-                                <Link
-                                  href={`/doctor/prescriptions/${patient.patient_id}`}
-                                  className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white"
-                                >
-                                  <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
-                                    <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
-                                      Add
-                                    </i>
-                                    Prescribed
-                                  </span>
-                                </Link>
-                              )}
-                            <button
-                              type="button"
-                              
-                              className="text-primary-500 leading-none custom-tooltip"
-                              onClick={() => handleViewClick(patient.patient_id)}
-                              
-                            >
-                              <i className="material-symbols-outlined !text-md">visibility</i>
-                            </button>
+                          {/* / */}
+
+                          <Link
+                            href={`/doctor/prescriptions/${patient.patient_id}`}
+                            className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white"
+                          >
+                            <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
+                              <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
+                                Add
+                              </i>
+                              Prescribed
+                            </span>
+                          </Link>
+                          <button
+                            type="button"
+                            className="text-primary-500 leading-none custom-tooltip"
+                            onClick={() => handleViewClick(patient.patient_id)}
+                          >
+                            <i className="material-symbols-outlined !text-md">
+                              visibility
+                            </i>
+                          </button>
                           {/* </Link> */}
 
-
                           {/* Edit button */}
-                          <Link href={`/doctor/patients-list/edit-patient/${patient.patient_id}`}>
+                          <Link
+                            href={`/doctor/patients-list/edit-patient/${patient.patient_id}`}
+                          >
                             <button
                               type="button"
                               className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
                             >
-                              <i className="material-symbols-outlined !text-md">edit</i>
+                              <i className="material-symbols-outlined !text-md">
+                                edit
+                              </i>
                             </button>
                           </Link>
 
@@ -398,7 +385,6 @@ console.log(allPatients, "all patients");
                           </button> */}
                         </div>
                       </td>
-
                     </tr>
                   ))
                 ) : (
@@ -478,64 +464,98 @@ console.log(allPatients, "all patients");
           </div>
         </div>
       </div>
-{/* view modal */}
-  {isOpen && selectedPatient && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative">
-      <button
-        className="absolute top-2 right-2 text-xl text-gray-500 hover:text-black"
-        onClick={() => setIsOpen(false)}
-      >
-        &times;
-      </button>
-      {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
-      <p className="text-lg font-bold underline">Patient Details:</p>
-      <div className="space-y-2 text-sm">
-        <Image
-          src={selectedPatient.image_url || "/uploads/default.avif"}
-          width={100}
-          height={100}
-          className="inline-block rounded-full"
-          alt="user-image"
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-              <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
-              <p><strong>Email:</strong> {selectedPatient?.email}</p>
-              <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
-               <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
-              <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
-              <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
-              <p><strong>State:</strong> {selectedPatient?.state_province}</p>
-              <p><strong>Age:</strong> {selectedPatient?.age}</p>
-              <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
-              <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
-          </div>
-          <div>
-            
-            <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
-            <p><strong>Assigns Doctor:</strong> DR. X*</p>
-            <p><strong>Last Visit:</strong> {new Date(selectedPatient?.created_at).toLocaleDateString()}</p>
-            <p><strong>Next Visit:</strong> May 2024*</p>
-            <p><strong>Treatment:</strong> DR. X*</p>
-            <p><strong>Due Amount:</strong> 50000*</p>
-            <p><strong>Paid Amount:</strong> 50000*</p>
-            <p><strong>Status:</strong> {selectedPatient?.status}</p>
+      {/* view modal */}
+      {isOpen && selectedPatient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative">
+            <button
+              className="absolute top-2 right-2 text-xl text-gray-500 hover:text-black"
+              onClick={() => setIsOpen(false)}
+            >
+              &times;
+            </button>
+            {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
+            <p className="text-lg font-bold underline">Patient Details:</p>
+            <div className="space-y-2 text-sm">
+              <Image
+                src={selectedPatient.image_url || "/uploads/default.avif"}
+                width={100}
+                height={100}
+                className="inline-block rounded-full"
+                alt="user-image"
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p>
+                    <strong>Name:</strong> {selectedPatient?.patient_name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {selectedPatient?.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {selectedPatient?.mobile_number}
+                  </p>
+                  <p>
+                    <strong>Emergency Contact:</strong>{" "}
+                    {selectedPatient?.emergency_contact_phone}
+                  </p>
+                  <p>
+                    <strong>DOB:</strong>{" "}
+                    {new Date(
+                      selectedPatient?.date_of_birth
+                    ).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Gender:</strong> {selectedPatient?.gender}
+                  </p>
+                  <p>
+                    <strong>State:</strong> {selectedPatient?.state_province}
+                  </p>
+                  <p>
+                    <strong>Age:</strong> {selectedPatient?.age}
+                  </p>
+                  <p>
+                    <strong>Blood Group:</strong> {selectedPatient?.blood_group}
+                  </p>
+                  <p>
+                    <strong>Weight:</strong> {selectedPatient?.weight}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <strong>Postal Code:</strong> {selectedPatient?.postal_code}
+                  </p>
+                  <p>
+                    <strong>Assigns Doctor:</strong> DR. X*
+                  </p>
+                  <p>
+                    <strong>Last Visit:</strong>{" "}
+                    {new Date(selectedPatient?.created_at).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Next Visit:</strong> May 2024*
+                  </p>
+                  <p>
+                    <strong>Treatment:</strong> DR. X*
+                  </p>
+                  <p>
+                    <strong>Due Amount:</strong> 50000*
+                  </p>
+                  <p>
+                    <strong>Paid Amount:</strong> 50000*
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {selectedPatient?.status}
+                  </p>
+                </div>
+              </div>
+
+              {/* Add more fields as needed */}
+            </div>
           </div>
         </div>
-        
-        {/* Add more fields as needed */}
-      </div>
-    </div>
-  </div>
-// view modal
-
-)}
-
-
-
-
-
+        // view modal
+      )}
     </>
   );
 };
