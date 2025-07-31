@@ -125,7 +125,7 @@ const InvoiceList: React.FC = () => {
               />
             </form>
           </div>
-          <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
+          {/* <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/invoice/create-invoice"
               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
@@ -137,7 +137,7 @@ const InvoiceList: React.FC = () => {
                 Create New Invoice
               </span>
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <div className="trezo-card-content">
@@ -164,7 +164,7 @@ const InvoiceList: React.FC = () => {
                     Treatment Name
                   </th> */}
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Appointment Date
+                    Prescribed Date
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Next Appointment Date

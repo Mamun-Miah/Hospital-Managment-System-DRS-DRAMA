@@ -302,7 +302,7 @@ const ViewPatientDetails: React.FC = () => {
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Status
+                  Appoinment Status
                 </label>
                 <select
                   name="status"
@@ -311,7 +311,7 @@ const ViewPatientDetails: React.FC = () => {
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
                   <option value="Active">Active</option>
-                  <option value="Suspended">Suspended</option>
+                  {/* <option value="Suspended">Suspended</option> */}
                   <option value="Deactivated">Deactivated</option>
                 </select>
               </div>

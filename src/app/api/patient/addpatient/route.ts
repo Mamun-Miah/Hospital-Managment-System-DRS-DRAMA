@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     image_url
   } = await req.json();
 
-  if (!patientName || !mobileNumber || !status) {
+  if (!patientName || !mobileNumber) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       emergency_contact_phone: emergencyContactNumber,
       gender,
       image_url: image_url || null,
-      status,
+      status: status || "Active",
     },
   });
 
