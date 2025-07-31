@@ -97,7 +97,8 @@ model Treatmentlist {
 model Medicine {
   medicine_id Int                @id @default(autoincrement())
   name        String             @db.VarChar(100)
-  quantity    Int
+  brand_name  String?            @db.VarChar(100)
+  quantity    Int?
   created_at  DateTime           @default(now())
   updated_at  DateTime?          @updatedAt
   items       PrescriptionItem[]

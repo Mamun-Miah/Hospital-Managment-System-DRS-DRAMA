@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useRouter } from 'next/navigation';
-// import Image from "next/image";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 // import { NextResponse } from "next/server";
 import { useEffect, useState } from "react";
@@ -538,23 +538,17 @@ useEffect(() => {
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <div>
-            <div className="sm:flex justify-between">
+            <div className="sm:flex flex justify-between">
               <div className="mt-[20px] sm:mt-0">
-                {/* <Image
+                <Image
                   src="/images/logo.png"
                   alt="logo"
                   className="mb-[10px] dark:hidden"
                   width={100}
                   height={26}
                 />
-                <Image
-                  src="/images/white-logo.svg"
-                  alt="logo"
-                  className="mb-[10px] hidden dark:block"
-                  width={100}
-                  height={26}
-                /> */}
-                <h3>DRS DERMA</h3>
+        
+                <h3>Create Prescription</h3>
               </div>
             </div>
 
@@ -632,7 +626,7 @@ useEffect(() => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Doctor Name
+                Doctor Name <span className="text-danger-800">*</span>
               </label>
 
               <select
@@ -722,7 +716,7 @@ useEffect(() => {
         </div>
 
         {/* Treatments */}
-        <h4 className="mt-16">Treatments</h4>
+        <h4 className="mt-16">Treatments <span className="text-danger-800">*</span></h4>
         {treatments.map((_singleTreatment, i) => (
           <div className="mb-10 mt-8" key={i}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
@@ -867,7 +861,7 @@ useEffect(() => {
             </span>
           </button>
         </div>
-        <h4 className="mt-16">Medicines</h4>
+        <h4 className="mt-16">Medicines <span className="text-danger-800">*</span></h4>
         {medicines.map((medicine, index) => (
           <div className="flex justify-between gap-8 mt-8" key={index}>
             <div className="w-1/3">
