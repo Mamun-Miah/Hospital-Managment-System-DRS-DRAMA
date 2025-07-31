@@ -9,7 +9,8 @@ const EditMedicineComponent: React.FC = () => {
 
   const [formData, setFormData] = useState({
     medicineName: "",
-    quantity: "",
+    brandName: "",
+    // quantity: "",
   });
 
   const [error, setError] = useState("");
@@ -43,7 +44,7 @@ const EditMedicineComponent: React.FC = () => {
         if (data?.viewMedicine) {
         setFormData({
           medicineName: data.viewMedicine.name || "",
-          quantity: data.viewMedicine.quantity?.toString() || "",
+          brandName: data.viewMedicine.brand_name || "",
         });
       }
       } catch (error) {
@@ -70,7 +71,7 @@ const EditMedicineComponent: React.FC = () => {
         },
         body: JSON.stringify({
           ...formData,
-          quantity: parseInt(formData.quantity),
+          // brandName: formData.brandName,
         }),
       });
 
@@ -84,7 +85,7 @@ const EditMedicineComponent: React.FC = () => {
 
       setFormData({
         medicineName: "",
-        quantity: "",
+        brandName: "",
       });
     } catch (error) {
       setError(error instanceof Error ? error.message : "An unexpected error occurred.");
@@ -115,18 +116,19 @@ const EditMedicineComponent: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Quantity
+                Brand Name
               </label>
               <input
-                name="quantity"
-                type="number"
-                placeholder="Quantity"
-                value={formData.quantity}
+                name="brandName"
+                type="text"
+                placeholder="Brand Name"
+                value={formData.brandName}
                 onChange={handleChange}
                 required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+
           </div>
         </div>
 
@@ -140,7 +142,7 @@ const EditMedicineComponent: React.FC = () => {
               onClick={() =>
                 setFormData({
                   medicineName: "",
-                  quantity: "",
+                  brandName: "",
                 })
               }
             >

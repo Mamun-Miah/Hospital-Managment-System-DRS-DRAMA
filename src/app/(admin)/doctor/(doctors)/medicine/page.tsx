@@ -5,7 +5,8 @@ import Link from "next/link";
 interface Medicine {
   medicine_id: string;
   name: string;
-  quantity: string;
+  // quantity: string;
+  brand_name: string;
 }
 
 const MedicineList: React.FC = () => {
@@ -153,7 +154,7 @@ const MedicineList: React.FC = () => {
                   </th> */}
 
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Quantity
+                    Brand Name
                   </th>
                 </tr>
               </thead>
@@ -174,7 +175,7 @@ const MedicineList: React.FC = () => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {medicine.quantity}
+                          {medicine.brand_name}
                         </span>
                       </td>
 
