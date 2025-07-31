@@ -147,6 +147,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
+
+    await prisma.patient.update({
+      where: { patient_id: patient_id },
+      data: {
+        status: "Deactivated",
+      },
+    });
+
     return NextResponse.json({
       message: "Prescription and Invoice saved successfully",
       prescription_id: prescriptionId,

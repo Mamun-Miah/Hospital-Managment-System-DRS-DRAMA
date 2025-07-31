@@ -3,10 +3,9 @@ import prisma from '@/lib/prisma';
 
 export async function PATCH(
   req: NextRequest,
-   { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
- const patient_id = (await params).id;
-
+  const patient_id = (await params).id;
   const id = parseInt(patient_id);
 
   if (isNaN(id)) {
@@ -24,9 +23,9 @@ export async function PATCH(
       date_of_birth: data.date_of_birth ? new Date(data.date_of_birth) : undefined,
       gender: data.gender,
       address_line1: data.address_line1,
-       age:data.age,
-      blood_group:data.blood_group,
-      weight:data.weight,
+      age: data.age,
+      blood_group: data.blood_group,
+      weight: data.weight,
       city: data.city,
       state_province: data.state_province,
       postal_code: data.postal_code,
@@ -41,6 +40,7 @@ export async function PATCH(
         updated_at: new Date(),
       },
     });
+
 
     return NextResponse.json(updatedPatient, { status: 200 });
   } catch (error) {

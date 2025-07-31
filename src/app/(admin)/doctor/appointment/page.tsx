@@ -144,7 +144,7 @@ const handleViewClick = async (id: number) => {
     console.error("Error fetching patient:", error);
   }
 };
-
+console.log(allPatients, "all patients");
 
 
   return (
@@ -231,9 +231,9 @@ const handleViewClick = async (id: number) => {
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Gender
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Status
-                  </th>
+                  </th> */}
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Action
                   </th>
@@ -332,17 +332,17 @@ const handleViewClick = async (id: number) => {
                           {patient?.gender}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {patient?.status}
                         </span>
-                      </td>
+                      </td> */}
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
                           {/* View button */}
                           {/* <Link href={`view-patient/${patient.patient_id}`}> */}
-                        
-                          {patient.Prescription?.some((p) => p.is_prescribed === "Yes") ? (
+                        {/* / */}
+                          {patient.status === "Deactivated" ? (
                                 <span
                                   className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border bg-gray-400 text-white border-gray-400 cursor-not-allowed"
                                 >
