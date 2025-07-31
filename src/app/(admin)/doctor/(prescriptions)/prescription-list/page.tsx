@@ -91,7 +91,7 @@ useEffect(() => {
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
-        <h5 className="!mb-0">Prescriptin List</h5>
+        <h5 className="!mb-0">Prescription List</h5>
 
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
@@ -111,7 +111,7 @@ useEffect(() => {
           </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Treatment List
+            Prescription List
           </li>
         </ol>
       </div>

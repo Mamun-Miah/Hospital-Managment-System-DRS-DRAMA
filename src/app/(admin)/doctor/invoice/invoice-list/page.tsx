@@ -105,11 +105,7 @@ const InvoiceList: React.FC = () => {
           </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Doctor
-          </li>
-
-          <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Treatment List
+            Invoice List
           </li>
         </ol>
       </div>

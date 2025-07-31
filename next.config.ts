@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     includePaths: [path.join(__dirname, 'styles')],
     // Additional Sass options can go here
   },
+  
+  
 };
 
 export default nextConfig;

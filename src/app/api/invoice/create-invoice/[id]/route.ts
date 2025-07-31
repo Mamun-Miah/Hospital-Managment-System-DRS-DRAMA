@@ -47,7 +47,7 @@ export async function GET(
             });
 
 
-        return NextResponse.json({message: 'Patitient Data Fetch Succesfully', getInvoiceData}, {status: 200})
+        return NextResponse.json({message: 'Invoice Created Succesfully', getInvoiceData}, {status: 200})
         
     } catch(error) {
         console.error('erro', error)
