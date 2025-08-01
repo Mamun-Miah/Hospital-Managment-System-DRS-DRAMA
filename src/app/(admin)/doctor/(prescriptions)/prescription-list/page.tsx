@@ -345,10 +345,10 @@ const InvoiceList: React.FC = () => {
         </div>
         {/* modal open here */}
         {isOpen && morePrescriptions && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-8xl relative ">
+          <div className="fixed inset-0  z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
+            <div className="bg-white p-10 rounded-lg shadow-lg w-8xl relative ">
               <button
-                className="absolute top-[-8px] right-[0] text-xl text-gray-500 hover:text-black"
+                className="absolute top-[-2px] right-[10px] text-4xl text-red-500 hover:text-black"
                 onClick={() => setIsOpen(false)}
               >
                 &times;
