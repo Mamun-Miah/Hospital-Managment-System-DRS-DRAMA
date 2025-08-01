@@ -28,6 +28,8 @@
     "react-simple-wysiwyg": "^3.2.2",
     "react-svg-worldmap": "^2.0.0-alpha.16",
     "remixicon": "^4.6.0",
+    "sweetalert2": "^11.22.2",
+    "sweetalert2-react-content": "^5.1.0",
     "swiper": "^11.2.6",
     "tailwind-scrollbar": "^4.0.2"
   },

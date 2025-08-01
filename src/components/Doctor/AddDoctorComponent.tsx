@@ -2,8 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Swal from 'sweetalert2';
+import { useRouter } from "next/navigation";
 
 const AddDoctor: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     doctorName: "",
     phone_number: "",
@@ -86,7 +89,14 @@ const AddDoctor: React.FC = () => {
         throw new Error(data.error || "Failed to add patient");
       }
 
-      alert("Doctor added successfully!");
+      Swal.fire({
+          
+          icon: "success",
+          title: "Doctor added successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
+      router.push('/doctor/doctor-list/');
       setFormData({
         doctorName: "",
         phone_number: "",
