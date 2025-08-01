@@ -359,7 +359,7 @@ console.log('prescriptionsData',prescriptionsData)
           </ul>
 
           <div className="max-w-[255px] ltr:pr-[25px] rtl:pl-[25px] ltr:md:ml-auto rtl:md:mr-auto mt-[20px] md:mt-[25px]">
-            <div className="text-center mb-[15px] md:mb-[20px] pb-[5px] border-b border-gray-100 dark:border-[#15203c]">
+            {/* <div className="text-center mb-[15px] md:mb-[20px] pb-[5px] border-b border-gray-100 dark:border-[#15203c]">
               <Image
                 src="/images/signature.svg"
                 className="inline-block dark:invert"
@@ -367,15 +367,15 @@ console.log('prescriptionsData',prescriptionsData)
                 width={77}
                 height={38}
               />
-            </div>
+            </div> */}
 
-            <span className="block text-black dark:text-white font-semibold">
-              {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
+            {/* <span className="block text-black dark:text-white font-semibold">
+              {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
             </span>
 
             <span className="block text-xs mt-[5px]">
               MBBS, MD, MS (Reg No: 321456)
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
