@@ -33,6 +33,7 @@ export async function GET() {
       patient_name: invoice.patient?.patient_name || "",
       mobile_number: invoice.patient?.mobile_number || "",
       total_cost: invoice.prescription?.total_cost || 0,
+      paid_amount: invoice.paid_amount || 0,
       doctor: undefined,
       patient: undefined,
       prescription: undefined,

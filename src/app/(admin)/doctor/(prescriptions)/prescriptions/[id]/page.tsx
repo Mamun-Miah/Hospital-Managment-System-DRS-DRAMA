@@ -171,13 +171,16 @@ const AddAppointment: React.FC = () => {
 
 //Set Error 
   const [error, setError] = useState("");
+
+// setNewMedicineInput, brandName state for adding new medicine 
+const [newMedicineInput, setNewMedicineInput] = useState("");
+const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
+
 //Set Loading State
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
 
 
-//fetch Appointments Data from Api & set Medicine to the SetOptions & Set Doctor List & TreatmentList
-useEffect(() => {
-  async function getPrescribedData() {
+async function getPrescribedData(id: string) {
     setLoading(true);
     try {
       const res = await fetch(`/api/appoinments/appoinments-data/${id}`);
@@ -239,8 +242,10 @@ useEffect(() => {
       console.log(error);
     }
   }
+//fetch Appointments Data from Api & set Medicine to the SetOptions & Set Doctor List & TreatmentList
+useEffect(() => {
 
-  getPrescribedData();
+  getPrescribedData(id);
 }, [id]);
 
 
@@ -467,6 +472,55 @@ const handleChangeTreatment = (
     ]);
   };
 
+  const handleAddNewMedicine = async () => {
+  if (!newMedicineInput.trim()) {
+    setError("Medicine name cannot be empty.");
+    return;
+  }
+  setLoading(true);
+  setError(""); 
+  if (!newMedicineBrandInput.trim()) {
+    setError("Brand name cannot be empty.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await fetch("/api/medicine/add-medicine", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        medicineName: newMedicineInput.trim(),
+        brandName: newMedicineBrandInput.trim(),
+        quantity: 0, // A default quantity for a new medicine
+      }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to add new medicine.");
+    }
+
+    alert(`"${newMedicineInput.trim()}" added successfully to the medicine list!`);
+    setNewMedicineInput(""); // Clear the input field
+    setNewMedicineBrandInput(""); 
+
+
+    // Re-fetch the medicine options to update the dropdowns
+    await getPrescribedData(id);
+  } catch (err: any) {
+    console.error("Error adding new medicine:", err);
+    setError(err.message || "Failed to add new medicine.");
+  } finally {
+    setLoading(false);
+  }
+  };
+
   const handleMedicineChange = (
     medIndex: number,
     key: "name" | "duration",
@@ -537,12 +591,12 @@ useEffect(() => {
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <div>
-            <div className="sm:flex ">
+            <div className="sm:flex flex justify-between">
               <div className="mt-[20px] sm:mt-0">
                 <Image
                   src="/images/logo.png"
                   alt="logo"
-                  className="mb-[30px] dark:hidden"
+                  className="mb-[10px] dark:hidden"
                   width={100}
                   height={26}
                 />
@@ -875,20 +929,48 @@ useEffect(() => {
                 }
                 styles={customStyles}
               />
-              <button
-                onClick={() => handleRemoveMedicine(index)}
-                type="button"
-                className="font-medium mt-5 inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
-              >
-                <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
-                  <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                    remove 
-                  </i>
-                  Remove Medicine
-                </span>
-              </button>
+              {/* Add New Medicine and New Medicine Brand Name Section  */}
+              <div className="trezo-card mt-[25px]">
+                <div className="flex gap-4 items-end">
+                  <div className="flex-grow">
+                    <input
+                      id="newMedicineNameInput"
+                      type="text"
+                      value={newMedicineInput}
+                      onChange={(e) => setNewMedicineInput(e.target.value)}
+                      placeholder="Medicine Name"
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                  <div className="flex-grow">
+                    <input
+                      id="newMedicineBrandInput"
+                      type="text"
+                      value={newMedicineBrandInput}
+                      onChange={(e) => setNewMedicineBrandInput(e.target.value)}
+                      placeholder="Brand Name"
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="trezo-card mt-[25px]">                 
+                    <button
+                      type="button"
+                      onClick={handleAddNewMedicine}
+                      disabled={loading}
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-green-500 text-white hover:bg-green-400"
+                    >
+                      <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                        <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                          add
+                        </i>
+                        {loading ? "Adding..." : "Add Medicine"}
+                      </span>
+                    </button>
+                </div>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
+              </div>       
             </div>
-
             <div className="w-1/3">
               <label htmlFor="dosages">Dosages</label>
 
@@ -934,16 +1016,6 @@ useEffect(() => {
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
               </div>
-              {/* <div className="flex gap-5 mt-5 items-center justify-between  h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500">
-                <label htmlFor="total">Total</label>
-                <span>-</span>
-                <input
-                  type="number"
-                  value={calculateTotal(medicine.dosages, medicine.duration)}
-                  disabled
-                  className="justify-self-end max-w-[40px]"
-                />
-              </div> */}
             </div>
           </div>
         ))}
@@ -960,6 +1032,21 @@ useEffect(() => {
               Add More Medicine
             </span>
           </button>
+          <span className="ml-4">
+            <button
+              onClick={() => handleRemoveMedicine(medicines.length - 1)}
+              type="button"
+              className="font-medium mt-5 inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
+              disabled={medicines.length === 0}
+            >
+              <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                  remove
+                </i>
+                Remove Medicine
+              </span>
+            </button>
+          </span>
         </div>
         <div className="my-8 last:mb-0">
           <label className="mb-[12px] font-medium block">Advise</label>

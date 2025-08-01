@@ -22,8 +22,8 @@ export async function GET() {
       ) latest ON p.patient_id = latest.patient_id AND p.prescribed_at = latest.latest_date
       
     `;
+    
 
-    // You’ll still need to manually join patient and doctor info if needed (or use JOIN in SQL)
     const enrichedData = await Promise.all(
       latestPrescriptions.map(async (prescription: any) => {
         const [patient, doctor] = await Promise.all([
