@@ -479,14 +479,7 @@ const handleChangeTreatment = (
   }
   setLoading(true);
   setError(""); 
-  if (!newMedicineBrandInput.trim()) {
-    setError("Brand name cannot be empty.");
-    return;
-  }
-
-  setLoading(true);
-  setError("");
-
+  
   try {
     const res = await fetch("/api/medicine/add-medicine", {
       method: "POST",
