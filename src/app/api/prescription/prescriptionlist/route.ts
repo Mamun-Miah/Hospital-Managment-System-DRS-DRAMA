@@ -1,53 +1,59 @@
-import prisma from "@/lib/prisma";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const prescriptionList = await prisma.prescription.findMany({
-  where: {
-    is_prescribed: "Yes",
-  },
-  select: {
-    prescription_id: true,
-    prescribed_at: true,
-    is_prescribed: true,
-    is_drs_derma: true,
-    patient_id: true,
-    patient: {
-      select: {
-        patient_name: true,
-        mobile_number:true,
-      },
-    },
-    doctor_id: true,
-    doctor: {
-      select: {
-        doctor_name: true,
-      },
-    },
-  },
-});
+    type Prescription = {
+      prescription_id: number;
+      prescribed_at: Date;
+      is_drs_derma: boolean;
+      patient_id: number;
+      doctor_id: number;
+    };
 
+    const latestPrescriptions = await prisma.$queryRaw<Prescription[]>`
+      SELECT p.*
+      FROM Prescription p
+      INNER JOIN (
+        SELECT patient_id, MAX(prescribed_at) AS latest_date
+        FROM Prescription
+        GROUP BY patient_id
+      ) latest ON p.patient_id = latest.patient_id AND p.prescribed_at = latest.latest_date
+      
+    `;
 
- const prescriptionListData = prescriptionList.map((item) => ({
-      prescription_id: item.prescription_id,
-      prescribed_at: item.prescribed_at.toISOString().slice(0, 10),
-      is_prescribed: item.is_prescribed,
-      is_drs_derma: item.is_drs_derma,
-      patient_id: item.patient_id,
-      patient_name: item.patient?.patient_name ?? "",
-      mobile_number: item.patient?.mobile_number ?? "",
-      doctor_id: item.doctor_id,
-      doctor_name: item.doctor?.doctor_name ?? "",
-    }));
+    // You’ll still need to manually join patient and doctor info if needed (or use JOIN in SQL)
+    const enrichedData = await Promise.all(
+      latestPrescriptions.map(async (prescription: any) => {
+        const [patient, doctor] = await Promise.all([
+          prisma.patient.findUnique({
+            where: { patient_id: prescription.patient_id },
+            select: { patient_name: true, mobile_number: true },
+          }),
+          prisma.doctor.findUnique({
+            where: { doctor_id: prescription.doctor_id },
+            select: { doctor_name: true },
+          }),
+        ]);
 
+        return {
+          prescription_id: prescription.prescription_id,
+          prescribed_at: prescription.prescribed_at.toISOString().slice(0, 10),
+          is_prescribed: prescription.is_prescribed,
+          is_drs_derma: prescription.is_drs_derma,
+          patient_id: prescription.patient_id,
+          patient_name: patient?.patient_name ?? "",
+          mobile_number: patient?.mobile_number ?? "",
+          doctor_id: prescription.doctor_id,
+          doctor_name: doctor?.doctor_name ?? "",
+        };
+      })
+    );
 
-
-
-
-    return NextResponse.json({ prescriptionlist: prescriptionListData });
+    return NextResponse.json({ prescriptionlist: enrichedData });
   } catch (error) {
-    console.error("Error fetching prescriptions:", error);
+    console.error("Error fetching latest prescriptions per patient:", error);
     return NextResponse.json(
       { error: "An error occurred while fetching prescriptions." },
       { status: 500 }
