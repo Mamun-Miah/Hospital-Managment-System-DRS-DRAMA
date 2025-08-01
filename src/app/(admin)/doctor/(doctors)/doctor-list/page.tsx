@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 interface Doctor {
   doctor_id: number;
@@ -45,26 +46,53 @@ const DoctorListTable: React.FC = () => {
 
 
   const handleDeleteDoctor = async (doctor_id: number) => {
-      if(confirm("Are you sure you want to delete this doctor?")) {
 
-    try {
-
-       
-      const response = await fetch(`/api/doctor/delete-doctor/${doctor_id}`, {
-        method: "DELETE",
+    //Sweet Alert for confirmation
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: true
       });
-      if (!response.ok) {
-        throw new Error("Failed to delete doctor");
-      }
-     
-      // Remove the deleted doctor from the state
-      setAllDoctors((prevDoctors) =>
-        prevDoctors.filter((doctor) => doctor.doctor_id !== doctor_id)
-      );
-    } catch (error) {
-      console.error("Error deleting doctor:", error);
-    }
-      }
+   
+      swalWithBootstrapButtons.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+      }).then (async(result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire({
+
+            title: "Deleted!",
+            text: "Doctor Has been successfully deleted.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500
+          });
+//Sweet Alert for confirmation ends here
+           try {
+                const response = await fetch(`/api/doctor/delete-doctor/${doctor_id}`, {
+                  method: "DELETE",
+                });
+                if (!response.ok) {
+                  throw new Error("Failed to delete doctor");
+                }
+              
+                // Remove the deleted doctor from the state
+                setAllDoctors((prevDoctors) =>
+                  prevDoctors.filter((doctor) => doctor.doctor_id !== doctor_id)
+                );
+              } catch (error) {
+                console.error("Error deleting doctor:", error);
+              }
+        }
+      });
+
   }
 
   return (
