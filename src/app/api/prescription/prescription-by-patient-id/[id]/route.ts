@@ -3,9 +3,10 @@ import prisma from "@/lib/prisma";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const patient_id = parseInt(params.id);
+  const id = (await params).id;
+  const patient_id = parseInt(id);
 
   if (isNaN(patient_id)) {
     return NextResponse.json(
