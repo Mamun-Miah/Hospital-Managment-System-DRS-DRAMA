@@ -46,7 +46,7 @@ export async function GET(
       patient_id: p.patient_id,
       patient_name: p.patient?.patient_name || "",
       mobile_number: p.patient?.mobile_number || "",
-      prescription_date: p.prescribed_at.toISOString().slice(0, 10),
+      prescribed_at: p.prescribed_at.toISOString().slice(0, 10),
       doctor_name: p.doctor?.doctor_name || "",
     }));
 

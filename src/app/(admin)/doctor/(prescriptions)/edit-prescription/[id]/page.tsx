@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useRouter } from 'next/navigation';
-// import Image from "next/image";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 // import { NextResponse } from "next/server";
 import { useEffect, useState } from "react";
@@ -13,8 +13,8 @@ interface FormData {
   doctor_name: string;
   doctor_fee: number;
   treatment_name: string;
-  treatmentAmount2: number;
-  treatmentCost:number;
+  treatmentAmount2: string;
+  treatmentCost:string;
   treatmentDuration: number;
   payableDoctorFee:number;
   doctorDiscountType: string, 
@@ -27,18 +27,19 @@ interface FormData {
   city: string;
   weight: string;
   blood_group: string;
+  totalPayableAmount: string,
   is_drs_derma: string;
   next_appoinment: string;
 }
 
 interface Dosage {
   time: string;
-  amount: number;
+  amount: string;
 }
 
 interface Medicine {
   name: string;
-  duration: number;
+  duration: string;
   dosages: Dosage[];
 }
 
@@ -52,6 +53,9 @@ type OptionType = {
   value: string;
   label: string;
 };
+
+
+
 // Searchable dropdown styles
 const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
   control: (base: any, state: any) => ({
@@ -97,11 +101,15 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
 };
 
 //Export Component
-const AddAppointment: React.FC = () => {
+const EditAppointment: React.FC = () => {
 //Get Id from Params
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
+  const [totalPayableAmount, setTotalPayableAmount] = useState(0);
+
+  const [clearedFields, setClearedFields] = useState<{ [key: string]: boolean }>({});
+  
 //Set Form Data
   const [formData, setFormData] = useState<FormData>({
     patient_id: "",
@@ -109,9 +117,9 @@ const AddAppointment: React.FC = () => {
     doctor_name: "",
     doctor_fee: 0,
     treatment_name: "",
-    treatmentAmount2: 0,
+    treatmentAmount2: "",
     treatmentDuration: 0,
-    treatmentCost:0,
+    treatmentCost:"",
     payableDoctorFee: 0, 
     doctorDiscountType: "", 
     doctorDiscountAmount: 0, 
@@ -123,11 +131,13 @@ const AddAppointment: React.FC = () => {
     city: "",
     weight: "",
     blood_group: "",
+    totalPayableAmount: "",
     is_drs_derma:"No",
     next_appoinment: "",
   });
 //Set Doctor Data
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+
 
 
  //Set Treatments List 
@@ -139,35 +149,38 @@ const AddAppointment: React.FC = () => {
       treatment_name: "Select Treatment",
       duration: 0,
       discountType: "",
-      discountAmount: 0,
-      treatmentAmount2:0,
-      treatmentCost:0
+      discountAmount: "",
+      treatmentAmount2:"",
+      treatmentCost:""
     },
   ]);
 
 //Set Medicine List 
   const [options, setOptions] = useState<OptionType[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([
-    {
-      name: "Select Medicine",
-      duration: 1,
-      dosages: [
-        { time: "Morning", amount: 0 },
-        { time: "Mid Day", amount: 0 },
-        { time: "Night", amount: 0 },
-      ],
-    },
+    // {
+    //   name: "Select Medicine",
+    //   duration: "",
+    //   dosages: [
+    //     { time: "Morning", amount: "" },
+    //     { time: "Mid Day", amount: "" },
+    //     { time: "Night", amount: "" },
+    //   ],
+    // },
   ]);
 
 //Set Error 
   const [error, setError] = useState("");
+
+// setNewMedicineInput, brandName state for adding new medicine 
+const [newMedicineInput, setNewMedicineInput] = useState("");
+const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
+
 //Set Loading State
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
 
 
-//fetch Appointments Data from Api & set Medicine to the SetOptions & Set Doctor List & TreatmentList
-useEffect(() => {
-  async function getPrescribedData() {
+async function getPrescribedData(id: string) {
     setLoading(true);
     try {
       const res = await fetch(`/api/appoinments/appoinments-data/${id}`);
@@ -203,11 +216,12 @@ useEffect(() => {
               ? data.treatments.treatment_name
               : "",
           mobile_number: data.patient.mobile_number,
-          treatmentAmount2: parseFloat(data.treatments.total_cost),
-          treatmentCost:0,
+          treatmentAmount2: data.treatments.total_cost,
+          treatmentCost:"",
           treatmentDuration: data.treatments.duration_months,
           
           payableDoctorFee: 0, 
+          totalPayableAmount: "",
           doctorDiscountType: "", 
           doctorDiscountAmount: 0, 
           medicine_name:
@@ -228,8 +242,10 @@ useEffect(() => {
       console.log(error);
     }
   }
+//fetch Appointments Data from Api & set Medicine to the SetOptions & Set Doctor List & TreatmentList
+useEffect(() => {
 
-  getPrescribedData();
+  getPrescribedData(id);
 }, [id]);
 
 
@@ -278,6 +294,8 @@ const handleChange = (
   >
 ) => {
   
+
+
   const { name, value } = e.target;
 
 
@@ -346,6 +364,8 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
     return;
   }
 
+  
+
   // Handle all other inputs
   setFormData((prev) => ({
     ...prev,
@@ -361,9 +381,9 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
         treatment_name: "Select Treatment",
         duration: 1,
         discountType: "",
-        discountAmount: 0,
-        treatmentAmount2:0,
-        treatmentCost:0,
+        discountAmount: "",
+        treatmentAmount2:"",
+        treatmentCost:"",
       },
     ]);
   };
@@ -376,45 +396,52 @@ const handleChangeTreatment = (
   setTreatments((prev) => {
     const updated = [...prev];
     const current = updated[index];
-
     let newData = { ...current, [name]: value };
 
-    // If user selects a treatment
+    // Handle treatment selection
     if (name === "treatment_name") {
       const selected = treatmentList.find(
         (item) => item.treatment_name === value
       );
+
       newData = {
         ...newData,
         treatment_name: value.toString(),
-        treatmentAmount2: selected ? Number(selected.total_cost) : 0,
+        treatmentAmount2: selected ? selected.total_cost : "",
         duration: selected ? Number(selected.duration_months) : 0,
       };
     }
 
-    // If user changes discountType or discountAmount
+    // Handle discount logic
     if (name === "discountType" || name === "discountAmount") {
-      const { treatmentAmount2, discountType } = {
-        ...current,
-        ...((name === "discountType" && { discountType: value }) ||
-          (name === "discountAmount" && { discountAmount: value })),
-      };
+      const treatmentAmount2 = Number(
+        name === "discountType"
+          ? current.treatmentAmount2
+          : newData.treatmentAmount2 ?? current.treatmentAmount2
+      );
 
-      const discountValue = Number(
-        name === "discountAmount" ? value : current.discountAmount
+      const discountType =
+        name === "discountType"
+          ? value
+          : current.discountType;
+
+      const discountAmount = Number(
+        name === "discountAmount"
+          ? value
+          : current.discountAmount
       );
 
       let finalAmount = treatmentAmount2;
 
       if (discountType === "Percentage") {
-        finalAmount = treatmentAmount2 - (treatmentAmount2 * discountValue) / 100;
+        finalAmount = treatmentAmount2 - (treatmentAmount2 * discountAmount) / 100;
       } else if (discountType === "Flat Rate") {
-        finalAmount = treatmentAmount2 - discountValue;
+        finalAmount = treatmentAmount2 - discountAmount;
       }
 
       newData = {
         ...newData,
-        treatmentCost: finalAmount < 0 ? 0 : Number(finalAmount.toFixed(2)),
+        treatmentCost: finalAmount < 0 ? "" : Math.round(finalAmount).toString(), // Remove `.toFixed(2)` to avoid trailing .00
       };
     }
 
@@ -422,6 +449,7 @@ const handleChangeTreatment = (
     return updated;
   });
 };
+
 
 
 
@@ -433,15 +461,57 @@ const handleChangeTreatment = (
     setMedicines([
       ...medicines,
       {
-        name: "",
-        duration: 1,
+        name: "Select Medicine",
+        duration: "",
         dosages: [
-          { time: "Morning", amount: 0 },
-          { time: "Mid Day", amount: 0 },
-          { time: "Night", amount: 0 },
+          { time: "Morning", amount: "" },
+          { time: "Mid Day", amount: "" },
+          { time: "Night", amount: "" },
         ],
       },
     ]);
+  };
+
+  const handleAddNewMedicine = async () => {
+  if (!newMedicineInput.trim()) {
+    setError("Medicine name cannot be empty.");
+    return;
+  }
+  setLoading(true);
+  setError(""); 
+  
+  try {
+    const res = await fetch("/api/medicine/add-medicine", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        medicineName: newMedicineInput.trim(),
+        brandName: newMedicineBrandInput.trim(),
+        quantity: 0, // A default quantity for a new medicine
+      }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to add new medicine.");
+    }
+
+    alert(`"${newMedicineInput.trim()}" added successfully to the medicine list!`);
+    setNewMedicineInput(""); // Clear the input field
+    setNewMedicineBrandInput(""); 
+
+
+    // Re-fetch the medicine options to update the dropdowns
+    await getPrescribedData(id);
+  } catch (err: any) {
+    console.error("Error adding new medicine:", err);
+    setError(err.message || "Failed to add new medicine.");
+  } finally {
+    setLoading(false);
+  }
   };
 
   const handleMedicineChange = (
@@ -474,37 +544,57 @@ const handleChangeTreatment = (
     setMedicines((prev) => prev.filter((_, i) => i !== index));
   };
 
+
+
+  const handleMouseEnter = (fieldName: string) => {
+  if (!clearedFields[fieldName]) {
+    setFormData((prev) => ({ ...prev, [fieldName]: "" })); 
+    setClearedFields((prev) => ({ ...prev, [fieldName]: true }));
+  }
+};
+
   const date = new Date();
   const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDay();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');  
   const finalDate = `${day}/${month}/${year}`;
 
-console.log(formData)
-console.log(medicines)
-console.log(treatments)
+
+  
+useEffect(() => {
+  const treatmentTotal = treatments.reduce((sum, t) => {
+    const cost = Number(t.treatmentCost) || 0;
+    return sum + cost;
+  }, 0);
+  const doctorFee = Number(formData.payableDoctorFee) || 0;
+  const totalPayable = doctorFee + treatmentTotal;
+  setTotalPayableAmount(totalPayable);
+
+
+
+  setFormData((prev) => ({
+    ...prev,
+    totalPayableAmount: totalPayable.toString(),
+  }));
+}, [formData.payableDoctorFee, treatments]);
+
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <div>
-            <div className="sm:flex justify-between">
+            <div className="sm:flex flex justify-between">
               <div className="mt-[20px] sm:mt-0">
-                {/* <Image
+                <Image
                   src="/images/logo.png"
                   alt="logo"
                   className="mb-[10px] dark:hidden"
                   width={100}
                   height={26}
                 />
-                <Image
-                  src="/images/white-logo.svg"
-                  alt="logo"
-                  className="mb-[10px] hidden dark:block"
-                  width={100}
-                  height={26}
-                /> */}
-                <h3>DRS DERMA</h3>
+        
+                <h3>Create Prescription</h3>
               </div>
             </div>
 
@@ -582,7 +672,7 @@ console.log(treatments)
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Doctor Name
+                Doctor Name <span className="text-danger-800">*</span>
               </label>
 
               <select
@@ -630,6 +720,7 @@ console.log(treatments)
               <select
                 name="doctorDiscountType"
                  value={formData.doctorDiscountType}
+                 required
                  onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
@@ -647,6 +738,7 @@ console.log(treatments)
                 name="doctorDiscountAmount"
                 type="number"
                 value={formData.doctorDiscountAmount}
+                onClick={() => handleMouseEnter("doctorDiscountAmount")}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -660,6 +752,7 @@ console.log(treatments)
                  name="payableDoctorFee"
                   type="number"
                   value={formData.payableDoctorFee}
+                  onClick={() => handleMouseEnter("payableDoctorFee")}
                 onChange={handleChange}
                 placeholder="Dicount Amount"
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
@@ -669,7 +762,7 @@ console.log(treatments)
         </div>
 
         {/* Treatments */}
-        <h4 className="mt-16">Treatments</h4>
+        <h4 className="mt-16">Treatments <span className="text-danger-800">*</span></h4>
         {treatments.map((_singleTreatment, i) => (
           <div className="mb-10 mt-8" key={i}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
@@ -751,9 +844,11 @@ console.log(treatments)
                  name="discountAmount"
                     type="number"
                     value={treatments[i].discountAmount}
+                    
                     onChange={(e) =>
                       handleChangeTreatment("discountAmount", i, e.target.value)
                     }
+                    onClick={() => handleMouseEnter("discountAmount")}
                   placeholder="Dicount Amount"
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
@@ -772,6 +867,7 @@ console.log(treatments)
                     )
                   }
                   type="number"
+                  placeholder='Payable Treatment Cost'
                   value={
                     treatments[i].treatmentCost
                   }
@@ -811,7 +907,7 @@ console.log(treatments)
             </span>
           </button>
         </div>
-        <h4 className="mt-16">Medicines</h4>
+        <h4 className="mt-16">Medicines <span className="text-danger-800">*</span></h4>
         {medicines.map((medicine, index) => (
           <div className="flex justify-between gap-8 mt-8" key={index}>
             <div className="w-1/3">
@@ -820,25 +916,54 @@ console.log(treatments)
               <Select
                 options={options}
                 value={{ label: medicine.name, value: medicine.name }}
+                required
                 onChange={(option) =>
                   handleMedicineChange(index, "name", option?.label ?? "")
                 }
                 styles={customStyles}
               />
-              <button
-                onClick={() => handleRemoveMedicine(index)}
-                type="button"
-                className="font-medium mt-5 inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
-              >
-                <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
-                  <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                    remove 
-                  </i>
-                  Remove Medicine
-                </span>
-              </button>
+              {/* Add New Medicine and New Medicine Brand Name Section  */}
+              <div className="trezo-card mt-[25px]">
+                <div className="flex gap-4 items-end">
+                  <div className="flex-grow">
+                    <input
+                      id="newMedicineNameInput"
+                      type="text"
+                      value={newMedicineInput}
+                      onChange={(e) => setNewMedicineInput(e.target.value)}
+                      placeholder="Medicine Name"
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                  <div className="flex-grow">
+                    <input
+                      id="newMedicineBrandInput"
+                      type="text"
+                      value={newMedicineBrandInput}
+                      onChange={(e) => setNewMedicineBrandInput(e.target.value)}
+                      placeholder="Brand Name"
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="trezo-card mt-[25px]">                 
+                    <button
+                      type="button"
+                      onClick={handleAddNewMedicine}
+                      disabled={loading}
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-green-500 text-white hover:bg-green-400"
+                    >
+                      <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                        <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                          add
+                        </i>
+                        {loading ? "Adding..." : "Add Medicine"}
+                      </span>
+                    </button>
+                </div>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
+              </div>       
             </div>
-
             <div className="w-1/3">
               <label htmlFor="dosages">Dosages</label>
 
@@ -853,12 +978,13 @@ console.log(treatments)
                     type="number"
                     value={dosage?.amount}
                     className="border-0 outline-none justify-self-end max-w-[50px] show-spinner"
+                    placeholder='0'
                     onChange={(e) =>
                       handleDosageChange(
                         index,
                         doseIndex,
                         "amount",
-                        Number(e.target.value)
+                        e.target.value
                       )
                     }
                   />
@@ -875,22 +1001,14 @@ console.log(treatments)
                     handleMedicineChange(
                       index,
                       "duration",
-                      Number(e.target.value)
+                      e.target.value
                     )
                   }
+                  placeholder='0'
+                  onClick={() => handleMouseEnter("duration")}
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                 />
               </div>
-              {/* <div className="flex gap-5 mt-5 items-center justify-between  h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500">
-                <label htmlFor="total">Total</label>
-                <span>-</span>
-                <input
-                  type="number"
-                  value={calculateTotal(medicine.dosages, medicine.duration)}
-                  disabled
-                  className="justify-self-end max-w-[40px]"
-                />
-              </div> */}
             </div>
           </div>
         ))}
@@ -907,6 +1025,21 @@ console.log(treatments)
               Add More Medicine
             </span>
           </button>
+          <span className="ml-4">
+            <button
+              onClick={() => handleRemoveMedicine(medicines.length - 1)}
+              type="button"
+              className="font-medium mt-5 inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
+              disabled={medicines.length === 0}
+            >
+              <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                  remove
+                </i>
+                Remove Medicine
+              </span>
+            </button>
+          </span>
         </div>
         <div className="my-8 last:mb-0">
           <label className="mb-[12px] font-medium block">Advise</label>
@@ -922,7 +1055,7 @@ console.log(treatments)
 
         <div className="trezo-card mt-[25px]">
           <div className="trezo-card-content">
-            <p className="font-bold">Total Payable Amount: $4483</p>
+            <p className="font-bold">Total Payable Amount: BDT {totalPayableAmount}</p> 
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
@@ -934,13 +1067,14 @@ console.log(treatments)
                   doctor_fee: formData.doctor_fee,
                   treatment_name: "",
                   treatmentAmount2: formData.treatmentAmount2,
-                  treatmentCost:0,
+                  treatmentCost:"",
                   treatmentDuration: formData.treatmentDuration,
                   payableDoctorFee: 0, 
                   doctorDiscountType: "", 
                   doctorDiscountAmount: 0, 
                   medicine_name: "",
                   advise: "",
+                  totalPayableAmount: "",
                   gender: "",
                   mobile_number:0,
                   age: 0,
@@ -972,4 +1106,4 @@ console.log(treatments)
   );
 };
 
-export default AddAppointment;
+export default EditAppointment;

@@ -12,8 +12,11 @@ interface Prescription {
 }
 const InvoiceList: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
-
-useEffect(() => {
+  const [morePrescriptions, setMorePrescriptions] = useState<Prescription[]>(
+    []
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
     const prescriptionList = async () => {
       try {
         const response = await fetch("/api/prescription/prescriptionlist");
@@ -21,7 +24,7 @@ useEffect(() => {
           throw new Error("Failed to fetch treatments");
         }
         const data = await response.json();
-        
+
         setPrescriptions(data.prescriptionlist);
       } catch (error) {
         console.error("Error fetching treatments:", error);
@@ -30,12 +33,12 @@ useEffect(() => {
 
     prescriptionList();
   }, []);
-// console.log(prescriptions)
+  // console.log(prescriptions)
 
   // console.log("allTreatment", allTreatment);
   const [filteredPrescriptions, setFilteredPrescriptions] =
     useState<Prescription[]>(prescriptions);
-// console.log('FilterPrescription',filteredPrescriptions)
+  // console.log('FilterPrescription',filteredPrescriptions)
   // search and pagination
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -68,7 +71,9 @@ useEffect(() => {
   useEffect(() => {
     const result: Prescription[] = prescriptions.filter(
       (prescription) =>
-        prescription.patient_name.toLowerCase().includes(search.toLowerCase()) ||
+        prescription.patient_name
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
         prescription.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
         prescription.prescription_id.toString().includes(search) ||
         prescription.mobile_number.toString().includes(search) ||
@@ -87,7 +92,19 @@ useEffect(() => {
     }
   };
 
+  const handleView = (id: number) => {
+    const fetchPatient = async () => {
+      const res = await fetch(
+        `/api/prescription/prescription-by-patient-id/${id}`
+      );
+      const newPres = await res.json();
+      setMorePrescriptions(newPres.prescriptions);
+      console.log(newPres.prescriptions);
+    };
+    setIsOpen(true);
 
+    fetchPatient();
+  };
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
@@ -147,7 +164,7 @@ useEffect(() => {
           </div>
         </div>
 
-        <div className="trezo-card-content">
+        <div className="trezo-card-content relative">
           <div className="table-responsive overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -161,7 +178,7 @@ useEffect(() => {
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Patient Name
                   </th>
-                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Mobile Number
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
@@ -214,18 +231,22 @@ useEffect(() => {
 
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
-                          <Link href={`/doctor/view-prescription/${treatment.prescription_id}`}>
-                          <button
-                            type="button"
-                            className="text-primary-500 leading-none custom-tooltip"
-                            // onClick={() => setOpen(true)}
+                          <Link
+                            href={`/doctor/view-prescription/${treatment.prescription_id}`}
                           >
-                            <i className="material-symbols-outlined !text-md">
-                              visibility
-                            </i>
-                          </button>
+                            <button
+                              type="button"
+                              className="text-primary-500 leading-none custom-tooltip"
+                              // onClick={() => setOpen(true)}
+                            >
+                              <i className="material-symbols-outlined !text-md">
+                                visibility
+                              </i>
+                            </button>
                           </Link>
-                          <Link href={`/doctor/edit-prescription/${treatment.prescription_id}`}>
+                          <Link
+                            href={`/doctor/edit-prescription/${treatment.prescription_id}`}
+                          >
                             <button
                               type="button"
                               className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
@@ -235,6 +256,13 @@ useEffect(() => {
                               </i>
                             </button>
                           </Link>
+                          <button
+                            onClick={() => handleView(treatment.patient_id)}
+                          >
+                            <span className="material-symbols-outlined !text-md">
+                              history
+                            </span>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -251,6 +279,7 @@ useEffect(() => {
                 )}
               </tbody>
             </table>
+
             <div className="pt-[12.5px] sm:flex sm:items-center justify-between">
               <p className="!mb-0 !text-xs">
                 Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
@@ -314,6 +343,129 @@ useEffect(() => {
             </div>
           </div>
         </div>
+        {/* modal open here */}
+        {isOpen && morePrescriptions && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-8xl relative ">
+              <button
+                className="absolute top-[-8px] right-[0] text-xl text-gray-500 hover:text-black"
+                onClick={() => setIsOpen(false)}
+              >
+                &times;
+              </button>
+              {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
+
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Prescription ID
+                    </th>
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Patient ID
+                    </th>
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Patient Name
+                    </th>
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Mobile Number
+                    </th>
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Prescription Date
+                    </th>
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Doctor&apos; Name
+                    </th>
+
+                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="text-black dark:text-white">
+                  {morePrescriptions.length > 0 ? (
+                    morePrescriptions?.map((treatment) => (
+                      <tr key={treatment.prescription_id}>
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <span className="block text-xs font-semibold text-primary-500">
+                            {treatment.prescription_id}
+                          </span>
+                        </td>
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <span className="block text-xs font-semibold text-primary-500">
+                            {treatment.patient_id}
+                          </span>
+                        </td>
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <span className="block text-xs font-semibold text-primary-500">
+                            {treatment.patient_name}
+                          </span>
+                        </td>
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <span className="block text-xs font-semibold text-primary-500">
+                            {treatment.mobile_number}
+                          </span>
+                        </td>
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                            {treatment.prescribed_at}
+                          </span>
+                        </td>
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                            {treatment.doctor_name}
+                          </span>
+                        </td>
+
+                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                          <div className="flex items-center gap-[9px]">
+                            <Link
+                              href={`/doctor/view-prescription/${treatment.prescription_id}`}
+                            >
+                              <button
+                                type="button"
+                                className="text-primary-500 leading-none custom-tooltip"
+                                // onClick={() => setOpen(true)}
+                              >
+                                <i className="material-symbols-outlined !text-md">
+                                  visibility
+                                </i>
+                              </button>
+                            </Link>
+                            <Link
+                              href={`/doctor/edit-prescription/${treatment.prescription_id}`}
+                            >
+                              <button
+                                type="button"
+                                className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
+                              >
+                                <i className="material-symbols-outlined !text-md">
+                                  edit
+                                </i>
+                              </button>
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="text-center py-4 text-gray-500 dark:text-gray-400"
+                      >
+                        No prescriptions available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          // view modal
+        )}
+        {/* modal close here */}
       </div>
     </>
   );
