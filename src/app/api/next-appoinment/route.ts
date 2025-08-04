@@ -26,6 +26,7 @@ export async function GET(req: Request) {
         patient_name: string;
         patient_mobile_number: string | null;
         patient_email: string | null;
+        next_visit_date: string;
         prescribed_doctor_name: string;
         prescribed_at: Date;
       }[]
@@ -33,6 +34,7 @@ export async function GET(req: Request) {
       SELECT 
         p.prescription_id,
         p.patient_id,
+        p.next_visit_date,
         pat.patient_name,
         pat.mobile_number AS patient_mobile_number,
         pat.email AS patient_email,
