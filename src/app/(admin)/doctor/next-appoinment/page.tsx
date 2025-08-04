@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Prescription {
-  prescription_id: number;
+  prescription_id: number ;
   patient_id: number;
   patient_name: string;
 
@@ -23,7 +23,6 @@ const NextAppointmentList: React.FC = () => {
     []
   );
   // const [isOpen, setIsOpen] = useState(false);
-
   const [selectedDate, setSelectedDate] = useState<string>("");
   // Helper function to format Date objects to YYYY-MM-DD string for display
   const formatDateToYYYYMMDD = (date: Date | null): string => {
@@ -80,8 +79,6 @@ const NextAppointmentList: React.FC = () => {
   fetchNextAppointments();
 }, [selectedDate]);
 
-
-
     useEffect(() => {
     setFilteredPrescriptions(prescriptions);
   }, [prescriptions]);
@@ -104,26 +101,19 @@ const NextAppointmentList: React.FC = () => {
   );
 
 
-   const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const order = e.target.value;
-    // console.log(order);
-    // change sort logic to use next_visit_date
-    const sortedPrescriptions = [...filteredPrescriptions].sort((a, b) => {
-      // Handle cases where next_visit_date might be null
-      const dateA = a.next_visit_date ? a.next_visit_date.getTime() : 0; // If null, treat as earlier (0 timestamp)
-      const dateB = b.next_visit_date ? b.next_visit_date.getTime() : 0;
-
-      if (order === "ascending") {
-        return dateA - dateB;
-      }
-      return dateB - dateA;
-    });
-
-    setFilteredPrescriptions(sortedPrescriptions);
-    // console.log(sortedPrescriptins);
-  };
-
-
+const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const type = e.target.value;
+  if (type === "new") {
+    // Show only new patients (no prescription_id)
+    setFilteredPrescriptions(prescriptions.filter(p => !p.prescription_id));
+  } else if (type === "old") {
+    // Show only old patients (has prescription_id)
+    setFilteredPrescriptions(prescriptions.filter(p => !!p.prescription_id));
+  } else {
+    // Show all
+    setFilteredPrescriptions(prescriptions);
+  }
+};
 
   useEffect(() => {
     const result: Prescription[] = prescriptions.filter(
@@ -212,7 +202,9 @@ const NextAppointmentList: React.FC = () => {
             </Link>
           </li>
 
-         
+          <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
+            Doctor
+          </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
             Next Appointment List
@@ -242,9 +234,9 @@ const NextAppointmentList: React.FC = () => {
                         onChange={handleSort}
                         className="px-5 bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
                       >
-                          <option value="">Sort by Next Appointment Date</option>
-                          <option value="ascending">Ascending</option>
-                          <option value="descending">Descending</option>
+                        <option value="">Sort by Patient Type</option>
+                        <option value="new">New</option>
+                        <option value="old">Old</option>
                       </select>
 
               </div>
