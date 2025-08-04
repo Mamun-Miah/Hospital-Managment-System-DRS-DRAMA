@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import Prescriptions from "@/components/Doctor/Prescriptions";
 "use client";
 import Image from "next/image";
-// import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
-// import PrescriptionPDF from "./prescriptionpdf";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-
+import { useRef, useCallback } from "react";
+import html2pdf from "html2pdf.js";
 
 
 export interface Prescription {
@@ -30,9 +30,9 @@ export interface Patient {
   city: string;
   mobile_number: string;
   gender: "Male" | "Female" | "Other";
-  age: string; // or number if age is numeric
+  age: string; 
   blood_group: string;
-  weight: string; // or number if weight is numeric
+  weight: string; 
 }
 
 export interface Doctor {
@@ -65,30 +65,155 @@ export interface TreatmentItem {
   duration_months: number;
 }
 
+interface DownloadPDFButtonProps {
+  prescriptionRef: React.MutableRefObject<HTMLDivElement | null>;
+  prescriptionsData: Prescription | null;
+}
+
+function DownloadPDFButton({
+  prescriptionRef,
+  prescriptionsData,
+}: DownloadPDFButtonProps) {
+  const handleDownloadPDF = useCallback(() => {
+    if (!prescriptionRef.current) return;
+
+    const element = prescriptionRef.current;
+
+    const patientName = prescriptionsData?.patient.patient_name || "prescription";
+    const dateStr = prescriptionsData?.prescribed_at
+      // ? new Date(prescriptionsData.prescribed_at).toISOString().split("T")[0]
+      // : new Date().toISOString().split("T")[0];
+    const filename = `${patientName.replace(/\s+/g, "_")}_${dateStr}.pdf`;
+
+    const opt = {
+      margin: [0, 10, 10, 10], // mm
+      filename,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
+    };
+
+    // Disable the button visually could be added here if desired
+    try {
+      html2pdf()
+        .set(opt)
+        .from(element)
+        .save();
+    } catch (err: any) {
+      console.error("PDF generation failed:", err);
+    }
+  }, [prescriptionRef, prescriptionsData]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleDownloadPDF}
+      className="font-medium inline-block transition-all rounded-md md:text-md py-[8px] px-[20px] md:px-[22px] bg-secondary-500 text-white hover:bg-secondary-400 mx-[8px]"
+      aria-label="Download Prescription as PDF"
+    >
+      <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+        <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+          download
+        </i>
+        Download PDF
+      </span>
+    </button>
+  );
+}
+
 
 
 
 export default function Page() {
 
-const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null)
-
+const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null);
+const prescriptionRef = useRef<HTMLDivElement | null>(null);
 
 const params = useParams();
 const prescriptionId = params?.id;
 
-  const handlePrint = async () => {
-    // const blob = await pdf(<PrescriptionPDF data={prescriptionsData} />).toBlob();
-    // const blobURL = URL.createObjectURL(blob);
-    // const printWindow = window.open(blobURL);
-    // printWindow?.addEventListener("load", () => {
-    //   printWindow.focus();
-    //   // printWindow.print();
-    // });
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+const handlePrint = async () => {
+  if (!prescriptionRef.current) return;
+  const element = prescriptionRef.current;
+
+  
+  const opt = {
+    margin: [0, 10, 10, 10], // in mm
+    filename: "temp.pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+    },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
+    pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
   };
 
+  try {
+    // Generate the PDF (jsPDF instance)
+    const worker = html2pdf().set(opt).from(element);
+     
+    const pdf = (await worker.toPdf().get("pdf")) as { output: (type: string) => Blob }; // jsPDF instance
+    const blob = pdf.output("blob");
 
-  const [loading, setLoading] = useState(false);
-const [error, setError] = useState<string | null>(null);
+    const blobUrl = URL.createObjectURL(blob);
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Popup blocked. Please allow popups to print the prescription.");
+      return;
+    }
+
+    //a  HTML wrapper that embeds the PDF and triggers print
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Prescription</title>
+          <style>
+            html,body { margin:0; padding:0; height:100%; }
+            iframe { border:none; width:100%; height:100%; }
+          </style>
+        </head>
+        <body>
+          <iframe id="pdfFrame" src="${blobUrl}"></iframe>
+          <script>
+            const iframe = document.getElementById("pdfFrame");
+            iframe.onload = function() {
+              // Give browser a moment to render, then invoke print on iframe's content
+              setTimeout(() => {
+                try {
+                  iframe.contentWindow.focus();
+                  iframe.contentWindow.print();
+                } catch (e) {
+                  // fallback: print parent window
+                  window.print();
+                }
+              }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  } catch (err) {
+    console.error("Print PDF generation failed:", err);
+    // fallback to native print if needed
+    if (document.fonts) {
+      document.fonts.ready.then(() => window.print());
+    } else {
+      window.print();
+    }
+  }
+};
+
 
 useEffect(() => {
   if (!prescriptionId) return;
@@ -117,7 +242,7 @@ useEffect(() => {
 if (loading) return <p>Loading prescription...</p>;
 if (error) return <p>Error: {error}</p>;
 if (!prescriptionsData || !prescriptionsData.patient) {
-  return <div>Loading...</div>; // or any loading state you want
+  return <div>Loading...</div>; 
 }
 
 
@@ -132,6 +257,7 @@ console.log('prescriptionsData',prescriptionsData)
           <button
             type="button"
             onClick={handlePrint}
+            // className="font-medium inline-block transition-all rounded-md md:text-md py-[8px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 mx-[8px]"
             className="font-medium inline-block transition-all rounded-md md:text-md py-[8px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 mx-[8px]"
           >
             <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
@@ -141,45 +267,50 @@ console.log('prescriptionsData',prescriptionsData)
               Print
             </span>
           </button>
+          <DownloadPDFButton
+            prescriptionRef={prescriptionRef}
+            prescriptionsData={prescriptionsData}
+          />
 
-          {/* <PDFDownloadLink
-            document={<PrescriptionPDF data={prescriptionsData} />}
-            fileName="prescription.pdf"
-            className="font-medium inline-block transition-all rounded-md md:text-md py-[8px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 mx-[8px]"
-          >
-            {({ loading }) =>
-              loading ? (
-                "Generating PDF..."
-              ) : (
-                <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
-                  <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                    download
-                  </i>
-                  Download
-                </span>
-              )
-            }
-          </PDFDownloadLink> */}
+
         </div>
       </div>
 
       <div
         id="prescription"
+        ref={(el) => { prescriptionRef.current = el; }}
         className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md"
       >
+
         <div className="trezo-card-content">
           <div className="sm:flex justify-between">
             <div className="mt-8">
-              <h4 className="!mb-[7px] !text-[16px] !font-semibold">
-               Doctor Name: {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
+              <h4 className="!mb-[7px] !text-[20px] !font-semibold">
+               {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
               </h4>
               <span className="block md:text-md mt-[5px]">
              {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.designation}
               </span>
-              {/* <span className="block md:text-md mt-[5px] text-black dark:text-white">
-               {prescriptionsData?.doctor?.phone_number ?? ""}
-              </span> */}
-            </div>
+                  <div className="sm:flex justify-between mt-[10px]">
+                    <ul className="mb-[7px] sm:mb-0">
+                      <li className="mb-[7px] last:mb-0">
+                        <span className="text-black dark:text-white">{prescriptionsData?.doctor?.specialization?? ""}</span>
+                      </li>
+                      {/* <li className="mb-[7px] last:mb-0">
+                        Degree:{" "}
+                        <span className="text-black dark:text-white">{prescriptionsData?.doctor?.doctor_degree?? ""}</span>
+                      </li>
+                      <li className="mb-[7px] last:mb-0">
+                        Address:{" "}
+                        <span className="text-black dark:text-white">{prescriptionsData?.patient.city?? ""}</span>
+                      </li>
+                      <li className="mb-[7px] last:mb-0">
+                        Mobile Number:{" "}
+                        <span className="text-black dark:text-white">{prescriptionsData?.patient.mobile_number?? ""}</span>
+                      </li> */}
+                    </ul>
+                  </div>
+            </div>  
 
             <div className="mt-[20px] sm:mt-0">
               <Image
@@ -206,7 +337,6 @@ console.log('prescriptionsData',prescriptionsData)
           </div>
 
           <div className="h-[1px] bg-gray-100 dark:bg-[#172036] my-[20px]"></div>
-
           <span className="block font-semibold text-black dark:text-white text-[20px]">
             Patient Info:
           </span>
@@ -256,7 +386,7 @@ console.log('prescriptionsData',prescriptionsData)
             </div>
           </div>
 
-          <span className="block mt-16 font-semibold text-black dark:text-white text-[20px]  mb-3">
+          <span className="block mt-6 font-semibold text-black dark:text-white text-[20px]  mb-2">
             Treatments:
           </span>
 
@@ -291,7 +421,7 @@ console.log('prescriptionsData',prescriptionsData)
 
             </div>
           </div>
-          <span className="block font-semibold text-black dark:text-white text-[20px] mt-[10px] mb-2">
+          <span className="block font-semibold text-black dark:text-white text-[20px] mt-[0px] mb-2">
             Medicines:
           </span>
 
@@ -358,8 +488,8 @@ console.log('prescriptionsData',prescriptionsData)
             </li>
           </ul>
 
-          <div className="max-w-[255px] ltr:pr-[25px] rtl:pl-[25px] ltr:md:ml-auto rtl:md:mr-auto mt-[20px] md:mt-[25px]">
-            {/* <div className="text-center mb-[15px] md:mb-[20px] pb-[5px] border-b border-gray-100 dark:border-[#15203c]">
+          {/* <div className="max-w-[255px] ltr:pr-[25px] rtl:pl-[25px] ltr:md:ml-auto rtl:md:mr-auto mt-[20px] md:mt-[25px]">
+            <div className="text-center mb-[15px] md:mb-[20px] pb-[5px] border-b border-gray-100 dark:border-[#15203c]">
               <Image
                 src="/images/signature.svg"
                 className="inline-block dark:invert"
@@ -367,16 +497,16 @@ console.log('prescriptionsData',prescriptionsData)
                 width={77}
                 height={38}
               />
-            </div> */}
+            </div>
 
-            {/* <span className="block text-black dark:text-white font-semibold">
-              {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
+            <span className="block text-black dark:text-white font-semibold">
+              {prescriptionsData?.doctor?.doctor_name ?? "N/A"}
             </span>
 
             <span className="block text-xs mt-[5px]">
               MBBS, MD, MS (Reg No: 321456)
-            </span> */}
-          </div>
+            </span>
+          </div> */}
         </div>
       </div>
     </>
