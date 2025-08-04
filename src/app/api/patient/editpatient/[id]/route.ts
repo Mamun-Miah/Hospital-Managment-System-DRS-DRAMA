@@ -24,6 +24,7 @@ export async function PATCH(
       gender: data.gender,
       address_line1: data.address_line1,
       age: data.age,
+      set_next_appoinmnet:data.set_next_appoinmnet ? new Date(data.set_next_appoinmnet) : undefined,
       blood_group: data.blood_group,
       weight: data.weight,
       city: data.city,

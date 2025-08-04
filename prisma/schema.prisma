@@ -32,6 +32,7 @@ model Patient {
   address_line1           String?        @db.VarChar(255)
   city                    String?        @db.VarChar(100)
   state_province          String?        @db.VarChar(100)
+  set_next_appoinmnet     DateTime?      @db.Date
   postal_code             String?        @db.VarChar(20)
   age                     String?        @db.VarChar(20)
   blood_group             String?        @db.VarChar(20)

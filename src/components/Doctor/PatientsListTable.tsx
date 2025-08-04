@@ -18,6 +18,7 @@ interface Patient {
     blood_group:string;
     weight:string;
   address_line1: string;
+  set_next_appoinmnet: string;
   city: string;
   state_province: string;
   postal_code: string;
@@ -202,21 +203,19 @@ const handleViewClick = async (id: number) => {
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Phone No.
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Assigns Doctor
-                  </th>
+                 
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Last Visit
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    App
+                    Next Appoinmnet
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Due Amount
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Paid Amount
-                  </th>
+                  </th> */}
 
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Gender
@@ -280,31 +279,35 @@ const handleViewClick = async (id: number) => {
                           {patient.mobile_number}
                         </span>
                       </td>
+                      
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                         {patient?.created_at && (
+                            new Date(patient.created_at)
+                              .toLocaleDateString('en-GB') // This gives you DD/MM/YYYY
+                              .replace(/\//g, '-')         // Replace slashes with dashes
+                          )}
+                        </span>
+                      </td>
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
+                         {patient?.set_next_appoinmnet && (
+                            new Date(patient.set_next_appoinmnet)
+                              .toLocaleDateString('en-GB') // This gives you DD/MM/YYYY
+                              .replace(/\//g, '-')         // Replace slashes with dashes
+                          )}
+                        </span>
+                      </td>
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                          ---
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         {new Date(patient?.created_at).toLocaleDateString()}
-                        </span>
-                      </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                          ---
                         </span>
-                      </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         ---
-                        </span>
-                      </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                         ---
-                        </span>
-                      </td>
+                      </td> */}
                       
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
@@ -459,19 +462,27 @@ const handleViewClick = async (id: number) => {
               <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
               <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
               <p><strong>Age:</strong> {selectedPatient?.age}</p>
-              <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
-              <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
-              <p><strong>State:</strong> {selectedPatient?.state_province}</p>
+              
           </div>
           <div>
-            
+            <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
+              <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
+              <p><strong>State:</strong> {selectedPatient?.state_province}</p>
             <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
-            <p><strong>Assigns Doctor:</strong> DR. X*</p>
-            <p><strong>Last Visit:</strong> {new Date(selectedPatient?.created_at).toLocaleDateString()}</p>
-            <p><strong>Next Visit:</strong> May 2024*</p>
-            <p><strong>Treatment:</strong> DR. X*</p>
+            {/* <p><strong>Assigns Doctor:</strong> DR. X*</p> */}
+            <p><strong>Last Visit:</strong> {selectedPatient?.created_at && (
+                            new Date(selectedPatient.created_at)
+                              .toLocaleDateString('en-GB') // This gives you DD/MM/YYYY
+                              .replace(/\//g, '-')         // Replace slashes with dashes
+                          )}</p>
+            <p><strong>Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && (
+                            new Date(selectedPatient.set_next_appoinmnet)
+                              .toLocaleDateString('en-GB') // This gives you DD/MM/YYYY
+                              .replace(/\//g, '-')         // Replace slashes with dashes
+                          )}</p>
+            {/* <p><strong>Treatment:</strong> DR. X*</p>
             <p><strong>Due Amount:</strong> 50000*</p>
-            <p><strong>Paid Amount:</strong> 50000*</p>
+            <p><strong>Paid Amount:</strong> 50000*</p> */}
             <p><strong>Status:</strong> {selectedPatient?.status}</p>
           </div>
         </div>

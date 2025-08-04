@@ -15,6 +15,7 @@ interface Patient {
     blood_group:string;
     weight:string;
   address_line1: string;
+  set_next_appoinmnet:string;
   city: string;
   state_province: string;
   postal_code: string;
@@ -70,7 +71,7 @@ const ViewPatientDetails: React.FC = () => {
 
     fetchPatient();
   }, [patientId]);
-
+console.log(formData)
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -302,6 +303,19 @@ const ViewPatientDetails: React.FC = () => {
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
+              <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Set Appoinmnet Date
+              </label>
+              <input
+                name="set_next_appoinmnet"
+                type="date"
+                placeholder="Enter Next Appoinment"
+                value={formData.set_next_appoinmnet?.slice(0, 10) || ""}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
                   Appoinment Status
