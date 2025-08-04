@@ -57,12 +57,11 @@ const InvoiceList: React.FC = () => {
     const order = e.target.value;
     // console.log(order);
     const sortedPrescriptins = currentPrescriptions.sort((a, b) => {
-      const dateA = new Date(a.prescribed_at).getTime();
-      const dateB = new Date(b.prescribed_at).getTime();
+
       if (order === "ascending") {
-        return dateA - dateB;
+        return a.prescription_id - b.prescription_id;
       }
-      return dateB - dateA;
+      return b.prescription_id - a.prescription_id;
     });
 
     setFilteredPrescriptions(sortedPrescriptins);
@@ -155,7 +154,7 @@ const InvoiceList: React.FC = () => {
                   onChange={handleSort}
                   className="px-5 bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
                 >
-                  <option value="">--Sort by date--</option>
+                  <option value="">Sort by Prescription ID</option>
                   <option value="ascending">Ascending</option>
                   <option value="descending">Descending</option>
                 </select>

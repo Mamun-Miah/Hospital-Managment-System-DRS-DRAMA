@@ -20,7 +20,7 @@ export async function GET() {
         FROM Prescription
         GROUP BY patient_id
       ) latest ON p.patient_id = latest.patient_id AND p.prescribed_at = latest.latest_date
-      
+      ORDER BY p.prescription_id DESC
     `;
     
 
