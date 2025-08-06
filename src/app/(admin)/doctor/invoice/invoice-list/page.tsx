@@ -276,7 +276,7 @@ const InvoiceList: React.FC = () => {
                               visibility
                             </i>
                           </button>
-                          <Link href="/doctor/edit-invoice">
+                          <Link href={`/doctor/invoice/create-invoice/${treatment.invoice_id}`}>
                             <button
                               type="button"
                               className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"

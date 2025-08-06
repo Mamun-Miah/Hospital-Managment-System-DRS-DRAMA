@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
-    // Create prescription
+    // Create prescription with doctor discount info (moved fields)
     const prescription = await prisma.prescription.create({
       data: {
         patient_id,
@@ -42,27 +42,20 @@ export async function POST(req: NextRequest) {
         is_prescribed: "Yes",
         advise: advise,
         prescribed_doctor_name: doctor_name,
+
+        //  Moved fields
+        doctor_discount_type:
+          doctorDiscountType === "Flat Rate"
+            ? "Flat"
+            : doctorDiscountType === "Percentage"
+            ? "Percentage"
+            : "None",
+        doctor_discount_value: parseFloat(doctorDiscountAmount || "0"),
+        payable_doctor_amount: parseFloat(payableDoctorFee || "0"),
       },
     });
 
     const prescriptionId = prescription.prescription_id;
-
-    // Save doctor info
-    if (doctor_fee || doctorDiscountAmount) {
-      await prisma.prescriptionItem.create({
-        data: {
-          prescription_id: prescriptionId,
-          doctor_discount_type:
-            doctorDiscountType === "Flat Rate"
-              ? "Flat"
-              : doctorDiscountType === "Percentage"
-              ? "Percentage"
-              : "None",
-          doctor_discount_value: parseInt(doctorDiscountAmount || "0"),
-          payable_doctor_amount: parseInt(payableDoctorFee || "0"),
-        },
-      });
-    }
 
     // Save medicines
     if (Array.isArray(medicines)) {
@@ -147,7 +140,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-
+    // Update patient status
     await prisma.patient.update({
       where: { patient_id: patient_id },
       data: {
