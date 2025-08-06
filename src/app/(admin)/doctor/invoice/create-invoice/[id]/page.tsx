@@ -1,245 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import Select, { StylesConfig, GroupBase } from "react-select";
+import { useState } from "react";
 
-// types
-type OptionType = {
-  label: string;
-  value: string;
-};
 
-type Patient = {
-  patient_name: string;
-  [key: string]: any;
-};
-
-const treatments = [
-  {
-    treatmentName: "Psychotherapy Counseling",
-    duration: "12 Sessions",
-    treatmentCost: 9600,
-  },
-  {
-    treatmentName: "Weight Loss Program",
-    duration: "3 Months",
-    treatmentCost: 18000,
-  },
-  {
-    treatmentName: "Cardiac Rehab",
-    duration: "2 Months",
-    treatmentCost: 22000,
-  },
-  {
-    treatmentName: "Acupuncture Therapy",
-    duration: "10 Sessions",
-    treatmentCost: 5000,
-  },
-];
-
-const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
-  control: (base: any, state: any) => ({
-    ...base,
-    maxHeight: "10px",
-    borderRadius: "0.375rem",
-    color: "black",
-    fontSize: "14px",
-    backgroundColor: "white",
-    borderColor: state.isFocused ? "#6366f1" : "#e5e7eb",
-    paddingLeft: "10px",
-    boxShadow: "none",
-    outline: "none",
-    width: "210px",
-    transition: "all 0.2s ease-in-out",
-    "&:hover": {
-      borderColor: "#6366f1",
-    },
-  }),
-  singleValue: (base: any) => ({
-    ...base,
-    color: "black",
-  }),
-  placeholder: (base: any) => ({
-    ...base,
-    color: "#6b7280",
-  }),
-  menu: (base: any) => ({
-    ...base,
-    backgroundColor: "white",
-    zIndex: 50,
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    backgroundColor: state.isFocused
-      ? "#ede9fe"
-      : state.isSelected
-      ? "#7c3aed"
-      : "white",
-    color: state.isSelected ? "white" : "black",
-    cursor: "pointer",
-    padding: 10,
-  }),
-};
 
 const CreateInvoice: React.FC = () => {
-  const [patients, setPatients] = useState<OptionType[]>([]);
-  // const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const [patientData, setPatientData] = useState<Patient[]>([]);
-
-  const [formData, setFormData] = useState({
-    patient_id: 0,
-    invoiceNumber: "",
-    patient_name: "",
-    doctorName: "John Doe",
-    totalCost: 0,
-    doctorFee: "",
-    treatmentName: "Radio Therapy",
-    treatmentCost: 200,
-    treatmentSession: 0,
-    treatmentDueSession: 0,
-    totalDueAmount: 300,
-    discountAmount: 0,
-    discountType: "",
-    paidAmount: "",
-    paymentType: "",
-    paymentMethod: "",
-    paymentDate: "",
-  });
-
-  const [paidAmount, setPaidAmount] = useState<number>(0);
-
-  // costs
-  const doctorFee: number = 2000;
-  const previousDue = 1800;
-  const totalTreatmentCost = treatments.reduce(
-    (curr, treatment) => curr + treatment.treatmentCost,
-    0
-  );
-  const totalCost = doctorFee + totalTreatmentCost + previousDue;
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handlePatientChange = async (patient_name: string) => {
-    const found = patientData.find((p) => p.patient_name === patient_name);
-
-    if (!found) {
-      alert("Patient not found");
-      return;
-    }
-    // setPatientId(found.patient_id)
-    const patient_id = found.patient_id;
-
-    try {
-      const res = await fetch(`/api/invoice/create-invoice/${patient_id}`);
-
-      if (!res.ok) throw new Error("Failed to create invoice");
-
-      const result = await res.json();
-      console.log("Invoice created:", result);
-
-      const patientId = patient_id;
-      const treatmentName =
-        result.getInvoiceData?.[0]?.items?.[0]?.treatment?.treatment_name || "";
-      const doctorName = result.getInvoiceData?.[0]?.doctor?.doctor_name || "";
-      const doctorFee = result.getInvoiceData?.[0]?.doctor?.doctor_fee || "";
-      const treatmentCost =
-        result.getInvoiceData?.[0]?.items?.[0]?.treatment?.total_cost || "";
-      const duration_months =
-        result.getInvoiceData?.[0]?.items?.[0]?.treatment?.duration_months ||
-        "";
-      const totalCost = result.getInvoiceData[0]?.total_cost || "";
-      const patient_name = found.patient_name;
-      const treatmentDueSession = duration_months - 1;
-      const discount_value =
-        result.getInvoiceData?.[0]?.items?.[0]?.discount_value || 0;
-      const discount_type =
-        result.getInvoiceData?.[0]?.items?.[0]?.discount_type || 0;
-
-      setFormData((prev) => ({
-        ...prev,
-        patient_id: patientId,
-        treatmentName: treatmentName,
-        doctorName: doctorName,
-        doctorFee: doctorFee,
-        discountAmount: discount_value,
-        treatmentCost: treatmentCost,
-        treatmentSession: duration_months,
-        treatmentDueSession: treatmentDueSession > 0 ? treatmentDueSession : 0,
-        totalCost: totalCost,
-        patient_name: patient_name,
-        discountType: discount_type,
-      }));
-    } catch (error) {
-      console.error("Error creating invoice:", error);
-    }
-  };
-
-  // console.log(selectedPatientId)
-
-  useEffect(() => {
-    // generate invoice number
-    const date = new Date();
-    const year = `${date.getFullYear()}-${date.getMonth()}`;
-    const year2 = date.getFullYear();
-    const random = Math.floor(1000 + Math.random() * 9000); // Generates a 4-digit random number
-    const invoiceNumber = `INV-${year}-${random}`;
-    // current date
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const today = `${day}-${month}-${year2}`;
-
-    const fetchPatients = async () => {
-       setLoading(true);
-      try {
-        const res = await fetch("/api/patient/patientlist");
-        const data = await res.json();
-
-        setPatientData(data);
-        // extract patient_name
-        const filteredPatients: OptionType[] = data.map((p: any) => ({
-          value: p.patient_name.toLowerCase().replace(/\s+/g, "_"),
-          label: p.patient_name,
-        }));
-
-        setPatients(filteredPatients);
-        setFormData({
-          patient_id: 0,
-          invoiceNumber: invoiceNumber,
-          patient_name: "",
-          doctorName: "",
-          doctorFee: "",
-          treatmentName: "",
-          totalCost: 0,
-          treatmentCost: 0,
-          treatmentSession: 0,
-          treatmentDueSession: 0,
-          totalDueAmount: 0,
-          paidAmount: "",
-          discountAmount: 0,
-          discountType: "",
-          paymentType: "",
-          paymentMethod: "",
-          paymentDate: today,
-        });
-        // console.log('Form Data', formData)
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching patient list:", error);
-      }
-    };
-
-    fetchPatients();
-  }, []);
+const [formData, setFormData] = useState([])
+const treatments = []
+const totalTreatmentCost = []
 
   return (
     <>
@@ -285,24 +56,24 @@ const CreateInvoice: React.FC = () => {
               />
             </div>
             <p className="md:text-md text-black dark:text-white mt-5">
-              Invoice Number : {formData.invoiceNumber}
+              Invoice Number : 
             </p>
             <p className="md:text-md text-black dark:text-white">
-              Invoice Date : {formData.paymentDate}
+              Invoice Date :
             </p>
           </div>
 
           <div className="mt-[20px] sm:mt-0">
             <div className="flex items-center gap-3 md:text-md mt-[5px] dark:text-white">
-              <p className=" dark:text-white font-medium mt-4">Patient:</p>
+              <p className=" dark:text-white font-medium mt-4">Patient: Sako Vai</p>
 
-              <Select
+              {/* <Select
                 options={patients}
                 onChange={(patient_name) =>
                   handlePatientChange(patient_name?.label ?? "")
                 }
                 styles={customStyles}
-              />
+              /> */}
             </div>
             <p className="md:text-md mt-[5px]">
               Patient Id: 01

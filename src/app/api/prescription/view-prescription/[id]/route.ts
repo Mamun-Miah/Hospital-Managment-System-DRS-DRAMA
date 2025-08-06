@@ -19,6 +19,9 @@ export async function GET(
         total_cost: true,
         patient_id: true,
         doctor_id: true,
+        doctor_discount_type: true,
+          doctor_discount_value: true,
+          payable_doctor_amount: true,
         prescribed_doctor_name: true,
         next_visit_date: true,
         advise: true,
@@ -43,9 +46,6 @@ export async function GET(
         items: {
           select: {
             item_id: true,
-            doctor_discount_type: true,
-            doctor_discount_value: true,
-            payable_doctor_amount: true,
             dose_morning: true,
             dose_mid_day: true,
             dose_night: true,

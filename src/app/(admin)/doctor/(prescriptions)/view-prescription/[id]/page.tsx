@@ -18,6 +18,9 @@ export interface Prescription {
   doctor_id: number;
   patient: Patient;
   doctor: Doctor;
+  doctor_discount_type: "Flat" | "Percentage" | "None" | null;
+  doctor_discount_value: number | null;
+  payable_doctor_amount: number | null;
   prescribed_doctor_name: string;
   advise: string | null;
   next_visit_date: string | null;
@@ -45,9 +48,7 @@ export interface Doctor {
 export interface PrescriptionItem {
   item_id: number;
   
-  doctor_discount_type: "Flat" | "Percentage" | "None" | null;
-  doctor_discount_value: number | null;
-  payable_doctor_amount: number | null;
+  
   dose_morning: string | null;
   dose_mid_day: string | null;
   dose_night: string | null;
