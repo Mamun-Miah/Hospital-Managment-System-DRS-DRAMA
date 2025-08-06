@@ -1,384 +1,3 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useParams } from "next/navigation";
-
-
-
-// interface PatientInfo {
-//   patient_id: number;
-//   patient_name: string;
-//   email: string;
-//   mobile_number: string;
-//   gender: string;
-//   age: string;
-//   blood_group: string;
-//   weight: string;
-//   emergency_contact_phone: string;
-//   image_url?: string;
-// }
-
-// interface PrescriptionItem {
-//   item_id: number;
-//   medicine_name: string;
-//   dose_morning: string;
-//   dose_mid_day: string;
-//   dose_night: string;
-//   duration_days: number;
-// }
-
-// interface TreatmentItem {
-//   treatment_name: string;
-//   duration_months: number;
-//   payable_treatment_amount: number;
-//   discount_type: string;
-//   discount_value: number;
-// }
-
-// interface Prescription {
-//   prescription_id: number;
-//   prescribed_at: string;
-//   total_cost: number;
-//   prescribed_doctor_name: string;
-//   advise: string;
-//   next_visit_date: string;
-//   medicine_items: PrescriptionItem[];
-//   treatment_items: TreatmentItem[];
-// }
-
-// interface PatientHistoryResponse {
-//   patient: PatientInfo;
-//   prescriptions: Prescription[];
-// }
-
-// export default function Page() {
-//   const { id } = useParams<{ id: string }>();
-//   const [data, setData] = useState<PatientHistoryResponse | null>(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchHistory = async () => {
-//       const res = await fetch(`/api/doctor/view-patient-history/${id}`);
-//       const result = await res.json();
-//       setData(result);
-//       setLoading(false);
-//     };
-//     fetchHistory();
-//   }, [id]);
-
-//   if (loading) return <div className="p-6">Loading...</div>;
-//   if (!data) return <div className="p-6">No history found.</div>;
-
-//   const { patient, prescriptions } = data;
-
-//   return (
-//     <div className="p-6 space-y-6">
-//       <h2 className="text-2xl font-bold">Patient Medical History {patient.patient_name} </h2>
-     
-//       {/* Patient Info */}
-//       <div className="border p-4 rounded bg-white shadow">
-//         <h3 className="text-xl font-semibold mb-2">Patient Information</h3>
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
-//           {/* <p><strong>Name:</strong> {patient.patient_name}</p>
-//           <p><strong>Email:</strong> {patient.email}</p>
-//           <p><strong>Phone:</strong> {patient.mobile_number}</p>
-//           <p><strong>Gender:</strong> {patient.gender}</p>
-//           <p><strong>Age:</strong> {patient.age}</p>
-//           <p><strong>Blood Group:</strong> {patient.blood_group}</p>
-//           <p><strong>Weight:</strong> {patient.weight}</p>
-//           // <p><strong>Emergency Contact:</strong> {patient.emergency_contact_phone}</p> */}
-//         </div>
-//       </div>
-
-//       {/* Prescription History */}
-//       <div className="space-y-4">
-//         {prescriptions.map((prescription) => (
-//           <div key={prescription.prescription_id} className="border p-4 rounded bg-white shadow">
-//             <h4 className="text-lg font-semibold mb-2">Visit on {new Date(prescription.prescribed_at).toLocaleDateString()}</h4>
-//             <p><strong>Doctor:</strong> {prescription.prescribed_doctor_name}</p>
-//             <p><strong>Advice:</strong> {prescription.advise || "N/A"}</p>
-//             <p><strong>Next Visit:</strong> {new Date(prescription.next_visit_date).toLocaleDateString()}</p>
-//             <p><strong>Total Cost:</strong> ৳{prescription.total_cost}</p>
-
-//             {/* Medicines */}
-//             {/* {prescription.medicine_items.length > 0 && (
-//               <>
-//                 <h5 className="mt-4 font-semibold">Prescribed Medicines</h5>
-//                 <ul className="list-disc pl-6">
-//                   {prescription.medicine_items.map((item) => (
-//                     <li key={item.item_id}>
-//                       {item.medicine_name} - 
-//                       {` Morning: ${item.dose_morning || "-"}, Midday: ${item.dose_mid_day || "-"}, Night: ${item.dose_night || "-"}`}
-//                       {`, Duration: ${item.duration_days} days`}
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </>
-//             )} */}
-
-//             {/* Treatments */}
-//             {/* {prescription.treatment_items.length > 0 && (
-//               <>
-//                 <h5 className="mt-4 font-semibold">Treatments</h5>
-//                 <ul className="list-disc pl-6">
-//                   {prescription.treatment_items.map((treatment, index) => (
-//                     <li key={index}>
-//                       {treatment.treatment_name} — {treatment.duration_months} months — ৳{treatment.payable_treatment_amount} 
-//                       ({treatment.discount_type !== "None" ? `Discount: ${treatment.discount_value} ${treatment.discount_type}` : "No discount"})
-//                     </li>
-//                   ))}
-//                 </ul>
-//               </>
-//             )} */}
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-// src\app\(admin)\doctor\(doctors)\patient-history\list\see-patient-history\[id]\page.tsx
-
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useParams } from "next/navigation";
-// import Image from "next/image"; // Import Image for patient image
-
-
-// interface PatientInfo {
-//   patient_id: number;
-//   patient_name: string;
-//   email: string;
-//   mobile_number: string;
-//   gender: string;
-//   age: string;
-//   blood_group: string;
-//   weight: string;
-//   emergency_contact_phone: string;
-//   image_url?: string;
-// }
-
-// interface PrescriptionItem {
-//   item_id: number;
-//   medicine_name: string;
-//   dose_morning: string;
-//   dose_mid_day: string;
-//   dose_night: string;
-//   duration_days: number;
-// }
-
-// interface TreatmentItem {
-//   treatment_name: string;
-//   duration_months: number;
-//   payable_treatment_amount: number;
-//   discount_type: string;
-//   discount_value: number;
-// }
-
-// interface Prescription {
-//   prescription_id: number;
-//   prescribed_at: string;
-//   total_cost: number;
-//   prescribed_doctor_name: string; // This should match what's returned by your API
-//   advise: string;
-//   next_visit_date: string;
-//   medicine_items: PrescriptionItem[];
-//   treatment_items: TreatmentItem[];
-// }
-
-// interface PatientHistoryResponse {
-//   patient: PatientInfo;
-//   prescriptions: Prescription[];
-// }
-
-// export default function Page() {
-//   const { id } = useParams<{ id: string }>();
-//   const [data, setData] = useState<PatientHistoryResponse | null>(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchHistory = async () => {
-//       try { // Add try-catch for better error handling
-//         const res = await fetch(`/api/doctor/view-patient-history/${id}`);
-//         if (!res.ok) {
-//           throw new Error(`HTTP error! status: ${res.status}`);
-//         }
-//         const result = await res.json();
-
-//         // **IMPORTANT:** Adapt this to your actual API response structure.
-//         // Your API route returns:
-//         // formatted = {
-//         //   patient_id: ...,
-//         //   patient_name: ...,
-//         //   age: ...,
-//         //   gender: ...,
-//         //   prescriptions: [...]
-//         // }
-//         // Notice it doesn't have a nested `patient: PatientInfo` object
-//         // but rather `patient_id`, `patient_name`, etc. directly at the top level.
-//         // So, you need to reconstruct `data` or adjust your API.
-
-//         // Assuming your API returns patient details at the root and prescriptions array:
-//         setData({
-//           patient: {
-//             patient_id: result.patient_id,
-//             patient_name: result.patient_name,
-//             email: result.email, // Make sure these fields are actually returned by your API
-//             mobile_number: result.mobile_number,
-//             gender: result.gender,
-//             age: result.age,
-//             blood_group: result.blood_group,
-//             weight: result.weight,
-//             emergency_contact_phone: result.emergency_contact_phone,
-//             image_url: result.image_url,
-//           },
-//           prescriptions: result.prescriptions.map((p: any) => ({
-//             prescription_id: p.prescription_id,
-//             prescribed_at: p.prescribed_at,
-//             total_cost: p.total_cost,
-//             // Ensure this matches the key from your API response:
-//             prescribed_doctor_name: p.doctor_name || "Unknown Doctor", // Use doctor_name from API
-//             advise: p.advise,
-//             next_visit_date: p.next_visit_date || new Date().toISOString().split("T")[0], // Add next_visit_date if missing
-//             medicine_items: p.medicines.map((m: any) => ({ // Use 'medicines' as per API
-//                 item_id: m.item_id,
-//                 medicine_name: m.medicine_name,
-//                 dose_morning: m.dose_morning,
-//                 dose_mid_day: m.dose_mid_day,
-//                 dose_night: m.dose_night,
-//                 duration_days: m.duration_days,
-//             })),
-//             treatment_items: p.treatments.map((t: any) => ({ // Use 'treatments' as per API
-//                 treatment_name: t.treatment_name,
-//                 duration_months: t.duration_months || 0, // Add duration_months if missing
-//                 payable_treatment_amount: t.payable_amount, // Use payable_amount as per API
-//                 discount_type: t.discount_type,
-//                 discount_value: t.discount_value,
-//             })),
-//           })),
-//         });
-//       } catch (error) {
-//         console.error("Error fetching patient history:", error);
-//         setData(null); // Set data to null on error to show "No history found"
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchHistory();
-//   }, [id]);
-
-//   if (loading) return <div className="p-6">Loading...</div>;
-//   if (!data || !data.patient) return <div className="p-6">No patient data found or an error occurred.</div>;
-
-//   const { patient, prescriptions } = data;
-
-//   return (
-//     <div className="p-6 space-y-6">
-//       <h2 className="text-2xl font-bold">Patient Medical History for {patient.patient_name} </h2> {/* Fix here */}
-      
-//       {/* Patient Info */}
-//       {/* <div className="border p-4 rounded bg-white shadow">
-//         <h3 className="text-xl font-semibold mb-2">Patient Information</h3>
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//             <div className="mb-4">
-//                 <Image
-//                   src={patient.image_url || "/uploads/default.avif"}
-//                   width={80} // Adjust size as needed
-//                   height={80} // Adjust size as needed
-//                   className="rounded-full object-cover"
-//                   alt="patient image"
-//                 />
-//             </div>
-//             <div>
-//               <p><strong>Patient ID:</strong> {patient.patient_id}</p>
-//               <p><strong>Name:</strong> {patient.patient_name}</p>
-//               <p><strong>Email:</strong> {patient.email}</p>
-//               <p><strong>Phone:</strong> {patient.mobile_number}</p>
-//               <p><strong>Gender:</strong> {patient.gender}</p>
-//               <p><strong>Age:</strong> {patient.age}</p>
-//               <p><strong>Blood Group:</strong> {patient.blood_group}</p>
-//               <p><strong>Weight:</strong> {patient.weight}</p>
-//               <p><strong>Emergency Contact:</strong> {patient.emergency_contact_phone}</p>
-//             </div>
-//         </div>
-//       </div> */}
-
-//       {/* Prescription History */}
-//       <div className="space-y-4">
-//         {prescriptions.length > 0 ? (
-//           prescriptions.map((prescription) => (
-//             <div key={prescription.prescription_id} className="border p-4 rounded bg-white shadow">
-//               <h4 className="text-lg font-semibold mb-2">Visit on {new Date(prescription.prescribed_at).toLocaleDateString()}</h4>
-//               <p><strong>Doctor:</strong> {prescription.prescribed_doctor_name}</p>
-//               <p><strong>Advice:</strong> {prescription.advise || "N/A"}</p>
-//               <p><strong>Next Visit:</strong> {new Date(prescription.next_visit_date).toLocaleDateString()}</p>
-//               <p><strong>Total Cost:</strong> ৳{prescription.total_cost}</p>
-
-//               {/* Medicines */}
-//               {prescription.medicine_items.length > 0 && (
-//                 <>
-//                   <h5 className="mt-4 font-semibold">Prescribed Medicines</h5>
-//                   <ul className="list-disc pl-6">
-//                     {prescription.medicine_items.map((item) => (
-//                       <li key={item.item_id}>
-//                         {item.medicine_name} - 
-//                         {` Morning: ${item.dose_morning || "-"}, Midday: ${item.dose_mid_day || "-"}, Night: ${item.dose_night || "-"}`}
-//                         {`, Duration: ${item.duration_days} days`}
-//                       </li>
-//                     ))}
-//                   </ul>
-//                 </>
-//               )}
-
-//               {/* Treatments */}
-//               {prescription.treatment_items.length > 0 && (
-//                 <>
-//                   <h5 className="mt-4 font-semibold">Treatments</h5>
-//                   <ul className="list-disc pl-6">
-//                     {prescription.treatment_items.map((treatment, index) => (
-//                       <li key={index}>
-//                         {treatment.treatment_name} — {treatment.duration_months} months — ৳{treatment.payable_treatment_amount} 
-//                         ({treatment.discount_type !== "None" ? `Discount: ${treatment.discount_value} ${treatment.discount_type}` : "No discount"})
-//                       </li>
-//                     ))}
-//                   </ul>
-//                 </>
-//               )}
-//             </div>
-//           ))
-//         ) : (
-//           <div className="p-4 rounded bg-white shadow">
-//             <p className="text-center text-gray-500">No prescription history found for this patient.</p>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
 
 // src\app\(admin)\doctor\(doctors)\patient-history\list\see-patient-history\[id]\page.tsx
 
@@ -475,7 +94,30 @@ export default function Page() {
             emergency_contact_phone: result.emergency_contact_phone || "",
             image_url: result.image_url,
           },
-          prescriptions: result.prescriptions.map((p: any) => ({
+          prescriptions: result.prescriptions.map((p: {
+            prescription_id: number;
+            prescribed_at: string;
+            total_cost: number;
+            doctor_name?: string;
+            doctor_image?: string;
+            advise: string;
+            next_visit_date?: string;
+            medicines: {
+              item_id: number;
+              medicine_name: string;
+              dose_morning: string;
+              dose_mid_day: string;
+              dose_night: string;
+              duration_days: number;
+            }[];
+            treatments: {
+              treatment_name: string;
+              duration_months?: number;
+              payable_amount: number;
+              discount_type: string;
+              discount_value: number;
+            }[];
+          }) => ({
             prescription_id: p.prescription_id,
             prescribed_at: p.prescribed_at,
             total_cost: p.total_cost,
@@ -483,7 +125,14 @@ export default function Page() {
             doctor_image_url: p.doctor_image || "/uploads/default.avif",
             advise: p.advise,
             next_visit_date: p.next_visit_date || new Date().toISOString().split("T")[0],
-            medicine_items: p.medicines.map((m: any) => ({
+            medicine_items: p.medicines.map((m: {
+              item_id: number;
+              medicine_name: string;
+              dose_morning: string;
+              dose_mid_day: string;
+              dose_night: string;
+              duration_days: number;
+            }) => ({
                 item_id: m.item_id,
                 medicine_name: m.medicine_name,
                 dose_morning: m.dose_morning,
@@ -491,7 +140,13 @@ export default function Page() {
                 dose_night: m.dose_night,
                 duration_days: m.duration_days,
             })),
-            treatment_items: p.treatments.map((t: any) => ({
+            treatment_items: p.treatments.map((t: {
+              treatment_name: string;
+              duration_months?: number;
+              payable_amount: number;
+              discount_type: string;
+              discount_value: number;
+            }) => ({
                 treatment_name: t.treatment_name,
                 duration_months: t.duration_months || 0,
                 payable_treatment_amount: t.payable_amount,
