@@ -317,7 +317,7 @@ export default function Page() {
                 src={data.patient.image_url}
                 alt={`${data.patient.patient_name}'s photo`}
                 className="w-full h-full object-cover"
-              /> */} 
+              /> */}  
 
                 <Image
                   src={data.patient.image_url}
