@@ -238,8 +238,8 @@ const PatientsListTable: React.FC = () => {
 
               <tbody className="text-black dark:text-white">
                 {currentPatients.length > 0 ? (
-                  currentPatients.map((patient) => (
-                    <tr key={patient.patient_id}>
+                  currentPatients.map((patient, index) => (
+                    <tr key={patient?.patient_id ?? `patient-${index}`}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
                           {/* <div className="form-check relative top-[1.2px]">
@@ -511,7 +511,10 @@ const PatientsListTable: React.FC = () => {
                   <p>
                     <strong>State:</strong> {selectedPatient?.state_province}
                   </p>
-                  <p>
+                 
+                </div>
+                <div>
+                   <p>
                     <strong>Age:</strong> {selectedPatient?.age}
                   </p>
                   <p>
@@ -520,30 +523,28 @@ const PatientsListTable: React.FC = () => {
                   <p>
                     <strong>Weight:</strong> {selectedPatient?.weight}
                   </p>
-                </div>
-                <div>
                   <p>
                     <strong>Postal Code:</strong> {selectedPatient?.postal_code}
                   </p>
-                  <p>
+                  {/* <p>
                     <strong>Assigns Doctor:</strong> DR. X*
-                  </p>
+                  </p> */}
                   <p>
                     <strong>Last Visit:</strong>{" "}
                     {new Date(selectedPatient?.created_at).toLocaleDateString()}
                   </p>
-                  <p>
+                  {/* <p>
                     <strong>Next Visit:</strong> May 2024*
-                  </p>
-                  <p>
+                  </p> */}
+                  {/* <p>
                     <strong>Treatment:</strong> DR. X*
-                  </p>
-                  <p>
+                  </p> */}
+                  {/* <p>
                     <strong>Due Amount:</strong> 50000*
                   </p>
                   <p>
                     <strong>Paid Amount:</strong> 50000*
-                  </p>
+                  </p> */}
                   <p>
                     <strong>Status:</strong> {selectedPatient?.status}
                   </p>

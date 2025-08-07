@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { generateInvoiceNumber } from "@/lib/invoice";
+import { generatePrescriptionNumber } from "@/lib/prescriptionIdGeneration"; // <-- Make sure this function exists
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
     const {
       patient_id,
       doctor_name,
-      doctor_fee,
+      doctor_fee, 
       doctorDiscountType,
       doctorDiscountAmount,
       payableDoctorFee,
@@ -30,10 +31,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
-    // Create prescription with doctor discount info (moved fields)
+
+      const prescriptionNumber = await generatePrescriptionNumber(
+      patient_id,
+      doctor.doctor_id
+    );
+    
+
+    // Create prescription
     const prescription = await prisma.prescription.create({
       data: {
         patient_id,
+        prescription_number:prescriptionNumber,
         doctor_id: doctor.doctor_id,
         total_cost: parseInt(totalPayableAmount || "0"),
         is_drs_derma: is_drs_derma || "No",
@@ -42,8 +51,6 @@ export async function POST(req: NextRequest) {
         is_prescribed: "Yes",
         advise: advise,
         prescribed_doctor_name: doctor_name,
-
-        //  Moved fields
         doctor_discount_type:
           doctorDiscountType === "Flat Rate"
             ? "Flat"
@@ -56,6 +63,9 @@ export async function POST(req: NextRequest) {
     });
 
     const prescriptionId = prescription.prescription_id;
+
+    // Generate and update prescription_number
+   
 
     // Save medicines
     if (Array.isArray(medicines)) {
@@ -151,6 +161,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: "Prescription and Invoice saved successfully",
       prescription_id: prescriptionId,
+      prescription_number: prescriptionNumber, // <-- Return it in response
       invoice_id: invoice.invoice_id,
       invoice_number: invoice.invoice_number,
     });
