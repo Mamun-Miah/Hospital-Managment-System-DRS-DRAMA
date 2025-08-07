@@ -226,7 +226,7 @@ const PatientsHistoryTable: React.FC = () => {
                             <button
                               type="button"
                               className="text-primary-500 leading-none custom-tooltip"
-                              onClick={() => router.push(`/doctor/patient-history/list/see-patient-history/${patient.patient_id}`)}
+                              onClick={() => router.push(`patient-history/list/see-patient-history/${patient.patient_id}`)}
                               
                             >
                               <i className="material-symbols-outlined !text-md">visibility</i>
