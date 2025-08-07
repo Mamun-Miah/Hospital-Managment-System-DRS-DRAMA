@@ -1,56 +1,82 @@
-import prisma from '@/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import prisma from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-){
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const invoiceId = parseInt((await params).id);
 
-   const id = (await params).id;
-   const patient_id = parseInt(id)
-//    console.log(patient_id)
+  try {
+    const body = await request.json();
 
+    const {
+      payment_method,
+      payment_type,
+      previous_due,
+      total_treatment_cost,
+      paid_amount,
+      doctor_fee,
+      due_amount,
+      treatment_ids, // array of treatment_id
+    } = body;
 
-    try{
+    // 1. Check if invoice exists
+    const existingInvoice = await prisma.invoice.findUnique({
+      where: { invoice_id: invoiceId },
+    });
 
-        const getInvoiceData = await prisma.prescription.findMany({
-            where: {
-                patient_id: patient_id, // replace with your variable
-            },
-            select: {
-                prescription_id: true,
-                total_cost: true,
-                doctor_id: true,
-                doctor: {
-                select: {
-                    doctor_id: true,
-                    doctor_name: true,
-                    doctor_fee: true,
-                },
-                },
-                items: {
-                // select: {
-                    
-                   
-                   
-                //     treatment: {
-                //     select: {
-                //         treatment_id: true,
-                //         treatment_name: true,
-                //         total_cost: true,
-                //         duration_months: true,
-                //     },
-                //     },
-                // },
-                },
+    if (!existingInvoice) {
+      return NextResponse.json(
+        { error: "Invoice not found." },
+        { status: 404 }
+      );
+    }
+
+    // 2. Update only NULL fields
+    const updatedInvoice = await prisma.invoice.update({
+            where: { invoice_id: invoiceId },
+            data: {
+                payment_method: payment_method ?? existingInvoice.payment_method,
+                payment_type: payment_type ?? existingInvoice.payment_type,
+                previous_due: previous_due ?? existingInvoice.previous_due,
+                total_treatment_cost: total_treatment_cost ?? existingInvoice.total_treatment_cost,
+                paid_amount: paid_amount ?? existingInvoice.paid_amount,
+                doctor_fee: doctor_fee ?? existingInvoice.doctor_fee,
+                due_amount: due_amount ?? existingInvoice.due_amount,
             },
             });
 
 
-        return NextResponse.json({message: 'Invoice Created Succesfully', getInvoiceData}, {status: 200})
-        
-    } catch(error) {
-        console.error('erro', error)
+    // 3. Save treatment IDs (if provided)
+    if (Array.isArray(treatment_ids)) {
+        await prisma.invoiceTreatment.deleteMany({
+            where: { invoice_id: invoiceId },
+        });
 
-    }
+        if (treatment_ids.length > 0) {
+            await prisma.invoiceTreatment.createMany({
+            data: treatment_ids.map((treatment_id: number) => ({
+                invoice_id: invoiceId,
+                treatment_id,
+            })),
+            skipDuplicates: true,
+            });
+        }
+        }
+
+    return NextResponse.json(
+      {
+        message: "Invoice updated successfully",
+        invoice: updatedInvoice,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating invoice:", error);
+    return NextResponse.json(
+      { error: "An error occurred while updating the invoice." },
+      { status: 500 }
+    );
+  }
 }
