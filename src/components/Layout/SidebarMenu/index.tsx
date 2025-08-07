@@ -1681,6 +1681,24 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                  Next Appoinment
               </Link>
             </div>
+                <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link
+              href="/doctor/patient-history/list"
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/doctor/patient-history/list" ? "active" : ""
+                }`}
+              >
+                 <Image
+                  src="/images/patient-list-icon.png"
+                  alt="logo-icon"
+                  width={18}
+                  height={18}
+                  className="me-4"
+                />
+                 Patient History
+              </Link>
+            </div>
+
 
             {/* <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link href="/doctor/view-prescription/">
