@@ -135,7 +135,7 @@ const CreateInvoice: React.FC = () => {
                   Treatment Cost
                 </th>
                 <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
-                  Discounted Amount
+                  Payable Cost
                 </th>
               </tr>
             </thead>
