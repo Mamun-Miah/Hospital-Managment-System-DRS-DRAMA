@@ -42,7 +42,7 @@ export async function GET(req: Request) {
         p.prescribed_at
       FROM Prescription p
       JOIN Patient pat ON p.patient_id = pat.patient_id
-      WHERE DATE(p.prescribed_at) = ${inputDate}
+      WHERE DATE(p.next_visit_date) = ${inputDate}
     `;
 
     // Fetch patients with a next appointment on inputDate

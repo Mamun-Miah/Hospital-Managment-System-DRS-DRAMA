@@ -110,18 +110,20 @@ const PatientsHistoryTable: React.FC = () => {
 
 
 //view patient details in modal
-const handleViewClick = async (id: number) => {
-  try {
-    // const res = await fetch(`/api/patient/viewpatient/${id}`); // Adjust path based on your route
-    const res = await fetch(`/api/doctor/view-patient-history/${id}`); // Adjust path based on your route
-    if (!res.ok) throw new Error('Failed to fetch');
-    const data = await res.json();
-    setSelectedPatient(data);
-    setIsOpen(true);
-  } catch (error) {
-    console.error("Error fetching patient:", error);
-  }
-};
+
+// const handleViewClick = async (id: number) => {
+//   try {
+//     // const res = await fetch(`/api/patient/viewpatient/${id}`); // Adjust path based on your route
+//     const res = await fetch(`/api/view-patient-history/${id}`); // Adjust path based on your route
+//     if (!res.ok) throw new Error('Failed to fetch');
+//     const data = await res.json();
+//     setSelectedPatient(data);
+//     setIsOpen(true);
+//   } catch (error) {
+//     console.error("Error fetching patient:", error);
+//   }
+// };
+
 
 
 
