@@ -10,7 +10,7 @@ interface Invoice {
   doctor_id: number;
   prescription_id: number;
   payment_method: string | null;
-  payment_type: "Full" | "Paid" | "Unpaid";
+  payment_type: "Full" | "Partial" | "Unpaid";
   previous_due: number;
   invoice_creation_date: string; // ISO date string
   total_treatment_cost: number;
@@ -44,24 +44,42 @@ const InvoiceList: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
 
   const currentInvoice = filteredInvoice?.slice(startIndex, endIndex);
+  const [filterType, setFilterType] = useState<"All" | "Full" | "Partial" | "Unpaid">("All");
 
 
 
 
 
+useEffect(() => {
+  const applyFilters = () => {
+    let result: Invoice[] = invoices;
 
-  useEffect(() => {
-    const result: Invoice[] = invoices?.filter(
-      (invoice) =>
-        invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
-        invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
-        invoice.invoice_number.toLowerCase().includes(search) ||
-        invoice.mobile_number.includes(search)
-    );
-    // console.log(result);
+    // Apply search filter
+    if (search) {
+      result = result?.filter(
+        (invoice) =>
+          invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
+          invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
+          invoice.invoice_number.toLowerCase().includes(search) ||
+          invoice.mobile_number.includes(search)
+      );
+    }
+
+    // Apply payment type filter
+    if (filterType !== "All") {
+      result = result?.filter((invoice) => {
+        const actualPaymentType = invoice.payment_type || "Unpaid";
+        return actualPaymentType === filterType;
+      });
+    }
+
     setFilteredInvoice(result);
     setCurrentPage(1);
-  }, [search, invoices]);
+  };
+
+  applyFilters();
+}, [search, invoices, filterType]);
+
 
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -175,7 +193,23 @@ const InvoiceList: React.FC = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </form>
+            
           </div>
+
+                                <div className="flex justify-start">
+                  <select
+                    onChange={(e) => setFilterType(e.target.value as "Full" | "Partial" | "Unpaid" | "All")}
+                    value={filterType}
+                    className="px-5 bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
+                  >
+                    <option value="All">Sort Payment Status</option>
+                    <option value="Full">Full</option>
+                    <option value="Partial">Partial</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+              </div>
+          
+          
           {/* <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/invoice/create-invoice"
@@ -305,20 +339,32 @@ const InvoiceList: React.FC = () => {
                           className={`${
                             treatment.payment_type === "Full"
                               ? "bg-green-600"
-                              : treatment.payment_type === "Paid"
+                              : treatment.payment_type === "Partial"
                               ? "bg-yellow-600"
                               : "bg-red-500"
                     
                               
                           } px-2 py-1 rounded text-xs font-semibold text-gray-100`}
                         >
-                          {treatment.payment_type? treatment.payment_type : "Unpaid"}
+                             {treatment.payment_type === "Full" ? "Paid" : (treatment.payment_type ? treatment.payment_type : "Unpaid")}
                         </span>
                       </td>
 
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
-                           <Link href={`/doctor/invoice/view-invoice/${treatment.invoice_id}`}>
+                 {/* {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
+                            <button
+                              type="button"
+                              className="text-primary-500 leading-none custom-tooltip"
+                              // onClick={() => setOpen(true)}
+                            >
+                              <i className="material-symbols-outlined !text-md">
+                                visibility
+                              </i>
+                            </button>
+                          )} */}
+ {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
+                        <Link href={`/doctor/invoice/view-invoice/${treatment.invoice_id}`}>
                           <button
                             type="button"
                             className="text-primary-500 leading-none custom-tooltip"
@@ -328,7 +374,7 @@ const InvoiceList: React.FC = () => {
                               visibility
                             </i>
                           </button>
-                          </Link>
+                          </Link>)}
                           <Link href={`/doctor/invoice/create-invoice/${treatment.invoice_id}`}>
                             <button
                               type="button"
