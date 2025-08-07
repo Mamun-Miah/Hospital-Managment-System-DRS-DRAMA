@@ -1,16 +1,44 @@
-
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-
-
 const CreateInvoice: React.FC = () => {
-const [formData, setFormData] = useState([])
-const treatments = []
-const totalTreatmentCost = []
+  const [treatments, setTreatments] = useState([
+    {
+      treatmentId: 101,
+      treatmentName: "Psychotherapy Counseling",
+      treatmentCost: 9600,
+      afterDiscount: 8000,
+    },
+    {
+      treatmentId: 102,
+      treatmentName: "Weight Loss Program",
+      treatmentCost: 18000,
+      afterDiscount: 16200,
+    },
+    {
+      treatmentId: 103,
+      treatmentName: "Cardiac Rehab",
+      treatmentCost: 22000,
+      afterDiscount: 22000,
+    },
+    {
+      treatmentId: 104,
+      treatmentName: "Acupuncture Therapy",
+      treatmentCost: 5000,
+      afterDiscount: 4500,
+    },
+  ]);
+
+  const handleRemove = (id: number) => {
+    setTreatments((prevs) => prevs.filter((item) => item.treatmentId !== id));
+  };
+
+  const totatTreatmentCost = treatments.reduce(
+    (acc, item) => acc + item.afterDiscount,
+    0
+  );
 
   return (
     <>
@@ -55,35 +83,42 @@ const totalTreatmentCost = []
                 height={30}
               />
             </div>
-            <p className="md:text-md text-black dark:text-white mt-5">
-              Invoice Number : 
-            </p>
-            <p className="md:text-md text-black dark:text-white">
-              Invoice Date :
-            </p>
+
+            <ul className="mb-[7px] sm:mb-0">
+              <li className="mb-[7px] text-md last:mb-0">
+                Invoice Number :{" "}
+                <span className="text-black text-md dark:text-white">
+                  inv-1245
+                </span>
+              </li>
+              <li className="mb-[7px] text-md last:mb-0">
+                <span>Invoice Date: </span>
+                <span className="text-black dark:text-white">12/07/25</span>
+              </li>
+            </ul>
           </div>
-
+          <h4>Bill</h4>
           <div className="mt-[20px] sm:mt-0">
-            <div className="flex items-center gap-3 md:text-md mt-[5px] dark:text-white">
-              <p className=" dark:text-white font-medium mt-4">Patient: Sako Vai</p>
-
-              {/* <Select
-                options={patients}
-                onChange={(patient_name) =>
-                  handlePatientChange(patient_name?.label ?? "")
-                }
-                styles={customStyles}
-              /> */}
-            </div>
-            <p className="md:text-md mt-[5px]">
-              Patient Id: 01
-            </p>
-            <p className="md:text-md mt-[5px]">
-              Previous Session: 07 Nov, 2025
-            </p>
-            <p className="mb-[8px] dark:text-white text-md block">
-              Next Session: 07 Dec, 2025
-            </p>
+            <ul className="mb-[7px] sm:mb-0">
+              <li className="mb-[7px] text-md last:mb-0">
+                Patient ID:{" "}
+                <span className="text-black text-md dark:text-white">007</span>
+              </li>
+              <li className="mb-[7px] text-md last:mb-0">
+                Patient Name:{" "}
+                <span className="text-black text-md dark:text-white">
+                  Shakku Vai
+                </span>
+              </li>
+              <li className="mb-[7px] text-md last:mb-0">
+                <span>Previous Session: : </span>
+                <span className="text-black dark:text-white">12/07/25</span>
+              </li>
+              <li className="mb-[7px] text-md last:mb-0">
+                <span>Next Session: : </span>
+                <span className="text-black dark:text-white">12/07/25</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -97,29 +132,36 @@ const totalTreatmentCost = []
                   Treatment Name
                 </th>
                 <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
-                  Duration
+                  Treatment Cost
                 </th>
                 <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
-                  Treatment Cost
+                  Discounted Amount
                 </th>
               </tr>
             </thead>
 
             <tbody className="text-gray-500 dark:text-white">
-              {treatments.map((treatment, i) => (
-                <tr key={i}>
+              {treatments.map((treatment) => (
+                <tr key={treatment.treatmentId}>
                   <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
                     {treatment.treatmentName}
                   </td>
 
                   <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                    {treatment.duration}
+                    {treatment.treatmentCost}/=
                   </td>
-                  <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                    {treatment.treatmentCost} /=
+                  <td className="flex items-center justify-between ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
+                    <span>{treatment.afterDiscount}</span>
+                    <button
+                      onClick={() => handleRemove(treatment.treatmentId)}
+                      className="ml-5 text-red-500"
+                    >
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
                   </td>
                 </tr>
               ))}
+
               <tr className="px-20">
                 <td className="border-b-1 border-gray-200"></td>
                 <td className="border-b-1 border-gray-200"></td>
@@ -128,17 +170,17 @@ const totalTreatmentCost = []
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
                 <td className="p-3 pl-6">Total Treatment Cost: </td>
-                <td className="p-3 pl-6">{totalTreatmentCost} /=</td>
+                <td className="p-3 pl-6">{totatTreatmentCost} /=</td>
               </tr>
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
                 <td className="p-3 pl-6">Doctor Fee: </td>
-                <td className="p-3 pl-6">{doctorFee} /=</td>
+                <td className="p-3 pl-6"> 347 /=</td>
               </tr>
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
                 <td className="p-3 pl-6">Previous Due: </td>
-                <td className="p-3 pl-6">{previousDue} /=</td>
+                <td className="p-3 pl-6">484 /=</td>
               </tr>
               <tr className="px-20">
                 <td className="border-b-1 border-gray-200"></td>
@@ -148,19 +190,14 @@ const totalTreatmentCost = []
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
                 <td className="p-3 pl-6">Total Cost: </td>
-                <td className="p-3 pl-6"> {totalCost} /=</td>
+                <td className="p-3 pl-6"> 57354 /=</td>
               </tr>
 
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3 pl-6 flex gap-3">
                   <div className="">
-                    {/* <p className="mt-3 text-black dark:text-white font-medium text-sm">
-                      Payment Type:
-                    </p> */}
                     <select
                       name="paymentType"
-                      value={formData.paymentType}
-                      onChange={handleChange}
                       className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     >
                       <option value="">Payment Type</option>
@@ -172,8 +209,6 @@ const totalTreatmentCost = []
                   <div className="">
                     <select
                       name="paymentMethod"
-                      value={formData.paymentMethod}
-                      onChange={handleChange}
                       className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     >
                       <option value="">Payment Method</option>
@@ -191,7 +226,6 @@ const totalTreatmentCost = []
                   <input
                     type="number"
                     placeholder="Amount"
-                    onChange={(e) => setPaidAmount(Number(e.target.value))}
                     className="h-[30px] rounded-md text-black text-[14px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[100px]"
                   />
                 </td>
@@ -204,7 +238,7 @@ const totalTreatmentCost = []
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
                 <td className="p-3 pl-6">Total Due: </td>
-                <td className="p-3 pl-6">{totalCost - paidAmount} /= </td>
+                <td className="p-3 pl-6">3477 /= </td>
               </tr>
             </tbody>
           </table>
@@ -213,14 +247,6 @@ const totalTreatmentCost = []
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
-              // onClick={() =>
-              //   setFormData({
-              //     treatmentID: "",
-              //     treatmentName: "",
-              //     totalCost: "",
-              //     durationMonths: "",
-              //   })
-              // }
             >
               Cancel
             </button>
@@ -232,7 +258,8 @@ const totalTreatmentCost = []
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                   add
                 </i>
-                {loading ? "Submitting..." : "Create Invoice"}
+                {/* {loading ? "Submitting..." : "Create Invoice"} */}
+                Submit
               </span>
             </button>
           </div>
