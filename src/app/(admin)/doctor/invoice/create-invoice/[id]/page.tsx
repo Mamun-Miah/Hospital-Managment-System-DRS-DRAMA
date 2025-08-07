@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -20,7 +19,7 @@ type Invoice = {
   next_session_date: string | null;
   doctor_fee: number;
   previous_due: number;
-  paid_amount: number;
+  paid_amount: string;
   payment_type: string;
   payment_method: string;
   patient_id: number;
@@ -44,15 +43,24 @@ const EditInvoice: React.FC = () => {
     payment_method: "",
     payment_type: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleRemove = (id: number) => {
-    setTreatments((prevs) => prevs.filter((item) => item.treatmentId !== id));
+  // Fix: Use treatmentId instead of index for removal
+  const handleRemove = (treatmentId: number) => {
+    setTreatments((prevs) => prevs.filter((item) => item.treatmentId !== treatmentId));
   };
 
-  const totatTreatmentCost = treatments.reduce(
+  // Calculate total treatment cost
+  const totalTreatmentCost = treatments.reduce(
     (acc, item) => acc + item.payable_treatment_amount,
     0
   );
+
+  // Calculate total cost (treatments + doctor fee + previous due)
+  const totalCost = totalTreatmentCost + (invoice?.doctor_fee || 0) + (invoice?.previous_due || 0);
+
+  // Calculate total due (total cost - paid amount)
+  const totalDue = totalCost - paymentInfo.paid_amount;
 
   const formattedDate = (isoDate: string) => {
     const date = new Date(isoDate);
@@ -63,23 +71,58 @@ const EditInvoice: React.FC = () => {
     const { name, value } = e.target;
     setPaymentInfo((prev) => ({
       ...prev,
-      [name]: name === "paid_amount" ? parseFloat(value) : value,
+      [name]: name === "paid_amount" ? parseFloat(value) || "" : value,
     }));
   };
 
+  const handleSubmit = async () => {
+    if (!invoice) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/invoice/update-invoice/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          treatments,
+          paymentInfo,
+          totalCost,
+          totalDue,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Invoice updated successfully!');
+      } else {
+        alert('Failed to update invoice');
+      }
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      alert('Error updating invoice');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    if (!id) return;
+    
     fetch(`/api/invoice/view-invoice/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const { treatments, invoice } = data;
         setTreatments(treatments);
         setInvoice(invoice);
-
         setPaymentInfo({
           paid_amount: invoice.paid_amount ?? 0,
           payment_method: invoice.payment_method ?? "",
           payment_type: invoice.payment_type ?? "",
         });
+      })
+      .catch((error) => {
+        console.error('Error fetching invoice:', error);
       });
   }, [id]);
 
@@ -101,9 +144,8 @@ const EditInvoice: React.FC = () => {
               Dashboard
             </Link>
           </li>
-
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Create Invoice
+            Edit Invoice
           </li>
         </ol>
       </div>
@@ -127,7 +169,6 @@ const EditInvoice: React.FC = () => {
                 height={30}
               />
             </div>
-
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] text-md last:mb-0">
                 Invoice Number :{" "}
@@ -159,11 +200,11 @@ const EditInvoice: React.FC = () => {
                 </span>
               </li>
               <li className="mb-[7px] text-md last:mb-0">
-                <span>Previous Session: : </span>
+                <span>Previous Session: </span>
                 <span className="text-black dark:text-white">
                   {invoice?.previous_session_date
                     ? formattedDate(invoice.previous_session_date)
-                    : ""}
+                    : "N/A"}
                 </span>
               </li>
               <li className="mb-[7px] text-md last:mb-0">
@@ -171,7 +212,7 @@ const EditInvoice: React.FC = () => {
                 <span className="text-black dark:text-white">
                   {invoice?.next_session_date
                     ? formattedDate(invoice.next_session_date)
-                    : ""}
+                    : "N/A"}
                 </span>
               </li>
             </ul>
@@ -182,86 +223,92 @@ const EditInvoice: React.FC = () => {
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-[#15203c]">
               <tr>
                 <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
                   Treatment Name
                 </th>
-                <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
+                <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
                   Treatment Cost
                 </th>
-                <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
+                <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
                   Discounted Amount
+                </th>
+                <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
+                  Action
                 </th>
               </tr>
             </thead>
-
             <tbody className="text-gray-500 dark:text-white">
-              {treatments.map((treatment, i) => (
-                <tr key={i}>
+              {treatments.map((treatment) => (
+                <tr key={treatment.treatmentId}>
                   <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
                     {treatment.treatment_name}
                   </td>
-
                   <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
                     {treatment.treatment_cost}
                   </td>
-                  <td className="flex items-center justify-between ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                    <span>{treatment.payable_treatment_amount}</span>
+                  <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
+                    {treatment.payable_treatment_amount}
+                  </td>
+                  <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
                     <button
-                      onClick={() => handleRemove(i)}
-                      className="ml-5 text-red-500"
+                      onClick={() => handleRemove(treatment.treatmentId)}
+                      className="text-red-500 hover:text-red-700 transition-colors"
+                      title="Remove treatment"
                     >
                       <span className="material-symbols-outlined">close</span>
                     </button>
                   </td>
                 </tr>
               ))}
-
-              <tr className="px-20">
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
+              
+              {/* Separator */}
+              <tr>
+                <td colSpan={4} className="border-b border-gray-200 dark:border-[#15203c]"></td>
               </tr>
-              <tr className="mt-5 font-semibold text-black">
+              
+              {/* Totals Section */}
+              <tr className="font-semibold text-black dark:text-white">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Total Treatment Cost: </td>
-                <td className="p-3 pl-6">{totatTreatmentCost} /=</td>
-              </tr>
-              <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Doctor Fee: </td>
-                <td className="p-3 pl-6"> {invoice.doctor_fee}</td>
+                <td className="p-3 text-right">Total Treatment Cost:</td>
+                <td className="p-3">{totalTreatmentCost.toFixed(2)} /=</td>
               </tr>
-              <tr className="mt-5 font-semibold text-black">
+              <tr className="font-semibold text-black dark:text-white">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Previous Due: </td>
-                <td className="p-3 pl-6">{invoice.previous_due}</td>
-              </tr>
-              <tr className="px-20">
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
-              </tr>
-              <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Total Cost: </td>
-                <td className="p-3 pl-6">
-                  {" "}
-                  {totatTreatmentCost +
-                    invoice.doctor_fee +
-                    invoice.previous_due}
-                </td>
+                <td className="p-3 text-right">Doctor Fee:</td>
+                <td className="p-3">{invoice.doctor_fee.toFixed(2)} /=</td>
               </tr>
-
-              <tr className="mt-5 font-semibold text-black">
-                <td className="p-3 pl-6 flex gap-3">
-                  <div className="">
+              <tr className="font-semibold text-black dark:text-white">
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3 text-right">Previous Due:</td>
+                <td className="p-3">{invoice.previous_due.toFixed(2)} /=</td>
+              </tr>
+              
+              {/* Separator */}
+              <tr>
+                <td colSpan={4} className="border-b border-gray-300 dark:border-[#15203c]"></td>
+              </tr>
+              
+              <tr className="font-semibold text-black dark:text-white">
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3 text-right">Total Cost:</td>
+                <td className="p-3">{totalCost.toFixed(2)} /=</td>
+              </tr>
+              
+              {/* Payment Section */}
+              <tr className="font-semibold text-black dark:text-white">
+                <td className="p-3 flex gap-3">
+                  <div>
                     <select
                       value={paymentInfo.payment_type}
                       onChange={handleChange}
                       name="payment_type"
-                      className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                      className="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     >
                       <option value="">Payment Type</option>
                       <option value="partial">Partial</option>
@@ -269,12 +316,12 @@ const EditInvoice: React.FC = () => {
                       <option value="due">Due</option>
                     </select>
                   </div>
-                  <div className="">
+                  <div>
                     <select
                       onChange={handleChange}
                       value={paymentInfo.payment_method}
                       name="payment_method"
-                      className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                      className="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     >
                       <option value="">Payment Method</option>
                       <option value="bkash">Bkash</option>
@@ -282,52 +329,63 @@ const EditInvoice: React.FC = () => {
                     </select>
                   </div>
                 </td>
-                <td className="p-3 pl-6">
+                <td className="p-3"></td>
+                <td className="p-3 text-right">
                   <p className="dark:text-white m-0 p-0 font-semibold text-black">
                     Paid Amount:
                   </p>
                 </td>
-                <td className="p-3 pl-6">
+                <td className="p-3">
                   <input
                     type="number"
                     name="paid_amount"
                     placeholder="Amount"
                     onChange={handleChange}
-                    value={invoice.paid_amount}
-                    className="h-[30px] rounded-md text-black text-[14px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[100px]"
+                    value={paymentInfo.paid_amount}
+                    min="0"
+                    max={totalCost}
+                    step="0.01"
+                    className="h-[40px] rounded-md text-black text-[14px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[120px]"
                   />
                 </td>
               </tr>
-              <tr className="px-20">
-                <td className="border-b-1 border-gray-300"></td>
-                <td className="border-b-1 border-gray-300"></td>
-                <td className="border-b-1 border-gray-300"></td>
+              
+              {/* Final Separator */}
+              <tr>
+                <td colSpan={4} className="border-b-2 border-gray-400 dark:border-[#15203c]"></td>
               </tr>
-              <tr className="mt-5 font-semibold text-black">
+              
+              {/* Total Due */}
+              <tr className="font-bold text-lg text-black dark:text-white">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Total Due: </td>
-                <td className="p-3 pl-6">3477 /= </td>
+                <td className="p-3"></td>
+                <td className="p-3 text-right">Total Due:</td>
+                <td className="p-3 text-green-600 dark:text-green-400">
+                  {totalDue.toFixed(2)} /=
+                </td>
               </tr>
             </tbody>
           </table>
-
-          <div className="mt-10 flex items-center justify-end">
+          
+          <div className="mt-10 flex items-center justify-end gap-4">
             <button
               type="button"
-              className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
+              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-gray-500 text-white hover:bg-gray-400"
+              onClick={() => window.history.back()}
             >
               Cancel
             </button>
             <button
-              type="submit"
-              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                  add
+                  {loading ? "hourglass_empty" : "save"}
                 </i>
-                {/* {loading ? "Submitting..." : "Create Invoice"} */}
-                Submit
+                {loading ? "Updating..." : "Update Invoice"}
               </span>
             </button>
           </div>
