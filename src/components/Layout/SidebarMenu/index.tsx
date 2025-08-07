@@ -1607,7 +1607,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                   width={18}
                   height={18}
                 />
-                <span className="title ms-4 leading-none">Invoice</span>
+                <span className="title ms-4 leading-none">Billing Records</span>
               </button>
 
               <div
