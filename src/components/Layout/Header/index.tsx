@@ -7,7 +7,7 @@ import DarkMode from "./DarkMode";
 import AppsMenu from "./AppsMenu";
 import ChooseLanguage from "./ChooseLanguage";
 import Fullscreen from "./Fullscreen";
-import Notifications from "./Notifications";
+// import Notifications from "./Notifications";
 import ProfileMenu from "./ProfileMenu";
 
 interface HeaderProps {
@@ -63,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({ toggleActive }) => {
 
             <Fullscreen />
 
-            <Notifications />
+            {/* <Notifications /> */}
 
             <ProfileMenu />
 

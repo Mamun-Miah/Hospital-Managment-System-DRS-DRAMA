@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from 'next-auth/react'
 import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SignOutButton from '@/components/SignOutButton';
@@ -51,13 +51,13 @@ const ProfileMenu: React.FC = () => {
           active ? "active" : ""
         }`}
       >
-        <Image
+        {/* <Image
           src="/images/admin.png"
           className="w-[35px] h-[35px] md:w-[42px] md:h-[42px] rounded-full ltr:md:mr-[2px] ltr:lg:mr-[8px] rtl:md:ml-[2px] rtl:lg:ml-[8px] border-[2px] border-primary-200 inline-block"
           alt="admin-image"
           width={35}
           height={35}
-        />
+        /> */}
         <span className="block font-semibold text-[0px] lg:text-base">
           {user?.name}
         </span>
@@ -66,7 +66,7 @@ const ProfileMenu: React.FC = () => {
 
       {active && (
         <div className="profile-menu-dropdown bg-white dark:bg-[#0c1427] transition-all shadow-3xl dark:shadow-none py-[22px] absolute mt-[13px] md:mt-[14px] w-[195px] z-[1] top-full ltr:right-0 rtl:left-0 rounded-md">
-          <div className="flex items-center border-b border-gray-100 dark:border-[#172036] pb-[12px] mx-[20px] mb-[10px]">
+          {/* <div className="flex items-center border-b border-gray-100 dark:border-[#172036] pb-[12px] mx-[20px] mb-[10px]">
             <Image
               src="/images/admin.png"
               className="rounded-full w-[31px] h-[31px] ltr:mr-[9px] rtl:ml-[9px] border-2 border-primary-200 inline-block"
@@ -78,9 +78,9 @@ const ProfileMenu: React.FC = () => {
               <span className="block text-black dark:text-white font-medium">
                 {user?.name}
               </span>
-              {/* <span className="block text-xs">Marketing Manager</span> */}
+            
             </div>
-          </div>
+          </div> */}
 
           <ul>
             <li>
@@ -96,7 +96,7 @@ const ProfileMenu: React.FC = () => {
                 My Profile
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/apps/chat/"
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
@@ -108,8 +108,8 @@ const ProfileMenu: React.FC = () => {
                 </i>
                 Messages
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link
                 href="/apps/to-do-list/"
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
@@ -121,8 +121,8 @@ const ProfileMenu: React.FC = () => {
                 </i>
                 My Task
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link
                 href="/ecommerce/checkout/"
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
@@ -134,7 +134,7 @@ const ProfileMenu: React.FC = () => {
                 </i>
                 Billing
               </Link>
-            </li>
+            </li> */}
           </ul>
 
           <div className="border-t border-gray-100 dark:border-[#172036] mx-[20px] my-[9px]"></div>
@@ -153,7 +153,7 @@ const ProfileMenu: React.FC = () => {
                 Settings
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/faq/"
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
@@ -165,8 +165,8 @@ const ProfileMenu: React.FC = () => {
                 </i>
                 Support
               </Link>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link
                 href="/authentication/lock-screen/"
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
@@ -178,7 +178,7 @@ const ProfileMenu: React.FC = () => {
                 </i>
                 Lock Screen
               </Link>
-            </li>
+            </li> */}
             <li>
               <button
               
