@@ -108,6 +108,7 @@ model Medicine {
 model Prescription {
   prescription_id        Int                         @id @default(autoincrement())
   patient_id             Int?
+  prescription_number    String                      @unique
   doctor_id              Int?
   total_cost             Int
   prescribed_at          DateTime                    @default(now())

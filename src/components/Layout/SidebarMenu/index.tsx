@@ -1572,7 +1572,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                           pathname === "/doctor/appointments/" ? "active" : ""
                         }`}
                       >
-                        Appointments
+                        Appointments Today
                       </Link>
                     </li>
 
