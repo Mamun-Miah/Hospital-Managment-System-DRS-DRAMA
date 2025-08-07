@@ -36,13 +36,13 @@ const InvoiceList: React.FC = () => {
   // search and pagination
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const totalItems = filteredInvoice.length;
+  const totalItems = filteredInvoice?.length;
   const itemsPerPage = 10;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentInvoice = filteredInvoice.slice(startIndex, endIndex);
+  const currentInvoice = filteredInvoice?.slice(startIndex, endIndex);
 
 
 
@@ -50,7 +50,7 @@ const InvoiceList: React.FC = () => {
 
 
   useEffect(() => {
-    const result: Invoice[] = invoices.filter(
+    const result: Invoice[] = invoices?.filter(
       (invoice) =>
         invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
         invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -190,7 +190,7 @@ const InvoiceList: React.FC = () => {
               </thead>
 
               <tbody className="text-black dark:text-white">
-                {currentInvoice.length > 0 ? (
+                {currentInvoice?.length > 0 ? (
                   currentInvoice.map((treatment) => (
                     <tr key={treatment.invoice_id}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
