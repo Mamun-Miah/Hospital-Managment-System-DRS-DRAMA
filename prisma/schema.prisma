@@ -168,13 +168,13 @@ enum DiscountType {
   Percentage
 }
 
-enum PaymentMethod {
+enum PaymentType {
   Partial
   Full
   Due
 }
 
-enum PaymentType {
+enum PaymentMethod {
   Bkash
   Cash
 }
