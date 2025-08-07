@@ -145,36 +145,38 @@ export default function Page() {
     let treatmentSubtotal = 0;
     // let medicineSubtotal = 0;
     const doctorFee = p.doctor_fee || 0;
-
     if (p.treatment_items.length > 0) {
-      treatmentSection += "Treatments:\n";
+      treatmentSection += "<strong>Treatments:</strong><br>";
       p.treatment_items.forEach((t) => {
         treatmentSubtotal += t.payable_treatment_amount || 0;
-        treatmentSection += `• ${t.treatment_name} (Fee: ৳${t.payable_treatment_amount}, Discount: ${t.discount_value}${t.discount_type === "Percentage" ? "%" : ""})\n`;
+        treatmentSection += `
+          • ${t.treatment_name}
+          (Fee: ৳${t.payable_treatment_amount}, 
+          Discount: ${t.discount_value}${t.discount_type === "Percentage" ? "%" : ""})<br>`;
       });
     }
 
     if (p.medicine_items.length > 0) {
-      medicineSection += "Medicines:\n";
+      medicineSection += "<strong>Medicines:</strong><br>";
       p.medicine_items.forEach((m) => {
-        medicineSection += `• ${m.medicine_name} (M-${m.dose_morning}, A-${m.dose_mid_day}, N-${m.dose_night}, ${m.duration_days} days)\n`;
+        medicineSection += `• ${m.medicine_name} (M-${m.dose_morning}, A-${m.dose_mid_day}, N-${m.dose_night}, ${m.duration_days} days)<br>`;
       });
     }
 
+
+
     let fullDescription = "";
+    if (treatmentSection) fullDescription += `${treatmentSection}<br>`;
+    if (medicineSection) fullDescription += `${medicineSection}`;
 
-    if (treatmentSection) fullDescription += `${treatmentSection}\n`;
-    if (medicineSection) fullDescription += `${medicineSection}\n`;
 
-    // fullDescription += `Advise:\n${p.advise}\n\nTotal cost: ৳${p.total_cost}`;
-    // fullDescription += `Advise:\n${p.advise}\n\nDoctor Fee: ৳${doctorFee}\nTreatment Fee: ৳${treatmentSubtotal}\nTotal cost: ৳${p.total_cost}`;
-    fullDescription += `Advise:\n${p.advise}\n\n`;
-
-    fullDescription += `Treatment Subtotal: ৳${treatmentSubtotal}\n`;
-    // fullDescription += `Medicine Subtotal: ৳${medicineSubtotal}\n`;
-    fullDescription += `Doctor Fee: ৳${doctorFee}\n`;
-    // fullDescription += `---------------------\n`;
-    fullDescription += `Total cost: ৳${p.total_cost}`;
+    if (p.advise && p.advise.trim() !== "") {
+      fullDescription += `Advise:${p.advise}<br><br>`;
+    }
+    fullDescription += `<h6>Cost Breakdown:</h6>`;
+    fullDescription += `- <strong>Treatment Subtotal:</strong> ৳${treatmentSubtotal}<br>`;
+    fullDescription += `- <strong>Doctor Fee:</strong> ৳${doctorFee}<br>`;
+    fullDescription += `<strong>Total Cost:</strong> ৳${p.total_cost}`;
 
 
     if (!groupedTimeline[dateKey]) {
@@ -239,31 +241,57 @@ export default function Page() {
 
     let invoiceDesc = "";
 
+    // if (p.invoice_number) {
+    //   invoiceDesc += `• Invoice #: ${p.invoice_number}`;
+    //   if (p.paid_at) {
+    //     const invoiceDate = new Date(p.paid_at).toISOString().split("T")[0];
+    //     invoiceDesc += ` (${invoiceDate})\n`;
+    //   } else {
+    //     invoiceDesc += `\n`;
+    //   }
+    // }
+
     if (p.invoice_number) {
-      invoiceDesc += `• Invoice #: ${p.invoice_number}`;
+      invoiceDesc += `• <strong>Invoice #:</strong> ${p.invoice_number}<br>`;
       if (p.paid_at) {
         const invoiceDate = new Date(p.paid_at).toISOString().split("T")[0];
-        invoiceDesc += ` (${invoiceDate})\n`;
-      } else {
-        invoiceDesc += `\n`;
+        invoiceDesc += `• <strong>Date:</strong> ${invoiceDate}<br>`;
       }
     }
 
+
+    // if (p.previous_due != null) {
+    //   invoiceDesc += `• Previous Due: ৳${p.previous_due}\n`;
+    // }
+
+    // if (p.amount != null) {
+    //   invoiceDesc += `• Paid Amount: ৳${p.amount}\n`;
+    // }
+
+    // if (p.previous_session_date) {
+    //   invoiceDesc += `• Previous Session Date: ${p.previous_session_date}\n`;
+    // }
+
+    // if (p.next_session_date) {
+    //   invoiceDesc += `• Next Session Date: ${p.next_session_date}\n`;
+    // }
+
     if (p.previous_due != null) {
-      invoiceDesc += `• Previous Due: ৳${p.previous_due}\n`;
+      invoiceDesc += `• <strong>Previous Due:</strong> ৳${p.previous_due}<br>`;
     }
 
     if (p.amount != null) {
-      invoiceDesc += `• Paid Amount: ৳${p.amount}\n`;
+      invoiceDesc += `• <strong>Paid Amount:</strong> ৳${p.amount}<br>`;
     }
 
     if (p.previous_session_date) {
-      invoiceDesc += `• Previous Session Date: ${p.previous_session_date}\n`;
+      invoiceDesc += `• <strong>Previous Session Date:</strong> ${p.previous_session_date}<br>`;
     }
 
     if (p.next_session_date) {
-      invoiceDesc += `• Next Session Date: ${p.next_session_date}\n`;
+      invoiceDesc += `• <strong>Next Session Date:</strong> ${p.next_session_date}<br>`;
     }
+
 
     // if (p.payment_method) {
     //   invoiceDesc += `• Payment Method: ${p.payment_method}\n`;
@@ -274,8 +302,9 @@ export default function Page() {
     // }
 
     if (p.due_amount != null) {
-      invoiceDesc += `• Total Due Amount: ৳${p.due_amount}\n`;
+      invoiceDesc += `• <strong>Total Due Amount</strong> ৳${p.due_amount}\n`;
     }
+
 
     groupedTimeline[dateKey].events.push({
       title: `Invoice Details:`,
@@ -343,9 +372,15 @@ export default function Page() {
                             {event.title}
                           </span>
                           {/* <p className="text-sm leading-[1.7] mb-[8px]"> */}
-                          <p className="text-sm leading-[1.7] mb-[8px] whitespace-pre-line">
+                          {/* <p className="text-sm leading-[1.7] mb-[8px] whitespace-pre-line">
                             {event.description}
-                          </p>
+                          </p> */}
+
+                          <p
+                            className="text-sm leading-[1.7] mb-[8px]"
+                            dangerouslySetInnerHTML={{ __html: event.description }}
+                          ></p>
+
 
                           {/* {event.participants.length > 0 && (
                             <div className="flex items-center mb-[8px]">
