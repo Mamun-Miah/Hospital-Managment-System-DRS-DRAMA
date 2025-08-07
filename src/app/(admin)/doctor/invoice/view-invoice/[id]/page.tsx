@@ -92,7 +92,7 @@ const ViewInvoice: React.FC = () => {
             <ul className="mb-[7px]">
               <li className="mb-[7px] text-md">Patient ID: <span className="text-black dark:text-white">{invoice.patient_id}</span></li>
               <li className="mb-[7px] text-md">Patient Name: <span className="text-black dark:text-white">{invoice.patient?.patient_name}</span></li>
-              <li className="mb-[7px] text-md">Previous Session: <span className="text-black dark:text-white">{formattedDate(invoice.previous_session_date)}</span></li>
+              <li className="mb-[7px] text-md">Previous Session: <span className="text-black dark:text-white">{formattedDate(invoice.invoice_creation_date)}</span></li>
               <li className="mb-[7px] text-md">Next Session: <span className="text-black dark:text-white">{formattedDate(invoice.next_session_date)}</span></li>
             </ul>
           </div>

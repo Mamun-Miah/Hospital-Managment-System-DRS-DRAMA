@@ -69,7 +69,7 @@ const CreateInvoice: React.FC = () => {
           <div>
             <div>
               <Image
-                src="/images/logo.png"
+                src="/images/logo.png" 
                 alt="logo"
                 className="mb-[10px] dark:hidden"
                 width={120}
