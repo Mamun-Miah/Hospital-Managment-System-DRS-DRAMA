@@ -254,7 +254,7 @@ console.log(treatments)
                   Treatment Cost
                 </th>
                 <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b">
-                  Discounted Amount
+                  Payable Treatment Amount
                 </th>
                 <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b">
                   Action

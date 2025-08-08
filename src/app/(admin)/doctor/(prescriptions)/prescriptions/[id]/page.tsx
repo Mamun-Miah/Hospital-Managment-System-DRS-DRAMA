@@ -743,7 +743,7 @@ useEffect(() => {
                 Discount Amount
               </label>
               <input
-                    // disabled={!formData.doctorDiscountType}
+                    disabled={!formData.doctorDiscountType}
                     name="doctorDiscountAmount"
                     type="number"
                     value={formData.doctorDiscountAmount}
@@ -752,7 +752,7 @@ useEffect(() => {
                     placeholder="Discount Amount"
                     className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
                       !formData.doctorDiscountType
-                        ? "bg-gray-50 dark:bg-gray-800"
+                        ? "bg-gray-100 dark:bg-gray-800"
                         : "bg-white dark:bg-[#0c1427]"
                     } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
                   />
@@ -763,21 +763,15 @@ useEffect(() => {
                 Payable Doctor Fees 
               </label>
               <input
-                  name="payableDoctorFee"
-                  disabled
+                 name="payableDoctorFee"
+                 disabled
                   type="number"
-                  value={
-                    formData.payableDoctorFee != null && !isNaN(formData.payableDoctorFee)
-                      ? formData.payableDoctorFee
-                      : formData.doctor_fee != null && !isNaN(formData.doctor_fee)
-                      ? formData.doctor_fee
-                      : ""
-                  }
+                  value={formData.payableDoctorFee ? formData.payableDoctorFee: formData.doctor_fee}
                   onClick={() => handleMouseEnter("payableDoctorFee")}
-                  onChange={handleChange}
-                  placeholder=""
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
-                />
+                onChange={handleChange}
+                placeholder=""
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+              />
             </div>
           </div>
         </div>
@@ -863,7 +857,7 @@ useEffect(() => {
                 </label>
                 <input
                     name="discountAmount"
-                    // disabled={!treatments[i].discountType}
+                    disabled={!treatments[i].discountType}
                     type="number"
                     value={treatments[i].discountAmount}
                     onChange={(e) =>
@@ -873,7 +867,7 @@ useEffect(() => {
                     placeholder="Discount Amount"
                     className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
                       !treatments[i].discountType
-                        ? "bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
+                        ? "bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                         : "bg-white dark:bg-[#0c1427]"
                     } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
                   />
