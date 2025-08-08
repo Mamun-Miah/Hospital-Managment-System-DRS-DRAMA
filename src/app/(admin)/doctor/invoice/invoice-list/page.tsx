@@ -349,7 +349,7 @@ useEffect(() => {
                              {treatment.payment_type === "Full" ? "Paid" : (treatment.payment_type ? treatment.payment_type : "Unpaid")}
                         </span>
                       </td>
-{/* 
+
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
                  {/* {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
@@ -391,44 +391,6 @@ useEffect(() => {
                             onClick={() =>
                               handleDelete(treatment.invoice_id)
                             }
-                            className="text-danger-500 leading-none custom-tooltip"
-                          >
-                            <i className="material-symbols-outlined !text-md">
-                              delete
-                            </i>
-                          </button>
-                        </div>
-                      </td> */}
-
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <div className="flex items-center gap-[9px]">
-                          {/* Conditional rendering for the "eye" button */}
-                          {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
-                            <button
-                              type="button"
-                              className="text-primary-500 leading-none custom-tooltip"
-                              // onClick={() => setOpen(true)}
-                            >
-                              <i className="material-symbols-outlined !text-md">
-                                visibility
-                              </i>
-                            </button>
-                          )}
-                          <Link href={`/doctor/invoice/create-invoice/${treatment.invoice_id}`}>
-                            <button
-                              type="button"
-                              className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
-                            >
-                              <i className="material-symbols-outlined !text-md">
-                                edit
-                              </i>
-                            </button>
-                          </Link>
-                          <button
-                            type="button"
-                            // onClick={() =>
-                            // handleDelete(treatment.treatmentName)
-                            // }
                             className="text-danger-500 leading-none custom-tooltip"
                           >
                             <i className="material-symbols-outlined !text-md">

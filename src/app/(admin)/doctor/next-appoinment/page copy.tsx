@@ -660,8 +660,3 @@ const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
 export default NextAppointmentList;
 
-<style jsx global>{`
-.pdf-only {
-  display: none !important;
-}
-`}</style>

@@ -27,10 +27,7 @@ interface Invoice {
   patient?: {
     patient_name: string;
   };
-  doctor?: { // <-- Update: The doctor object is now directly on the invoice
-    doctor_name: string;
-  };
-  // doctor_id: number;
+  doctor_name: string;
 }
 
 const ViewInvoice: React.FC = () => {
@@ -150,11 +147,10 @@ const ViewInvoice: React.FC = () => {
                 <li className="mb-[7px] text-md">
                   Patient ID: <span className="text-black dark:text-white">{invoice.patient_id}</span>
                 </li>
-                
 
                 {/* This li element is hidden on the screen but will be made visible for the PDF */}
                 <li className="mb-[7px] text-md pdf-only" style={{ display: "none" }}>
-                  Doctor Name: <span className="text-black dark:text-white">{invoice.doctor?.doctor_name}</span>
+                  Doctor ID: <span className="text-black dark:text-white">{invoice.doctor_name}</span>
                 </li>
 
                 <li className="mb-[7px] text-md">

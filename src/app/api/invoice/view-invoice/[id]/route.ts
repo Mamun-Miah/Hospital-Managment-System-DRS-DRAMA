@@ -16,6 +16,9 @@ export async function GET(
         patient: {
           select: { patient_name: true },
         },
+        doctor: {
+          select: { doctor_name: true },
+        },
         prescription: {
           select: {
             prescription_id: true,
@@ -70,6 +73,7 @@ export async function GET(
       {
         invoice,
         patient_name: invoice.patient?.patient_name ?? "",
+        doctor_name: invoice.doctor?.doctor_name ?? "N/A",
         previous_due: previousInvoice?.due_amount ?? 0,
         previous_invoice_number: previousInvoice?.invoice_number ?? null,
         treatments: formattedTreatments,
