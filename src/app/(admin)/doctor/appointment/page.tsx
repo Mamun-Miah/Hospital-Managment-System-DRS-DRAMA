@@ -347,7 +347,7 @@ const PatientsListTable: React.FC = () => {
                               <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
                                 Add
                               </i>
-                              Prescribed
+                              Prescribe
                             </span>
                           </Link>
                           <button

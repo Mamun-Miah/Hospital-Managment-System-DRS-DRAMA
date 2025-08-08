@@ -51,6 +51,7 @@ export async function GET(
       include: {
         treatment: {
           select: {
+            treatment_id:true,
             treatment_name: true,
             total_cost: true, // <-- This gets the cost from Treatmentlist
           },
@@ -59,6 +60,7 @@ export async function GET(
     });
 
     const formattedTreatments = treatments.map((t) => ({
+      treatment_id: t.treatment?.treatment_id,
       treatment_name: t.treatment?.treatment_name || "",
       treatment_cost: t.treatment?.total_cost ?? 0,
       discount_type: t.discount_type,
