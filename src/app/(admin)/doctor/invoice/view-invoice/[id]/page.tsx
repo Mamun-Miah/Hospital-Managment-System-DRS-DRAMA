@@ -5,6 +5,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import html2pdf from "html2pdf.js";
+import React from "react";
+import QRCode from "react-qr-code";
+
+
 
 interface Treatment {
   treatment_name: string;
@@ -38,6 +42,7 @@ const ViewInvoice: React.FC = () => {
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [treatments, setTreatments] = useState<Treatment[]>([]);
   const invoiceRef = useRef<HTMLDivElement | null>(null);
+  const invoiceUrl = `http://localhost:3000/doctor/invoice/view-invoice/${id}`;
 
   const totalTreatmentCost: number = treatments.reduce(
     (acc, item) => acc + item.payable_treatment_amount,
@@ -69,10 +74,15 @@ const ViewInvoice: React.FC = () => {
     // Clone the element so we can modify it for the PDF without affecting the visible UI
     const clone = invoiceRef.current.cloneNode(true) as HTMLElement;
 
+
     // Find the element with the "pdf-only" class and change its display style to make it visible
     const doctorIdElement = clone.querySelector(".pdf-only");
+    const qrCodeIdElement = clone.querySelector(".pdf-qr-only");
     if (doctorIdElement) {
         (doctorIdElement as HTMLElement).style.display = "block";
+    }
+    if (qrCodeIdElement) {
+        (qrCodeIdElement as HTMLElement).style.display = "block";
     }
 
     const options = {
@@ -145,6 +155,8 @@ const ViewInvoice: React.FC = () => {
               </ul>
             </div>
 
+
+
             <div className="mt-[20px] sm:mt-0">
               <ul className="mb-[7px]">
                 <li className="mb-[7px] text-md">
@@ -167,6 +179,16 @@ const ViewInvoice: React.FC = () => {
                   Next Session: <span className="text-black dark:text-white">{formattedDate(invoice.next_session_date)}</span>
                 </li>
               </ul>
+            </div>
+            {/* <div className="pdf-qr-only"  style={{ marginTop: "20px",  display:"none"}}> */}
+            
+            <div className="pdf-qr-only sm:absolute sm:top-0 sm:right-0" style={{display:"none"}}>
+              {/* <p>Scan this QR code to view the invoice online:</p> */}
+              <QRCode
+                value={invoiceUrl}
+                size={64}       // size in px
+                level="H"        // error correction level
+              />
             </div>
           </div>
         </div>
