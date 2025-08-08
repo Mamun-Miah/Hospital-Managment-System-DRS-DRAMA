@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 interface Patient {
   patient_id: number;
@@ -26,6 +28,7 @@ interface Patient {
 }
 
 const ViewPatientDetails: React.FC = () => {
+  const router = useRouter();
   const params = useParams();
   const patientId = params?.id;
   const [formData, setFormData] = useState<Patient | null>(null);
@@ -95,7 +98,13 @@ console.log(formData)
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Update failed");
 
-      alert("Patient updated successfully!");
+      Swal.fire({
+          icon: "success",
+          title: "Patient Updated successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
+      router.push('/doctor/patients-list/');
     } catch (err) {
       setError(err instanceof Error ? err.message : "Update failed");
     } finally {
@@ -118,8 +127,8 @@ console.log(formData)
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Patient Name
-                </label>
+                  Patient Name <span className="text-danger-800">*</span>
+                </label> 
                 <input
                   name="patient_name"
                   type="text"
@@ -132,7 +141,7 @@ console.log(formData)
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Mobile Number
+                  Mobile Number <span className="text-danger-800">*</span>
                 </label>
                 <input
                   name="mobile_number"

@@ -1,11 +1,14 @@
 'use client';
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import Swal from 'sweetalert2';
 
 export default function EditDoctor() {
+  const router = useRouter();
   const params = useParams();
    const doctorIds = params?.id;
   //  console.log("Fetched doctor ID:", doctorIds);
@@ -131,7 +134,14 @@ const handleRemoveImage = (index: number) => {
            throw new Error(data.error || "Failed to add patient");
          }
    
-         alert("Patient added successfully!");
+            Swal.fire({
+              
+              icon: "success",
+              title: "Doctor Updated successfully!",
+              showConfirmButton: false,
+              timer: 1500
+          });
+         router.push('/doctor/doctor-list/');
          setFormData({
            doctorName: "",
             phone_number: "",
@@ -192,7 +202,7 @@ const handleRemoveImage = (index: number) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px] md:gap-[25px]">
                   <div>
                     <label className="mb-[10px] text-black dark:text-white font-medium block">
-                      Doctor Name *
+                      Doctor Name <span className="text-danger-800">*</span>
                     </label>
                     <input
                       name="doctorName"
@@ -206,7 +216,7 @@ const handleRemoveImage = (index: number) => {
                   </div>
                   <div>
                     <label className="mb-[10px] text-black dark:text-white font-medium block">
-                      Mobile Number *
+                      Mobile Number <span className="text-danger-800">*</span>
                     </label>
                     <input
                       name="phone_number"
@@ -307,7 +317,7 @@ const handleRemoveImage = (index: number) => {
 
                   <div>
                     <label className="mb-[10px] text-black dark:text-white font-medium block">
-                      Doctor Fee
+                      Doctor Visit Fee <span className="text-danger-800">*</span>
                     </label>
                     <input
                       name="doctorFee"
@@ -315,6 +325,7 @@ const handleRemoveImage = (index: number) => {
                       placeholder="Enter Doctor Fee"
                       value={formData.doctorFee}
                       onChange={handleChange}
+                      required
                       className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     />
                   </div>
@@ -425,7 +436,7 @@ const handleRemoveImage = (index: number) => {
                           <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                             add
                           </i>
-                          {loading ? "Submitting..." : "Add Doctor"}
+                          {loading ? "Submitting..." : "Update Doctor"}
                     </span>
                   </button>
                 </div>

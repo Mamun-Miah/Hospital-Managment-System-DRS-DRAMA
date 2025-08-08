@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const AddTreatmentComponent: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     treatment_name: "",
     total_cost: "",
@@ -40,8 +43,13 @@ const AddTreatmentComponent: React.FC = () => {
         throw new Error(data.error || "Failed to add patient");
       }
 
-      alert("Treatment added successfully!");
-      
+      Swal.fire({
+          icon: "success",
+          title: "Treatment added successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
+      router.push('/doctor/add-treatment/treatment-list/');
       setFormData({
         treatment_name: "",
         total_cost: "",
@@ -82,8 +90,8 @@ const AddTreatmentComponent: React.FC = () => {
             </div> */}
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Treatment Name
-              </label>
+                Treatment Name <span className="text-danger-800">*</span>
+              </label> 
               <input
                 name="treatment_name"
                 type="text"
@@ -96,7 +104,7 @@ const AddTreatmentComponent: React.FC = () => {
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Total Cost
+                Total Cost <span className="text-danger-800">*</span>
               </label>
               <input
                 name="total_cost"
@@ -104,6 +112,7 @@ const AddTreatmentComponent: React.FC = () => {
                 placeholder="Total Treatment Cost"
                 value={formData.total_cost}
                 onChange={handleChange}
+                required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
@@ -111,12 +120,13 @@ const AddTreatmentComponent: React.FC = () => {
 
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Treatment Duration
+                Treatment Duration <span className="text-danger-800">*</span>
               </label>
               <select
                 name="duration_months"
                 value={formData.duration_months}
                 onChange={handleChange}
+                required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
                 <option value="">Select Duration</option>

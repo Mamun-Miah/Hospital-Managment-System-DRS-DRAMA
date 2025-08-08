@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const AddPatientForm: React.FC = () => {
   const router = useRouter();
@@ -118,7 +119,12 @@ const AddPatientForm: React.FC = () => {
         throw new Error(data.error || "Failed to add patient");
       }
 
-      // alert("Patient added successfully!");
+      Swal.fire({
+          icon: "success",
+          title: "Patient added successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
       router.push('/doctor/patients-list/');
 
       setFormData({
@@ -258,15 +264,16 @@ console.log(formData);
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Select Gender
+                Select Gender <span className="text-danger-800">*</span>
               </label>
               <select
                 name="gender"
                 value={formData.gender}
+                required
                 onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
-                <option value="">Select Gender</option>
+                <option value="">Select Gender </option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
@@ -347,7 +354,7 @@ console.log(formData);
                 placeholder="Enter Next Appoinment"
                 value={formData.setNextAppoinmnets}
                 onChange={handleChange}
-                required
+                // required
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
