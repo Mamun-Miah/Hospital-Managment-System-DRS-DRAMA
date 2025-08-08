@@ -243,7 +243,7 @@ const InvoiceList: React.FC = () => {
                               </i>
                             </button>
                           </Link>
-                          <Link
+                          {/* <Link
                             href={`/doctor/edit-prescription/${treatment.prescription_id}`}
                           >
                             <button
@@ -254,7 +254,7 @@ const InvoiceList: React.FC = () => {
                                 edit
                               </i>
                             </button>
-                          </Link>
+                          </Link> */}
                           <button
                             onClick={() => handleView(treatment.patient_id)}
                           >
@@ -432,7 +432,7 @@ const InvoiceList: React.FC = () => {
                                 </i>
                               </button>
                             </Link>
-                            <Link
+                            {/* <Link
                               href={`/doctor/edit-prescription/${treatment.prescription_id}`}
                             >
                               <button
@@ -443,7 +443,7 @@ const InvoiceList: React.FC = () => {
                                   edit
                                 </i>
                               </button>
-                            </Link>
+                            </Link> */}
                           </div>
                         </td>
                       </tr>
