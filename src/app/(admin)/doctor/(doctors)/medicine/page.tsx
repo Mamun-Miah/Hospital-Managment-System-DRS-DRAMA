@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 interface Medicine {
   medicine_id: string;
@@ -51,7 +52,33 @@ const MedicineList: React.FC = () => {
   }, [search, allMedicine]);
 
   const handleDelete = async (medicine_id: string) => {
-    if (confirm("Are you sure you want to delete this Medicine?")) {
+     const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: true
+      });
+   
+      swalWithBootstrapButtons.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+      }).then (async(result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire({
+ 
+            title: "Deleted!",
+            text: "Has been successfully deleted.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          
       try {
         const response = await fetch(
           `/api/medicine/delete-medicine/${medicine_id}`,
@@ -70,7 +97,8 @@ const MedicineList: React.FC = () => {
       } catch (error) {
         console.error("Error deleting treatment:", error);
       }
-    }
+      }
+      });
   };
 
   // Handle page change

@@ -2,8 +2,10 @@
 
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 const EditMedicineComponent: React.FC = () => {
+  const router = useRouter();
   const params = useParams();
   const medicineId = params?.id as string;
 
@@ -81,8 +83,13 @@ const EditMedicineComponent: React.FC = () => {
         throw new Error(data.error || "Failed to update medicine");
       }
 
-      alert("Medicine updated successfully!");
-
+      Swal.fire({
+          icon: "success",
+          title: "Medicine Updated successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
+router.push('/doctor/medicine/');
       setFormData({
         medicineName: "",
         brandName: "",
