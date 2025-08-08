@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 interface Invoice {
   invoice_id: number;
@@ -105,55 +105,55 @@ useEffect(() => {
      fetchInvoiceList();
    }, []);
 
-   const handleDelete = async (id: number) => {
+  //  const handleDelete = async (id: number) => {
    
-       //Sweet Alert for confirmation
-         const swalWithBootstrapButtons = Swal.mixin({
-           customClass: {
-             confirmButton: "btn btn-success",
-             cancelButton: "btn btn-danger"
-           },
-           buttonsStyling: true
-         });
+  //      //Sweet Alert for confirmation
+  //        const swalWithBootstrapButtons = Swal.mixin({
+  //          customClass: {
+  //            confirmButton: "btn btn-success",
+  //            cancelButton: "btn btn-danger"
+  //          },
+  //          buttonsStyling: true
+  //        });
       
-         swalWithBootstrapButtons.fire({
-           title: "Are you sure?",
-           text: "You won't be able to revert this!",
-           icon: "warning",
-           showCancelButton: true,
-           confirmButtonText: "Yes, delete it!",
-           cancelButtonText: "No, cancel!",
-           reverseButtons: true
-         }).then (async(result) => {
-           if (result.isConfirmed) {
-             swalWithBootstrapButtons.fire({
+  //        swalWithBootstrapButtons.fire({
+  //          title: "Are you sure?",
+  //          text: "You won't be able to revert this!",
+  //          icon: "warning",
+  //          showCancelButton: true,
+  //          confirmButtonText: "Yes, delete it!",
+  //          cancelButtonText: "No, cancel!",
+  //          reverseButtons: true
+  //        }).then (async(result) => {
+  //          if (result.isConfirmed) {
+  //            swalWithBootstrapButtons.fire({
    
-               title: "Deleted!",
-               text: "Invoice Has been successfully deleted.",
-               icon: "success",
-               showConfirmButton: false,
-               timer: 1500
-             });
-   //Sweet Alert for confirmation ends here
-              try {
-                   const response = await fetch(`/api/invoice/delete-invoice/${id}`, {
-                     method: "DELETE",
-                   });
-                   if (!response.ok) {
-                     throw new Error("Failed to delete invoice");
-                   }
+  //              title: "Deleted!",
+  //              text: "Invoice Has been successfully deleted.",
+  //              icon: "success",
+  //              showConfirmButton: false,
+  //              timer: 1500
+  //            });
+  //  //Sweet Alert for confirmation ends here
+  //             try {
+  //                  const response = await fetch(`/api/invoice/delete-invoice/${id}`, {
+  //                    method: "DELETE",
+  //                  });
+  //                  if (!response.ok) {
+  //                    throw new Error("Failed to delete invoice");
+  //                  }
                  
-                   // Remove the deleted doctor from the state
-                   setInvoices((prevInvoices) =>
-                     prevInvoices.filter((invoice) => invoice.invoice_id !== id)
-                   );
-                 } catch (error) {
-                   console.error("Error deleting Invoice:", error);
-                 }
-           }
-         });
+  //                  // Remove the deleted doctor from the state
+  //                  setInvoices((prevInvoices) =>
+  //                    prevInvoices.filter((invoice) => invoice.invoice_id !== id)
+  //                  );
+  //                } catch (error) {
+  //                  console.error("Error deleting Invoice:", error);
+  //                }
+  //          }
+  //        });
    
-     }
+  //    }
 console.log(currentInvoice)
   return (
     <>
@@ -386,7 +386,7 @@ console.log(currentInvoice)
                             </button>
                           </Link>
 
-                          <button
+                          {/* <button
                             type="button"
                             onClick={() =>
                               handleDelete(treatment.invoice_id)
@@ -396,7 +396,7 @@ console.log(currentInvoice)
                             <i className="material-symbols-outlined !text-md">
                               delete
                             </i>
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
