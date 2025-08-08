@@ -38,6 +38,7 @@ const PatientsHistoryTable: React.FC = () => {
   //modal state
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  console.log(setSelectedPatient)
 //end modal state
   const [allPatients, setAllPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
@@ -110,7 +111,6 @@ const PatientsHistoryTable: React.FC = () => {
 
 
 //view patient details in modal
-
 // const handleViewClick = async (id: number) => {
 //   try {
 //     // const res = await fetch(`/api/patient/viewpatient/${id}`); // Adjust path based on your route
@@ -123,7 +123,6 @@ const PatientsHistoryTable: React.FC = () => {
 //     console.error("Error fetching patient:", error);
 //   }
 // };
-
 
 
 
@@ -226,7 +225,7 @@ const PatientsHistoryTable: React.FC = () => {
                             <button
                               type="button"
                               className="text-primary-500 leading-none custom-tooltip"
-                              onClick={() => router.push(`patient-history/list/see-patient-history/${patient.patient_id}`)}
+                              onClick={() => router.push(`/doctor/patient-history/list/see-patient-history/${patient.patient_id}`)}
                               
                             >
                               <i className="material-symbols-outlined !text-md">visibility</i>
