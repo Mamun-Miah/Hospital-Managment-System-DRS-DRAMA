@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const AddMedicineComponent: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     medicineName: "",
     // quantity: "",
@@ -42,8 +45,14 @@ const AddMedicineComponent: React.FC = () => {
         throw new Error(data.error || "Failed to add patient");
       }
 
-      alert("Medicine added successfully!");
-      
+      Swal.fire({
+          
+          icon: "success",
+          title: "Medicine added successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
+      router.push('/doctor/medicine/');
       setFormData({
         medicineName: "",
         brandName: "",
