@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { generateInvoiceNumber } from "@/lib/invoice";
-import { generatePrescriptionNumber } from "@/lib/prescriptionIdGeneration"; // <-- Make sure this function exists
+import { generatePrescriptionNumber } from "@/lib/prescriptionIdGeneration";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const {
       patient_id,
       doctor_name,
-      doctor_fee, 
+      doctor_fee,
       doctorDiscountType,
       doctorDiscountAmount,
       payableDoctorFee,
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       treatments,
     } = data;
 
-    // Find doctor by name
+    // Find doctor
     const doctor = await prisma.doctor.findFirst({
       where: { doctor_name },
     });
@@ -31,18 +31,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
 
-
-      const prescriptionNumber = await generatePrescriptionNumber(
+    // Generate prescription number
+    const prescriptionNumber = await generatePrescriptionNumber(
       patient_id,
       doctor.doctor_id
     );
-    
 
     // Create prescription
     const prescription = await prisma.prescription.create({
       data: {
         patient_id,
-        prescription_number:prescriptionNumber,
+        prescription_number: prescriptionNumber,
         doctor_id: doctor.doctor_id,
         total_cost: parseInt(totalPayableAmount || "0"),
         is_drs_derma: is_drs_derma || "No",
@@ -63,9 +62,6 @@ export async function POST(req: NextRequest) {
     });
 
     const prescriptionId = prescription.prescription_id;
-
-    // Generate and update prescription_number
-   
 
     // Save medicines
     if (Array.isArray(medicines)) {
@@ -130,6 +126,25 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // --- Check previous due from latest invoice ---
+    let previousDue = 0;
+    let newDueAmount = 0;
+
+    const latestInvoice = await prisma.invoice.findFirst({
+      where: { patient_id },
+      orderBy: { invoice_creation_date: "desc" },
+    });
+
+      if (
+      latestInvoice &&
+      typeof latestInvoice.due_amount === "number" &&
+      latestInvoice.due_amount > 0
+    ) {
+      previousDue = latestInvoice.due_amount;
+      newDueAmount = previousDue; // starting due
+    }
+
+
     // Generate invoice number
     const invoiceNumber = await generateInvoiceNumber(patient_id);
 
@@ -139,11 +154,11 @@ export async function POST(req: NextRequest) {
         invoice_number: invoiceNumber,
         patient_id: patient_id,
         doctor_id: doctor.doctor_id,
-        previous_due: 0,
+        previous_due: previousDue,
         total_treatment_cost: 0,
         paid_amount: 0,
         doctor_fee: parseInt(doctor_fee || "0"),
-        due_amount: 0,
+        due_amount: newDueAmount, // carry forward the due
         invoice_creation_date: new Date(),
         next_session_date: next_appoinment ? new Date(next_appoinment) : null,
         prescription_id: prescriptionId,
@@ -161,7 +176,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: "Prescription and Invoice saved successfully",
       prescription_id: prescriptionId,
-      prescription_number: prescriptionNumber, // <-- Return it in response
+      prescription_number: prescriptionNumber,
       invoice_id: invoice.invoice_id,
       invoice_number: invoice.invoice_number,
     });

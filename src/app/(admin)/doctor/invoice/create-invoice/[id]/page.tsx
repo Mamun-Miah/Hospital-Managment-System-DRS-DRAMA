@@ -176,7 +176,7 @@ const EditInvoice: React.FC = () => {
   }, [id]);
 
   if (!invoice) return <p>Loading...</p>;
-
+console.log(invoice)
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">

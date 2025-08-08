@@ -2,8 +2,8 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
- request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const id = (await params).id;
   const invoiceId = parseInt(id, 10);
@@ -13,6 +13,7 @@ export async function PATCH(
 
     const {
       payment_method,
+      patient_id,
       payment_type,
       previous_due,
       total_treatment_cost,
@@ -34,21 +35,61 @@ export async function PATCH(
       );
     }
 
-    // 2. Update fields with explicit undefined checks
+    let resolvedPreviousDue = previous_due;
+
+    // 2. If no previous_due passed, fetch latest previous invoice for same patient
+    if (resolvedPreviousDue === undefined && patient_id) {
+      const latestPreviousInvoice = await prisma.invoice.findFirst({
+        where: {
+          patient_id,
+          invoice_id: { not: invoiceId },
+        },
+        orderBy: { invoice_creation_date: "desc" },
+      });
+
+      if (latestPreviousInvoice) {
+        resolvedPreviousDue = latestPreviousInvoice.due_amount ?? 0;
+      } else {
+        resolvedPreviousDue = 0; // No previous invoice found
+      }
+    }
+
+    // 3. Update fields
     const updatedInvoice = await prisma.invoice.update({
       where: { invoice_id: invoiceId },
       data: {
-        payment_method: payment_method !== undefined ? payment_method : existingInvoice.payment_method,
-        payment_type: payment_type !== undefined ? payment_type : existingInvoice.payment_type,
-        previous_due: previous_due !== undefined ? previous_due : existingInvoice.previous_due,
-        total_treatment_cost: total_treatment_cost !== undefined ? total_treatment_cost : existingInvoice.total_treatment_cost,
-        paid_amount: paid_amount !== undefined ? paid_amount : existingInvoice.paid_amount,
-        doctor_fee: doctor_fee !== undefined ? doctor_fee : existingInvoice.doctor_fee,
-        due_amount: due_amount !== undefined ? due_amount : existingInvoice.due_amount,
+        payment_method:
+          payment_method !== undefined
+            ? payment_method
+            : existingInvoice.payment_method,
+        payment_type:
+          payment_type !== undefined
+            ? payment_type
+            : existingInvoice.payment_type,
+        previous_due:
+          resolvedPreviousDue !== undefined
+            ? resolvedPreviousDue
+            : existingInvoice.previous_due,
+        total_treatment_cost:
+          total_treatment_cost !== undefined
+            ? total_treatment_cost
+            : existingInvoice.total_treatment_cost,
+        paid_amount:
+          paid_amount !== undefined
+            ? paid_amount
+            : existingInvoice.paid_amount,
+        doctor_fee:
+          doctor_fee !== undefined
+            ? doctor_fee
+            : existingInvoice.doctor_fee,
+        due_amount:
+          due_amount !== undefined
+            ? due_amount
+            : existingInvoice.due_amount,
       },
     });
 
-    // 3. Save treatment IDs (if provided)
+    // 4. Save treatment IDs (if provided)
     if (Array.isArray(treatment_ids)) {
       await prisma.invoiceTreatment.deleteMany({
         where: { invoice_id: invoiceId },
