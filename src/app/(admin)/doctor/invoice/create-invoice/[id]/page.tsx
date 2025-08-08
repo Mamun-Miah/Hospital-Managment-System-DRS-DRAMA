@@ -221,12 +221,12 @@ console.log(treatments)
                 </span>
               </li>
               <li className="mb-[7px] text-md">
-                <span>Previous Session: </span>
+                {/* <span>Previous Session: </span>
                 <span className="text-black dark:text-white">
                   {invoice?.previous_session_date
                     ? formattedDate(invoice.previous_session_date)
                     : "N/A"}
-                </span>
+                </span> */}
               </li>
               <li className="mb-[7px] text-md">
                 <span>Next Session: </span>
@@ -294,20 +294,20 @@ console.log(treatments)
               <tr className="font-semibold text-black dark:text-white">
                 <td></td>
                 <td></td>
-                <td className="text-right">Total Treatment Cost:</td>
-                <td>{totalTreatmentCost.toFixed(2)} /=</td>
+                <td className="text-right">Total Treatment Cost: </td>
+                <td><span className="me-3">    </span> {totalTreatmentCost.toFixed(2)} /=</td>
               </tr>
               <tr className="font-semibold text-black dark:text-white">
                 <td></td>
                 <td></td>
                 <td className="text-right">Doctor Fee:</td>
-                <td>{invoice.doctor_fee.toFixed(2)} /=</td>
+                <td><span className="me-3">    </span>{invoice.doctor_fee.toFixed(2)} /=</td>
               </tr>
               <tr className="font-semibold text-black dark:text-white">
                 <td></td>
                 <td></td>
                 <td className="text-right">Previous Due:</td>
-                <td>{invoice.previous_due.toFixed(2)} /=</td>
+                <td><span className="me-3">    </span>{invoice.previous_due.toFixed(2)} /=</td>
               </tr>
 
               {/* Total Cost */}
@@ -318,7 +318,7 @@ console.log(treatments)
                 <td></td>
                 <td></td>
                 <td className="text-right">Total Cost:</td>
-                <td>{totalCost.toFixed(2)} /=</td>
+                <td><span className="me-3">    </span>{totalCost.toFixed(2)} /=</td>
               </tr>
 
               {/* Payment Section */}
@@ -373,7 +373,7 @@ console.log(treatments)
                 <td></td>
                 <td></td>
                 <td className="text-right">Total Due:</td>
-                <td className="text-green-600">{totalDue.toFixed(2)} /=</td>
+                <td className="text-green-600"><span className="me-3">    </span>{totalDue.toFixed(2)} /=</td>
               </tr>
             </tbody>
           </table>

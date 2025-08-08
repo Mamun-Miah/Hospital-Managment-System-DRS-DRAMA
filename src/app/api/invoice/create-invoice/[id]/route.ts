@@ -2,10 +2,11 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+ request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const invoiceId = parseInt(params.id, 10);
+  const id = (await params).id;
+  const invoiceId = parseInt(id, 10);
 
   try {
     const body = await request.json();
