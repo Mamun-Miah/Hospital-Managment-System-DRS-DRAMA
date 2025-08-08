@@ -367,6 +367,7 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
     setFormData((prev) => ({
       ...prev,
       doctor_name: value,
+      payableDoctorFee:Number(selectedDoctor?.doctor_fee) || 0,
       doctor_fee: Number(selectedDoctor?.doctor_fee) || 0,
     }));
 
@@ -416,6 +417,8 @@ const handleChangeTreatment = (
       newData = {
         ...newData,
         treatment_name: value.toString(),
+        treatmentCost: selected ? selected.total_cost : "",
+
         treatmentAmount2: selected ? selected.total_cost : "",
         duration: selected ? Number(selected.duration_months) : 0,
       };
@@ -586,7 +589,8 @@ useEffect(() => {
     totalPayableAmount: totalPayable.toString(),
   }));
 }, [formData.payableDoctorFee, treatments]);
-
+console.log(formData)
+console.log(treatments)
 
   return (
     <form onSubmit={handleSubmit}>
