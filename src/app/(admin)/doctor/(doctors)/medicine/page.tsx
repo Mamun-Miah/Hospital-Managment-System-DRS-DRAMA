@@ -73,7 +73,7 @@ const MedicineList: React.FC = () => {
           swalWithBootstrapButtons.fire({
  
             title: "Deleted!",
-            text: "Has been successfully deleted.",
+            text: "Medicine Has been successfully deleted.",
             icon: "success",
             showConfirmButton: false,
             timer: 1500

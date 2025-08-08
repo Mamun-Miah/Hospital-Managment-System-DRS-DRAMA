@@ -2,10 +2,12 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
+
 import { useParams } from "next/navigation";
 // import { NextResponse } from "next/server";
 import { useEffect, useState } from "react";
 import Select, { StylesConfig, GroupBase } from "react-select";
+import Swal from 'sweetalert2';
 
 interface FormData {
   patient_id: string;
@@ -274,6 +276,13 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     console.log("Prescription created:", result.prescription);
+
+    Swal.fire({
+          icon: "success",
+          title: "Prescribed successfully!",
+          showConfirmButton: false,
+          timer: 1500
+      });
     // alert("Prescription saved successfully!");
     router.push('/doctor/appointment/');
     
@@ -720,14 +729,13 @@ useEffect(() => {
               <select
                 name="doctorDiscountType"
                  value={formData.doctorDiscountType}
-                 required
                  onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
                 <option value="">Select Option</option>
                 <option value="Percentage">Percentage</option>
                 <option value="Flat Rate">Flat Rate</option>
-                <option value="No Discount">No Discount</option>
+                {/* <option value="No Discount">No Discount</option> */}
               </select>
             </div>
             <div>
@@ -735,28 +743,41 @@ useEffect(() => {
                 Discount Amount
               </label>
               <input
-                name="doctorDiscountAmount"
-                type="number"
-                value={formData.doctorDiscountAmount}
-                onClick={() => handleMouseEnter("doctorDiscountAmount")}
-                onChange={handleChange}
-                placeholder="Dicount Amount"
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
-              />
+                    // disabled={!formData.doctorDiscountType}
+                    name="doctorDiscountAmount"
+                    type="number"
+                    value={formData.doctorDiscountAmount}
+                    onClick={() => handleMouseEnter("doctorDiscountAmount")}
+                    onChange={handleChange}
+                    placeholder="Discount Amount"
+                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
+                      !formData.doctorDiscountType
+                        ? "bg-gray-50 dark:bg-gray-800"
+                        : "bg-white dark:bg-[#0c1427]"
+                    } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
+                  />
+
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Payable Doctor Fees 
               </label>
               <input
-                 name="payableDoctorFee"
+                  name="payableDoctorFee"
+                  disabled
                   type="number"
-                  value={formData.payableDoctorFee}
+                  value={
+                    formData.payableDoctorFee != null && !isNaN(formData.payableDoctorFee)
+                      ? formData.payableDoctorFee
+                      : formData.doctor_fee != null && !isNaN(formData.doctor_fee)
+                      ? formData.doctor_fee
+                      : ""
+                  }
                   onClick={() => handleMouseEnter("payableDoctorFee")}
-                onChange={handleChange}
-                placeholder="Dicount Amount"
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
-              />
+                  onChange={handleChange}
+                  placeholder=""
+                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+                />
             </div>
           </div>
         </div>
@@ -820,7 +841,7 @@ useEffect(() => {
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Discount Type
+                  Treatment Discount Type
                 </label>
                 <select
                   name="discountType"
@@ -833,7 +854,7 @@ useEffect(() => {
                   <option value="">Select Option</option>
                   <option value="Percentage">Percentage</option>
                   <option value="Flat Rate">Flat Rate</option>
-                  <option value="No Discount">No Discount</option>
+                  {/* <option value="No Discount">No Discount</option> */}
                 </select>
               </div>
               <div>
@@ -841,17 +862,22 @@ useEffect(() => {
                   Discount Amount
                 </label>
                 <input
-                 name="discountAmount"
+                    name="discountAmount"
+                    // disabled={!treatments[i].discountType}
                     type="number"
                     value={treatments[i].discountAmount}
-                    
                     onChange={(e) =>
                       handleChangeTreatment("discountAmount", i, e.target.value)
                     }
                     onClick={() => handleMouseEnter("discountAmount")}
-                  placeholder="Dicount Amount"
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
-                />
+                    placeholder="Discount Amount"
+                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
+                      !treatments[i].discountType
+                        ? "bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
+                        : "bg-white dark:bg-[#0c1427]"
+                    } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
+                  />
+
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -869,7 +895,7 @@ useEffect(() => {
                   type="number"
                   placeholder='Payable Treatment Cost'
                   value={
-                    treatments[i].treatmentCost
+                    treatments[i].treatmentCost ? treatments[i].treatmentCost: treatments[i].treatmentAmount2
                   }
                   
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -1059,32 +1085,7 @@ useEffect(() => {
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
-              onClick={() =>
-                setFormData({
-                  patient_id: formData.patient_id,
-                  patient_name: formData.patient_name,
-                  doctor_name: "",
-                  doctor_fee: formData.doctor_fee,
-                  treatment_name: "",
-                  treatmentAmount2: formData.treatmentAmount2,
-                  treatmentCost:"",
-                  treatmentDuration: formData.treatmentDuration,
-                  payableDoctorFee: 0, 
-                  doctorDiscountType: "", 
-                  doctorDiscountAmount: 0, 
-                  medicine_name: "",
-                  advise: "",
-                  totalPayableAmount: "",
-                  gender: "",
-                  mobile_number:0,
-                  age: 0,
-                  city: "",
-                  weight: "",
-                  blood_group: "",
-                  is_drs_derma:"",
-                  next_appoinment:""
-                })
-              }
+               onClick={() => router.push('/doctor/appointment/')}
             >
               Cancel
             </button>
@@ -1096,7 +1097,7 @@ useEffect(() => {
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                   add
                 </i>
-                {loading ? "Submitting..." : "Add Appointment"}
+                {loading ? "Submitting..." : "Presribe"}
               </span>
             </button>
           </div>
