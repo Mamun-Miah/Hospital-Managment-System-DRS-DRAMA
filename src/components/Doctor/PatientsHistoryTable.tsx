@@ -38,6 +38,7 @@ const PatientsHistoryTable: React.FC = () => {
   //modal state
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  console.log(setSelectedPatient)
 //end modal state
   const [allPatients, setAllPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
