@@ -150,7 +150,7 @@ const ViewInvoice: React.FC = () => {
               <tr className="mt-5  text-black">
                 <td className="p-3"></td>
                 <td className="p-3 pl-6">Previous Due: </td>
-                <td className="p-3 pl-6">Tk. {invoice.due_amount}</td>
+                <td className="p-3 pl-6">Tk. {invoice.previous_due}</td>
               </tr>
               <tr className="px-20">
                 <td className="border-b-1 border-gray-200"></td>
