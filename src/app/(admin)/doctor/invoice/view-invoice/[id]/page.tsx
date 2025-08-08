@@ -45,7 +45,7 @@ const ViewInvoice: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`/api/invoice/view-invoice/${id}`)
+    fetch(`/api/invoice/view-eye-invoice/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const { treatments, invoice } = data;
@@ -92,7 +92,7 @@ const ViewInvoice: React.FC = () => {
             <ul className="mb-[7px]">
               <li className="mb-[7px] text-md">Patient ID: <span className="text-black dark:text-white">{invoice.patient_id}</span></li>
               <li className="mb-[7px] text-md">Patient Name: <span className="text-black dark:text-white">{invoice.patient?.patient_name}</span></li>
-              <li className="mb-[7px] text-md">Previous Session: <span className="text-black dark:text-white">{formattedDate(invoice.invoice_creation_date)}</span></li>
+              {/* <li className="mb-[7px] text-md">Previous Session: <span className="text-black dark:text-white">{formattedDate(invoice.invoice_creation_date)}</span></li> */}
               <li className="mb-[7px] text-md">Next Session: <span className="text-black dark:text-white">{formattedDate(invoice.next_session_date)}</span></li>
             </ul>
           </div>
@@ -171,10 +171,10 @@ const ViewInvoice: React.FC = () => {
               <tr className="mt-5 font-semibold text-black">
                 <td className="p-3 pl-6 flex gap-3">
                   <div className="text-sm">
-                    Payment Type: <span>{invoice.payment_type}</span>
+                    Payment Type: <span className="font-medium">{invoice.payment_type}</span>
                   </div>
                   <div className="text-sm">
-                    Pyament Method: <span>{invoice.payment_method}</span>
+                    Pyament Method: <span className="font-medium">{invoice.payment_method}</span>
                   </div>
                 </td>
                 <td className="p-3 pl-6">
@@ -203,7 +203,7 @@ const ViewInvoice: React.FC = () => {
             </tbody>
           </table>
 
-          <div className="mt-10 flex items-center justify-end">
+          {/* <div className="mt-10 flex items-center justify-end">
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
@@ -218,11 +218,11 @@ const ViewInvoice: React.FC = () => {
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                   add
                 </i>
-                {/* {loading ? "Submitting..." : "Create Invoice"} */}
+               
                 Submit
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
