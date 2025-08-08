@@ -15,6 +15,7 @@ interface PatientInfo {
   weight: string;
   emergency_contact_phone: string;
   image_url?: string;
+  onboarded_at?: string;
 }
 
 interface PrescriptionItem {
@@ -52,6 +53,7 @@ interface Prescription {
   prescribed_at: string;
   total_cost: number;
   prescribed_doctor_name: string;
+  is_drs_derma: string;
   doctor_image_url?: string;
   doctor_fee?: number;
   advise: string;
@@ -108,6 +110,15 @@ export default function Page() {
   const getDateKey = (dateStr: string) =>
     new Date(dateStr).toISOString().split("T")[0];
 
+  function getDateTimeKey(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+  }
+
+
   const formatDate = (dateStr: string): string =>
     new Date(dateStr).toLocaleString("en-US", {
       weekday: "long",
@@ -121,10 +132,37 @@ export default function Page() {
 
   const groupedTimeline: { [key: string]: GroupedEvent } = {};
 
+  // Add onboarding event
+  if (data.patient.onboarded_at) {
+    const onboardDateKey = getDateKey(data.patient.onboarded_at);
+    if (!groupedTimeline[onboardDateKey]) {
+      groupedTimeline[onboardDateKey] = {
+        date: onboardDateKey,
+        formattedDate: formatDate(data.patient.onboarded_at),
+        events: [],
+      };
+    }
+    groupedTimeline[onboardDateKey].events.push({
+      title: "Patient Onboarded",
+      // description: `Patient ${data.patient.patient_name} was registered in the system at ${getDateTimeKey(data.patient.onboarded_at)}.`,
+      description: `Patient ${data.patient.patient_name} was registered in the system at ${getDateTimeKey(data.patient.onboarded_at)}.`,
+      author: "System",
+      color: "bg-blue-500",
+      participants: data.patient.image_url ? [data.patient.image_url] : [],
+    });
+  }
+
   data.prescriptions.forEach((p) => {
     const dateKey = getDateKey(p.prescribed_at);
     const doctor = p.prescribed_doctor_name;
+    const is_drs_derma_doctor = p.is_drs_derma;
+
     const doctorImage = p.doctor_image_url || "/uploads/default.avif";
+
+    let show_drs_derma = "";
+    if(is_drs_derma_doctor === "Yes"){
+       show_drs_derma = "(DRS DERMA)";
+    }
     // const patientImage = p.image_url || "/uploads/default.avif";
 
     // let fullDescription = `Advise: ${p.advise}. Total cost: ৳${p.total_cost}.`;
@@ -192,7 +230,7 @@ export default function Page() {
     return colors[Math.floor(Math.random() * colors.length)];
   };
     groupedTimeline[dateKey].events.push({
-      title: `Prescribed by Dr. ${doctor}`,
+      title: `Prescribed by Dr. ${doctor} ${show_drs_derma}`,
       description: fullDescription,
       author: doctor,
       color: getRandomColor(),//"bg-red-500",
@@ -332,7 +370,7 @@ export default function Page() {
           {/* <h3 className="!mb-0">Timeline</h3>
            */}
           <h2 className="text-2xl font-bold mb-4">
-              Medical History Timeline for {data.patient.patient_name}
+              Patient History for {data.patient.patient_name}
           </h2>
           {data?.patient?.image_url && data.patient.image_url.trim() !== "" && (
             <div className="w-30 h-30 rounded-full overflow-hidden">

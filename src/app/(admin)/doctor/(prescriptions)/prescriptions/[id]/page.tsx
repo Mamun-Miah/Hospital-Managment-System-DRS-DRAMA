@@ -499,13 +499,21 @@ const handleChangeTreatment = (
       throw new Error(result.error || "Failed to add new medicine.");
     }
 
+    setOptions(prev => [
+      ...prev,
+      {
+        value: newMedicineInput.trim().toLowerCase().replace(/\s+/g, "_"),
+        label: newMedicineInput.trim()
+      }
+    ]);
+
     alert(`"${newMedicineInput.trim()}" added successfully to the medicine list!`);
     setNewMedicineInput(""); // Clear the input field
     setNewMedicineBrandInput(""); 
 
 
     // Re-fetch the medicine options to update the dropdowns
-    await getPrescribedData(id);
+    // await getPrescribedData(id);
   } catch (err: any) {
     console.error("Error adding new medicine:", err);
     setError(err.message || "Failed to add new medicine.");
