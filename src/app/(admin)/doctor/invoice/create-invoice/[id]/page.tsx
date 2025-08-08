@@ -2,8 +2,10 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+
 import { useEffect, useState, ChangeEvent } from "react";
+import Swal from "sweetalert2";
 
 type Treatment = {
   treatmentId: number;
@@ -46,6 +48,7 @@ const EditInvoice: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
   // Remove treatment by index
   const handleRemove = (index: number) => {
     setTreatments((prev) => prev.filter((_, i) => i !== index));
@@ -84,7 +87,12 @@ const EditInvoice: React.FC = () => {
           : value,
     }));
   };
-
+  const handleClick = () => {
+    setPaymentInfo((prev) => ({
+      ...prev,
+      paid_amount: "",
+    }));
+  };
   // Submit update
   const handleSubmit = async () => {
     if (!invoice) return;
@@ -109,13 +117,29 @@ const EditInvoice: React.FC = () => {
       });
 
       if (response.ok) {
-        alert("Invoice updated successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Invoice updated successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        router.push("/doctor/patients-list/");
       } else {
-        alert("Failed to update invoice");
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     } catch (error) {
       console.error("Error updating invoice:", error);
-      alert("Error updating invoice");
+      Swal.fire({
+        icon: "error",
+        title: "Something went wrong!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } finally {
       setLoading(false);
     }
@@ -258,7 +282,7 @@ const EditInvoice: React.FC = () => {
                   Treatment Cost
                 </th>
                 <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b border-gray-200">
-                  Payable Treatment Amount
+                  Discounted Amount
                 </th>
                 <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b border-gray-200">
                   Action
@@ -271,11 +295,11 @@ const EditInvoice: React.FC = () => {
                   <td className="px-[20px] py-[18px] font-semibold">
                     {treatment.treatment_name}
                   </td>
-                  <td className="px-[20px] py-[18px] font-semibold">
-                    {treatment.treatment_cost}
+                  <td className="px-[20px] py-[18px] font-semibold text-center">
+                    Tk. {treatment.treatment_cost}
                   </td>
-                  <td className="px-[20px] py-[18px] font-semibold">
-                    {treatment.payable_treatment_amount}
+                  <td className="px-[20px] py-[18px] font-semibold text-center">
+                    Tk. {treatment.payable_treatment_amount}
                   </td>
                   <td className="px-[20px] py-[18px] font-semibold">
                     <button
@@ -370,10 +394,8 @@ const EditInvoice: React.FC = () => {
                     name="paid_amount"
                     placeholder="Amount"
                     onChange={handleChange}
+                    onClick={handleClick}
                     value={paymentInfo.paid_amount}
-                    min={0}
-                    max={totalCost}
-                    // step="0.01"
                     className="h-[40px] ml-2 rounded-md border px-[10px] w-[120px] border-gray-200 outline-none"
                   />
                 </td>
