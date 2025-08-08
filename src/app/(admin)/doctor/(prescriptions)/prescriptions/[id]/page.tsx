@@ -484,14 +484,14 @@ const handleChangeTreatment = (
     ]);
   };
 
-  const handleAddNewMedicine = async () => {
+ const handleAddNewMedicine = async () => {
   if (!newMedicineInput.trim()) {
     setError("Medicine name cannot be empty.");
     return;
   }
   setLoading(true);
-  setError(""); 
-  
+  setError("");
+ 
   try {
     const res = await fetch("/api/medicine/add-medicine", {
       method: "POST",
@@ -504,20 +504,28 @@ const handleChangeTreatment = (
         quantity: 0, // A default quantity for a new medicine
       }),
     });
-
+ 
     const result = await res.json();
-
+ 
     if (!res.ok) {
       throw new Error(result.error || "Failed to add new medicine.");
     }
-
+ 
+    setOptions(prev => [
+      ...prev,
+      {
+        value: newMedicineInput.trim().toLowerCase().replace(/\s+/g, "_"),
+        label: newMedicineInput.trim()
+      }
+    ]);
+ 
     alert(`"${newMedicineInput.trim()}" added successfully to the medicine list!`);
     setNewMedicineInput(""); // Clear the input field
-    setNewMedicineBrandInput(""); 
-
-
+    setNewMedicineBrandInput("");
+ 
+ 
     // Re-fetch the medicine options to update the dropdowns
-    await getPrescribedData(id);
+    // await getPrescribedData(id);
   } catch (err: any) {
     console.error("Error adding new medicine:", err);
     setError(err.message || "Failed to add new medicine.");
