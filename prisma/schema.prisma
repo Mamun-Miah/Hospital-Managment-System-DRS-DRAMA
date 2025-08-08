@@ -93,6 +93,7 @@ model Treatmentlist {
   updated_at        DateTime?                   @updatedAt
   prescriptionItems PrescriptionItem[]
   treatmentLinks    PrescriptionTreatmentItem[]
+  invoices          InvoiceTreatment[]
 }
 
 model Medicine {
@@ -198,7 +199,16 @@ model Invoice {
   previous_session_date DateTime?
   updated_at            DateTime?      @updatedAt
 
-  patient      Patient       @relation(fields: [patient_id], references: [patient_id])
-  doctor       Doctor?       @relation(fields: [doctor_id], references: [doctor_id])
-  prescription Prescription? @relation(fields: [prescription_id], references: [prescription_id])
+  patient      Patient            @relation(fields: [patient_id], references: [patient_id])
+  doctor       Doctor?            @relation(fields: [doctor_id], references: [doctor_id])
+  prescription Prescription?      @relation(fields: [prescription_id], references: [prescription_id])
+  treatments   InvoiceTreatment[]
+}
+
+model InvoiceTreatment {
+  invoice_treatment_id Int           @id @default(autoincrement())
+  invoice              Invoice       @relation(fields: [invoice_id], references: [invoice_id])
+  invoice_id           Int
+  treatment            Treatmentlist @relation(fields: [treatment_id], references: [treatment_id])
+  treatment_id         Int
 }

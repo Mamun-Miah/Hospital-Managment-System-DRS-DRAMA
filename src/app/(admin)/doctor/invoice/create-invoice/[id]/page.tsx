@@ -1,50 +1,137 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState, ChangeEvent } from "react";
 
-const CreateInvoice: React.FC = () => {
-  const [treatments, setTreatments] = useState([
-    {
-      treatmentId: 101,
-      treatmentName: "Psychotherapy Counseling",
-      treatmentCost: 9600,
-      afterDiscount: 8000,
-    },
-    {
-      treatmentId: 102,
-      treatmentName: "Weight Loss Program",
-      treatmentCost: 18000,
-      afterDiscount: 16200,
-    },
-    {
-      treatmentId: 103,
-      treatmentName: "Cardiac Rehab",
-      treatmentCost: 22000,
-      afterDiscount: 22000,
-    },
-    {
-      treatmentId: 104,
-      treatmentName: "Acupuncture Therapy",
-      treatmentCost: 5000,
-      afterDiscount: 4500,
-    },
-  ]);
+type Treatment = {
+  treatmentId: number;
+  treatment_name: string;
+  treatment_cost: number;
+  payable_treatment_amount: number;
+};
 
-  const handleRemove = (id: number) => {
-    setTreatments((prevs) => prevs.filter((item) => item.treatmentId !== id));
+type Invoice = {
+  invoice_id: number;
+  invoice_number: string;
+  invoice_creation_date: string;
+  previous_session_date: string | null;
+  next_session_date: string | null;
+  doctor_fee: number;
+  previous_due: number;
+  paid_amount: string;
+  payment_type: string;
+  payment_method: string;
+  patient_id: number;
+  patient?: {
+    patient_name: string;
+  };
+};
+
+type PaymentInfo = {
+  paid_amount: number;
+  payment_method: string;
+  payment_type: string;
+};
+
+const EditInvoice: React.FC = () => {
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const { id } = useParams<{ id: string }>();
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    paid_amount: 0,
+    payment_method: "",
+    payment_type: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Fix: Use treatmentId instead of index for removal
+  const handleRemove = (treatmentId: number) => {
+    setTreatments((prevs) => prevs.filter((item) => item.treatmentId !== treatmentId));
   };
 
-  const totatTreatmentCost = treatments.reduce(
-    (acc, item) => acc + item.afterDiscount,
+  // Calculate total treatment cost
+  const totalTreatmentCost = treatments.reduce(
+    (acc, item) => acc + item.payable_treatment_amount,
     0
   );
+
+  // Calculate total cost (treatments + doctor fee + previous due)
+  const totalCost = totalTreatmentCost + (invoice?.doctor_fee || 0) + (invoice?.previous_due || 0);
+
+  // Calculate total due (total cost - paid amount)
+  const totalDue = totalCost - paymentInfo.paid_amount;
+
+  const formattedDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setPaymentInfo((prev) => ({
+      ...prev,
+      [name]: name === "paid_amount" ? parseFloat(value) || "" : value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!invoice) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/invoice/update-invoice/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          treatments,
+          paymentInfo,
+          totalCost,
+          totalDue,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Invoice updated successfully!');
+      } else {
+        alert('Failed to update invoice');
+      }
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      alert('Error updating invoice');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!id) return;
+    
+    fetch(`/api/invoice/view-invoice/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const { treatments, invoice } = data;
+        setTreatments(treatments);
+        setInvoice(invoice);
+        setPaymentInfo({
+          paid_amount: invoice.paid_amount ?? 0,
+          payment_method: invoice.payment_method ?? "",
+          payment_type: invoice.payment_type ?? "",
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching invoice:', error);
+      });
+  }, [id]);
+
+  if (!invoice) return <p>Loading...</p>;
 
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
-        <h5 className="!mb-0">Create Invoice</h5>
-
+        <h5 className="!mb-0">Edit Invoice</h5>
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
             <Link
@@ -57,9 +144,8 @@ const CreateInvoice: React.FC = () => {
               Dashboard
             </Link>
           </li>
-
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Create Invoice
+            Edit Invoice
           </li>
         </ol>
       </div>
@@ -83,17 +169,18 @@ const CreateInvoice: React.FC = () => {
                 height={30}
               />
             </div>
-
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] text-md last:mb-0">
                 Invoice Number :{" "}
                 <span className="text-black text-md dark:text-white">
-                  inv-1245
+                  {invoice.invoice_number}
                 </span>
               </li>
               <li className="mb-[7px] text-md last:mb-0">
                 <span>Invoice Date: </span>
-                <span className="text-black dark:text-white">12/07/25</span>
+                <span className="text-black dark:text-white">
+                  {formattedDate(invoice.invoice_creation_date)}
+                </span>
               </li>
             </ul>
           </div>
@@ -102,21 +189,31 @@ const CreateInvoice: React.FC = () => {
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] text-md last:mb-0">
                 Patient ID:{" "}
-                <span className="text-black text-md dark:text-white">007</span>
+                <span className="text-black text-md dark:text-white">
+                  {invoice.patient_id}
+                </span>
               </li>
               <li className="mb-[7px] text-md last:mb-0">
                 Patient Name:{" "}
                 <span className="text-black text-md dark:text-white">
-                  Shakku Vai
+                  {invoice.patient?.patient_name}
                 </span>
               </li>
               <li className="mb-[7px] text-md last:mb-0">
-                <span>Previous Session: : </span>
-                <span className="text-black dark:text-white">12/07/25</span>
+                <span>Previous Session: </span>
+                <span className="text-black dark:text-white">
+                  {invoice?.previous_session_date
+                    ? formattedDate(invoice.previous_session_date)
+                    : "N/A"}
+                </span>
               </li>
               <li className="mb-[7px] text-md last:mb-0">
-                <span>Next Session: : </span>
-                <span className="text-black dark:text-white">12/07/25</span>
+                <span>Next Session: </span>
+                <span className="text-black dark:text-white">
+                  {invoice?.next_session_date
+                    ? formattedDate(invoice.next_session_date)
+                    : "N/A"}
+                </span>
               </li>
             </ul>
           </div>
@@ -126,79 +223,92 @@ const CreateInvoice: React.FC = () => {
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-content">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-[#15203c]">
               <tr>
                 <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
                   Treatment Name
                 </th>
-                <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
+                <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
                   Treatment Cost
                 </th>
-                <th className="text-black dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
-                  Payable Cost
+                <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
+                  Discounted Amount
+                </th>
+                <th className="text-gray-500 dark:text-gray-400 whitespace-nowrap relative z-[1] align-middle text-base font-normal ltr:text-left rtl:text-right py-[14px] px-[20px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px] border-t border-b border-gray-100 dark:border-[#15203c]">
+                  Action
                 </th>
               </tr>
             </thead>
-
             <tbody className="text-gray-500 dark:text-white">
               {treatments.map((treatment) => (
                 <tr key={treatment.treatmentId}>
                   <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                    {treatment.treatmentName}
+                    {treatment.treatment_name}
                   </td>
-
                   <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                    {treatment.treatmentCost}/=
+                    {treatment.treatment_cost}
                   </td>
-                  <td className="flex items-center justify-between ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                    <span>{treatment.afterDiscount}</span>
+                  <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
+                    {treatment.payable_treatment_amount}
+                  </td>
+                  <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
                     <button
                       onClick={() => handleRemove(treatment.treatmentId)}
-                      className="ml-5 text-red-500"
+                      className="text-red-500 hover:text-red-700 transition-colors"
+                      title="Remove treatment"
                     >
                       <span className="material-symbols-outlined">close</span>
                     </button>
                   </td>
                 </tr>
               ))}
-
-              <tr className="px-20">
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
+              
+              {/* Separator */}
+              <tr>
+                <td colSpan={4} className="border-b border-gray-200 dark:border-[#15203c]"></td>
               </tr>
-              <tr className="mt-5 font-semibold text-black">
+              
+              {/* Totals Section */}
+              <tr className="font-semibold text-black dark:text-white">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Total Treatment Cost: </td>
-                <td className="p-3 pl-6">{totatTreatmentCost} /=</td>
-              </tr>
-              <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Doctor Fee: </td>
-                <td className="p-3 pl-6"> 347 /=</td>
+                <td className="p-3 text-right">Total Treatment Cost:</td>
+                <td className="p-3">{totalTreatmentCost.toFixed(2)} /=</td>
               </tr>
-              <tr className="mt-5 font-semibold text-black">
+              <tr className="font-semibold text-black dark:text-white">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Previous Due: </td>
-                <td className="p-3 pl-6">484 /=</td>
-              </tr>
-              <tr className="px-20">
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
-                <td className="border-b-1 border-gray-200"></td>
-              </tr>
-              <tr className="mt-5 font-semibold text-black">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Total Cost: </td>
-                <td className="p-3 pl-6"> 57354 /=</td>
+                <td className="p-3 text-right">Doctor Fee:</td>
+                <td className="p-3">{invoice.doctor_fee.toFixed(2)} /=</td>
               </tr>
-
-              <tr className="mt-5 font-semibold text-black">
-                <td className="p-3 pl-6 flex gap-3">
-                  <div className="">
+              <tr className="font-semibold text-black dark:text-white">
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3 text-right">Previous Due:</td>
+                <td className="p-3">{invoice.previous_due.toFixed(2)} /=</td>
+              </tr>
+              
+              {/* Separator */}
+              <tr>
+                <td colSpan={4} className="border-b border-gray-300 dark:border-[#15203c]"></td>
+              </tr>
+              
+              <tr className="font-semibold text-black dark:text-white">
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="p-3 text-right">Total Cost:</td>
+                <td className="p-3">{totalCost.toFixed(2)} /=</td>
+              </tr>
+              
+              {/* Payment Section */}
+              <tr className="font-semibold text-black dark:text-white">
+                <td className="p-3 flex gap-3">
+                  <div>
                     <select
-                      name="paymentType"
-                      className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                      value={paymentInfo.payment_type}
+                      onChange={handleChange}
+                      name="payment_type"
+                      className="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     >
                       <option value="">Payment Type</option>
                       <option value="partial">Partial</option>
@@ -206,10 +316,12 @@ const CreateInvoice: React.FC = () => {
                       <option value="due">Due</option>
                     </select>
                   </div>
-                  <div className="">
+                  <div>
                     <select
-                      name="paymentMethod"
-                      className="h-[30px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                      onChange={handleChange}
+                      value={paymentInfo.payment_method}
+                      name="payment_method"
+                      className="h-[40px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     >
                       <option value="">Payment Method</option>
                       <option value="bkash">Bkash</option>
@@ -217,49 +329,63 @@ const CreateInvoice: React.FC = () => {
                     </select>
                   </div>
                 </td>
-                <td className="p-3 pl-6">
+                <td className="p-3"></td>
+                <td className="p-3 text-right">
                   <p className="dark:text-white m-0 p-0 font-semibold text-black">
                     Paid Amount:
                   </p>
                 </td>
-                <td className="p-3 pl-6">
+                <td className="p-3">
                   <input
                     type="number"
+                    name="paid_amount"
                     placeholder="Amount"
-                    className="h-[30px] rounded-md text-black text-[14px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[100px]"
+                    onChange={handleChange}
+                    value={paymentInfo.paid_amount}
+                    min="0"
+                    max={totalCost}
+                    step="0.01"
+                    className="h-[40px] rounded-md text-black text-[14px] dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 w-[120px]"
                   />
                 </td>
               </tr>
-              <tr className="px-20">
-                <td className="border-b-1 border-gray-300"></td>
-                <td className="border-b-1 border-gray-300"></td>
-                <td className="border-b-1 border-gray-300"></td>
+              
+              {/* Final Separator */}
+              <tr>
+                <td colSpan={4} className="border-b-2 border-gray-400 dark:border-[#15203c]"></td>
               </tr>
-              <tr className="mt-5 font-semibold text-black">
+              
+              {/* Total Due */}
+              <tr className="font-bold text-lg text-black dark:text-white">
                 <td className="p-3"></td>
-                <td className="p-3 pl-6">Total Due: </td>
-                <td className="p-3 pl-6">3477 /= </td>
+                <td className="p-3"></td>
+                <td className="p-3 text-right">Total Due:</td>
+                <td className="p-3 text-green-600 dark:text-green-400">
+                  {totalDue.toFixed(2)} /=
+                </td>
               </tr>
             </tbody>
           </table>
-
-          <div className="mt-10 flex items-center justify-end">
+          
+          <div className="mt-10 flex items-center justify-end gap-4">
             <button
               type="button"
-              className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
+              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-gray-500 text-white hover:bg-gray-400"
+              onClick={() => window.history.back()}
             >
               Cancel
             </button>
             <button
-              type="submit"
-              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                  add
+                  {loading ? "hourglass_empty" : "save"}
                 </i>
-                {/* {loading ? "Submitting..." : "Create Invoice"} */}
-                Submit
+                {loading ? "Updating..." : "Update Invoice"}
               </span>
             </button>
           </div>
@@ -269,4 +395,4 @@ const CreateInvoice: React.FC = () => {
   );
 };
 
-export default CreateInvoice;
+export default EditInvoice;

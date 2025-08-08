@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 interface Invoice {
   invoice_id: number;
@@ -47,48 +48,38 @@ const InvoiceList: React.FC = () => {
 
 
 
-  // useEffect(() => {
-  //   const result: Invoice[] = invoices?.filter(
-  //     (invoice) =>
-  //       invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
-  //       invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
-  //       invoice.invoice_number.toLowerCase().includes(search) ||
-  //       invoice.mobile_number.includes(search)
-  //   );
-  //   // console.log(result);
-  //   setFilteredInvoice(result);
-  //   setCurrentPage(1);
-  // }, [search, invoices]);
 
-  useEffect(() => {
-    const applyFilters = () => {
-      let result: Invoice[] = invoices;
 
-      // 1. Apply search filter
-      if (search) {
-        result = result?.filter(
-          (invoice) =>
-            invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
-            invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
-            invoice.invoice_number.toLowerCase().includes(search) ||
-            invoice.mobile_number.includes(search)
-        );
-      }
+useEffect(() => {
+  const applyFilters = () => {
+    let result: Invoice[] = invoices;
 
-      // 2. Apply payment type filter
-      if (filterType !== "All") {
-        result = result?.filter((invoice) => {
-            const actualPaymentType = invoice.payment_type || "Unpaid";
-            return actualPaymentType === filterType;
-        });
-      }
-      
-      setFilteredInvoice(result);
-      setCurrentPage(1); // Reset to the first page when filters change
-    };
+    // Apply search filter
+    if (search) {
+      result = result?.filter(
+        (invoice) =>
+          invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
+          invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
+          invoice.invoice_number.toLowerCase().includes(search) ||
+          invoice.mobile_number.includes(search)
+      );
+    }
 
-    applyFilters();
-  }, [search, invoices, filterType]); // Add filterType to the dependency array
+    // Apply payment type filter
+    if (filterType !== "All") {
+      result = result?.filter((invoice) => {
+        const actualPaymentType = invoice.payment_type || "Unpaid";
+        return actualPaymentType === filterType;
+      });
+    }
+
+    setFilteredInvoice(result);
+    setCurrentPage(1);
+  };
+
+  applyFilters();
+}, [search, invoices, filterType]);
+
 
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -113,6 +104,56 @@ const InvoiceList: React.FC = () => {
  
      fetchInvoiceList();
    }, []);
+
+   const handleDelete = async (id: number) => {
+   
+       //Sweet Alert for confirmation
+         const swalWithBootstrapButtons = Swal.mixin({
+           customClass: {
+             confirmButton: "btn btn-success",
+             cancelButton: "btn btn-danger"
+           },
+           buttonsStyling: true
+         });
+      
+         swalWithBootstrapButtons.fire({
+           title: "Are you sure?",
+           text: "You won't be able to revert this!",
+           icon: "warning",
+           showCancelButton: true,
+           confirmButtonText: "Yes, delete it!",
+           cancelButtonText: "No, cancel!",
+           reverseButtons: true
+         }).then (async(result) => {
+           if (result.isConfirmed) {
+             swalWithBootstrapButtons.fire({
+   
+               title: "Deleted!",
+               text: "Invoice Has been successfully deleted.",
+               icon: "success",
+               showConfirmButton: false,
+               timer: 1500
+             });
+   //Sweet Alert for confirmation ends here
+              try {
+                   const response = await fetch(`/api/invoice/delete-invoice/${id}`, {
+                     method: "DELETE",
+                   });
+                   if (!response.ok) {
+                     throw new Error("Failed to delete invoice");
+                   }
+                 
+                   // Remove the deleted doctor from the state
+                   setInvoices((prevInvoices) =>
+                     prevInvoices.filter((invoice) => invoice.invoice_id !== id)
+                   );
+                 } catch (error) {
+                   console.error("Error deleting Invoice:", error);
+                 }
+           }
+         });
+   
+     }
 
   return (
     <>
@@ -152,9 +193,10 @@ const InvoiceList: React.FC = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </form>
-
+            
           </div>
-                      <div className="flex justify-start">
+
+                                <div className="flex justify-start">
                   <select
                     onChange={(e) => setFilterType(e.target.value as "Full" | "Partial" | "Unpaid" | "All")}
                     value={filterType}
@@ -310,6 +352,19 @@ const InvoiceList: React.FC = () => {
 {/* 
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
+                 {/* {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
+                            <button
+                              type="button"
+                              className="text-primary-500 leading-none custom-tooltip"
+                              // onClick={() => setOpen(true)}
+                            >
+                              <i className="material-symbols-outlined !text-md">
+                                visibility
+                              </i>
+                            </button>
+                          )} */}
+ {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
+                        <Link href={`/doctor/invoice/view-invoice/${treatment.invoice_id}`}>
                           <button
                             type="button"
                             className="text-primary-500 leading-none custom-tooltip"
@@ -319,6 +374,7 @@ const InvoiceList: React.FC = () => {
                               visibility
                             </i>
                           </button>
+                          </Link>)}
                           <Link href={`/doctor/invoice/create-invoice/${treatment.invoice_id}`}>
                             <button
                               type="button"
@@ -332,9 +388,9 @@ const InvoiceList: React.FC = () => {
 
                           <button
                             type="button"
-                            // onClick={() =>
-                            //   handleDelete(treatment.treatmentName)
-                            // }
+                            onClick={() =>
+                              handleDelete(treatment.invoice_id)
+                            }
                             className="text-danger-500 leading-none custom-tooltip"
                           >
                             <i className="material-symbols-outlined !text-md">
