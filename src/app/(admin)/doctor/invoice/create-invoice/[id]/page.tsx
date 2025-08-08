@@ -30,7 +30,7 @@ type Invoice = {
 };
 
 type PaymentInfo = {
-  paid_amount: number;
+  paid_amount: number | "";
   payment_method: string;
   payment_type: string;
 };
@@ -59,10 +59,12 @@ const EditInvoice: React.FC = () => {
 
   // Calculate total cost
   const totalCost =
-    totalTreatmentCost + (invoice?.doctor_fee || 0) + (invoice?.previous_due || 0);
+    totalTreatmentCost +
+    (invoice?.doctor_fee || 0) +
+    (invoice?.previous_due || 0);
 
   // Calculate total due
-  const totalDue = totalCost - paymentInfo.paid_amount;
+  const totalDue = totalCost - Number(paymentInfo.paid_amount);
 
   const formattedDate = (isoDate: string) => {
     const date = new Date(isoDate);
@@ -70,83 +72,85 @@ const EditInvoice: React.FC = () => {
   };
 
   // Handle input/select changes for payment info
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setPaymentInfo((prev) => ({
       ...prev,
-      [name]: name === "paid_amount" ? parseFloat(value) || 0 : value,
+      [name]:
+        name === "paid_amount"
+          ? Math.max(0, Math.min(totalCost, Number(value))) || ""
+          : value,
     }));
   };
 
   // Submit update
- const handleSubmit = async () => {
-  if (!invoice) return;
+  const handleSubmit = async () => {
+    if (!invoice) return;
 
-  setLoading(true);
-  try {
-    const response = await fetch(`/api/invoice/create-invoice/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        payment_method: paymentInfo.payment_method,       // e.g. "Cash"
-        payment_type: paymentInfo.payment_type,           // e.g. "Full"
-        previous_due: invoice.previous_due,                // e.g. 0
-        total_treatment_cost: totalTreatmentCost,          // e.g. 1500
-        paid_amount: paymentInfo.paid_amount,              // e.g. 1500
-        doctor_fee: invoice.doctor_fee,                     // e.g. 500
-        due_amount: totalCost - paymentInfo.paid_amount,   // calculate due_amount properly
-        treatment_ids: treatments.map((t) => t.treatmentId) // e.g. [1, 3, 4]
-      }),
-    });
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/invoice/create-invoice/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          payment_method: paymentInfo.payment_method, // e.g. "Cash"
+          payment_type: paymentInfo.payment_type, // e.g. "Full"
+          previous_due: invoice.previous_due, // e.g. 0
+          total_treatment_cost: totalTreatmentCost, // e.g. 1500
+          paid_amount: paymentInfo.paid_amount, // e.g. 1500
+          doctor_fee: invoice.doctor_fee, // e.g. 500
+          due_amount: totalCost - Number(paymentInfo.paid_amount), // calculate due_amount properly
+          treatment_ids: treatments.map((t) => t.treatmentId), // e.g. [1, 3, 4]
+        }),
+      });
 
-    if (response.ok) {
-      alert("Invoice updated successfully!");
-    } else {
-      alert("Failed to update invoice");
+      if (response.ok) {
+        alert("Invoice updated successfully!");
+      } else {
+        alert("Failed to update invoice");
+      }
+    } catch (error) {
+      console.error("Error updating invoice:", error);
+      alert("Error updating invoice");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error updating invoice:", error);
-    alert("Error updating invoice");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   // Fetch invoice & treatments on mount
   useEffect(() => {
-  if (!id) return;
+    if (!id) return;
 
-  fetch(`/api/invoice/view-invoice/${id}`)
-    .then((res) => res.json())
-    .then((data) => {
-      const { treatments: apiTreatments, invoice } = data;
+    fetch(`/api/invoice/view-invoice/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const { treatments: apiTreatments, invoice } = data;
 
-      // Map API treatments to frontend Treatment type
-      const treatments = apiTreatments.map((t: any) => ({
-        treatmentId: t.treatment_id,
-        treatment_name: t.treatment_name,
-        treatment_cost: Number(t.treatment_cost),
-        payable_treatment_amount: Number(t.payable_treatment_amount),
-      }));
+        // Map API treatments to frontend Treatment type
+        const treatments = apiTreatments.map((t: any) => ({
+          treatmentId: t.treatment_id,
+          treatment_name: t.treatment_name,
+          treatment_cost: Number(t.treatment_cost),
+          payable_treatment_amount: Number(t.payable_treatment_amount),
+        }));
 
-      setTreatments(treatments);
-      setInvoice(invoice);
-      setPaymentInfo({
-        paid_amount: invoice.paid_amount ?? 0,
-        payment_method: invoice.payment_method ?? "",
-        payment_type: invoice.payment_type ?? "",
+        setTreatments(treatments);
+        setInvoice(invoice);
+        setPaymentInfo({
+          paid_amount: invoice.paid_amount ?? 0,
+          payment_method: invoice.payment_method ?? "",
+          payment_type: invoice.payment_type ?? "",
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching invoice:", error);
       });
-    })
-    .catch((error) => {
-      console.error("Error fetching invoice:", error);
-    });
-}, [id]);
+  }, [id]);
 
-console.log(invoice)
-console.log(treatments)
   if (!invoice) return <p>Loading...</p>;
 
   return (
@@ -247,16 +251,16 @@ console.log(treatments)
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-[#15203c]">
               <tr>
-                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b">
+                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b border-gray-200">
                   Treatment Name
                 </th>
-                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b">
+                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b border-gray-200">
                   Treatment Cost
                 </th>
-                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b">
+                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b border-gray-200">
                   Payable Treatment Amount
                 </th>
-                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b">
+                <th className="text-gray-500 dark:text-gray-400 text-base font-normal text-left py-[14px] px-[20px] border-t border-b border-gray-200">
                   Action
                 </th>
               </tr>
@@ -287,48 +291,59 @@ console.log(treatments)
 
               {/* Separator */}
               <tr>
-                <td colSpan={4} className="border-b"></td>
+                <td colSpan={4} className="border-b border-gray-200"></td>
               </tr>
-
               {/* Totals Section */}
-              <tr className="font-semibold text-black dark:text-white">
-                <td></td>
-                <td></td>
-                <td className="text-right">Total Treatment Cost: </td>
-                <td><span className="me-3">    </span> {totalTreatmentCost.toFixed(2)} /=</td>
+              <tr className="font-semibold text-black dark:text-white mt-5">
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="text-right p-3">Total Treatment Cost: </td>
+                <td className="p-3">
+                  <span className="me-3"> </span> Tk.{" "}
+                  {totalTreatmentCost.toFixed(2)}
+                </td>
               </tr>
               <tr className="font-semibold text-black dark:text-white">
-                <td></td>
-                <td></td>
-                <td className="text-right">Doctor Fee:</td>
-                <td><span className="me-3">    </span>{invoice.doctor_fee.toFixed(2)} /=</td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="text-right p-3">Doctor Fee:</td>
+                <td className="p-3">
+                  <span className="me-3"> </span>
+                  Tk. {invoice.doctor_fee.toFixed(2)}
+                </td>
               </tr>
               <tr className="font-semibold text-black dark:text-white">
-                <td></td>
-                <td></td>
-                <td className="text-right">Previous Due:</td>
-                <td><span className="me-3">    </span>{invoice.previous_due.toFixed(2)} /=</td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="text-right p-3">Previous Due:</td>
+                <td className="p-3">
+                  <span className="me-3"> </span>
+                  Tk. {invoice.previous_due.toFixed(2)}
+                </td>
               </tr>
 
               {/* Total Cost */}
               <tr>
-                <td colSpan={4} className="border-b"></td>
+                <td colSpan={4} className="border-b border-gray-200"></td>
               </tr>
               <tr className="font-semibold text-black dark:text-white">
-                <td></td>
-                <td></td>
-                <td className="text-right">Total Cost:</td>
-                <td><span className="me-3">    </span>{totalCost.toFixed(2)} /=</td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="text-right p-3">Total Cost:</td>
+                <td className="p-3">
+                  <span className="me-3"> </span>
+                  Tk. {totalCost.toFixed(2)}
+                </td>
               </tr>
 
               {/* Payment Section */}
-              <tr className="font-semibold text-black dark:text-white">
-                <td className="flex gap-3">
+              <tr className=" dark:text-white mt-5 font-semibold text-black">
+                <td className="flex gap-3 p-3">
                   <select
                     value={paymentInfo.payment_type}
                     onChange={handleChange}
                     name="payment_type"
-                    className="h-[40px] rounded-md border px-[17px]"
+                    className="h-[40px] rounded-md border px-[17px] border-gray-200 outline-none"
                   >
                     <option value="">Payment Type</option>
                     <option value="Partial">Partial</option>
@@ -339,16 +354,17 @@ console.log(treatments)
                     onChange={handleChange}
                     value={paymentInfo.payment_method}
                     name="payment_method"
-                    className="h-[40px] rounded-md border px-[17px]"
+                    className="h-[40px] rounded-md border px-[17px] border-gray-200 outline-none"
                   >
                     <option value="">Payment Method</option>
                     <option value="Bkash">Bkash</option>
                     <option value="Cash">Cash</option>
                   </select>
                 </td>
-                <td></td>
-                <td className="text-right">Paid Amount:</td>
-                <td>
+                <td className="p-3"></td>
+                <td className="text-right p-3">Paid Amount:</td>
+                <td className="p-3">
+                  <span className="ml-3">Tk.</span>
                   <input
                     type="number"
                     name="paid_amount"
@@ -357,23 +373,29 @@ console.log(treatments)
                     value={paymentInfo.paid_amount}
                     min={0}
                     max={totalCost}
-                    step="0.01"
-                    className="h-[40px] rounded-md border px-[10px] w-[120px]"
+                    // step="0.01"
+                    className="h-[40px] ml-2 rounded-md border px-[10px] w-[120px] border-gray-200 outline-none"
                   />
                 </td>
               </tr>
 
               {/* Final Separator */}
               <tr>
-                <td colSpan={4} className="border-b-2 pt-5"></td>
+                <td
+                  colSpan={4}
+                  className="border-b-2 pt-5 border-gray-200"
+                ></td>
               </tr>
 
               {/* Total Due */}
               <tr className="font-bold text-lg text-black dark:text-white">
-                <td></td>
-                <td></td>
-                <td className="text-right">Total Due:</td>
-                <td className="text-green-600"><span className="me-3">    </span>{totalDue.toFixed(2)} /=</td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
+                <td className="text-right p-3">Total Due:</td>
+                <td className="text-green-600 p-3">
+                  <span className="me-3"> </span>
+                  Tk. {totalDue.toFixed(2)}
+                </td>
               </tr>
             </tbody>
           </table>
