@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import html2pdf from "html2pdf.js";
 
 interface Prescription {
   prescription_id: number ;
@@ -18,6 +19,7 @@ interface Prescription {
 
 
 const NextAppointmentList: React.FC = () => {
+  const appointmentListRef = useRef<HTMLDivElement | null>(null);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [morePrescriptions, setMorePrescriptions] = useState<Prescription[]>(
     []
@@ -32,6 +34,190 @@ const NextAppointmentList: React.FC = () => {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+
+  const handleDownloadPDF = async () => {
+  if (!appointmentListRef.current) return;
+  const element = appointmentListRef.current;
+  const filename = `Next_Appointment_List_${new Date().toISOString().split("T")[0]}.pdf`;
+
+  // Clone so UI isn't mutated and we can inject PDF-only heading
+  const clone = element.cloneNode(true) as HTMLElement;
+
+  // --- Remove the "Actions" column from the cloned table ---
+  // Remove the header cell
+  clone.querySelectorAll("th").forEach((th) => {
+    if (th.textContent?.trim().toLowerCase().includes("actions")) {
+      th.remove();
+    }
+    if (th.textContent?.trim().toLowerCase().includes("Prescription Date")) {
+      th.remove();
+    }
+    
+  });
+    clone.querySelectorAll("td").forEach((td) => {
+    (td as HTMLElement).style.fontSize = "2px"; 
+  });
+  // Remove any whitespace-nowrap classes or similar that might prevent wrapping
+clone.querySelectorAll("th, td").forEach((cell) => {
+  cell.classList.remove("whitespace-nowrap");
+  // Remove all Tailwind px-*, py-*, pl-*, pr-*, pt-*, pb-* classes
+  cell.className = cell.className
+    .split(" ")
+    .filter(
+      (cls) =>
+        !/^px-\[.*\]$/.test(cls) &&
+        !/^py-\[.*\]$/.test(cls) &&
+        !/^pl-\[.*\]$/.test(cls) &&
+        !/^pr-\[.*\]$/.test(cls) &&
+        !/^pt-\[.*\]$/.test(cls) &&
+        !/^pb-\[.*\]$/.test(cls)
+    )
+    .join(" ");
+  // As a fallback: ensure wrapping via inline style too
+  (cell as HTMLElement).style.whiteSpace = "normal";
+  (cell as HTMLElement).style.wordBreak = "break-word";
+  // (cell as HTMLElement).style.fontSize = "12px"; 
+  (cell as HTMLElement).style.padding = "4px 6px";
+});
+  // Set font size for all td elements
+clone.querySelectorAll("td").forEach((cell) => {
+  (cell as HTMLElement).style.fontSize = "9px";
+  // (cell as HTMLElement).style.padding = "2px 3px";
+});
+
+// Set font size for all span elements inside td
+clone.querySelectorAll("td span").forEach((span) => {
+  (span as HTMLElement).style.fontSize = "9px";
+  // (span as HTMLElement).style.fontWeight = "400";
+});
+
+  // // Change "Patient ID" header to "P. ID" in the cloned table
+  // clone.querySelectorAll("th").forEach((th) => {
+  //   if (th.textContent?.trim() === "Prescription ID") {
+  //     th.textContent = "P. ID";
+  //   }
+  //   if (th.textContent?.trim() === "Patient Name") {
+  //     th.textContent = "Name";
+  //   }
+  //   if (th.textContent?.trim() === "Mobile Number") {
+  //     th.textContent = "Phone";
+  //   }
+  //   if (th.textContent?.trim() === "Patient Email") {
+  //     th.textContent = "Email";
+  //   }
+  //   // if (th.textContent?.trim() === "Prescription Date") {
+  //   //   th.textContent = "P. Date";
+  //   // }
+    
+  // });
+
+
+
+  // Remove the corresponding last cell of each row (assumes actions is last)
+  clone.querySelectorAll("tbody tr").forEach((tr) => {
+    const cells = Array.from(tr.children);
+    if (cells.length > 0) {
+      // Optionally verify it's the actions cell by heuristics, but here we just drop last
+      cells[cells.length - 1].remove();
+    }
+  });
+  // Also adjust the "no data" row colspan if present
+  clone.querySelectorAll('tbody tr td[colspan]').forEach((td) => {
+    const colspan = parseInt(td.getAttribute("colspan") || "0", 10);
+    if (colspan > 1) {
+      // subtract 1 because we removed Actions column
+      td.setAttribute("colspan", String(Math.max(1, colspan - 1)));
+    }
+  });
+  // --- Prep clone for full-width capture ---
+ // Make any overflow wrapper expand so html2canvas sees all columns
+  clone.querySelectorAll(".table-responsive, .overflow-x-auto").forEach((el: Element) => {
+    (el as HTMLElement).style.overflow = "visible";
+  });
+
+  // Remove any whitespace-nowrap classes or similar that might prevent wrapping
+  clone.querySelectorAll("th, td").forEach((cell) => {
+    cell.classList.remove("whitespace-nowrap");
+    // As a fallback: ensure wrapping via inline style too
+    (cell as HTMLElement).style.whiteSpace = "normal";
+    (cell as HTMLElement).style.wordBreak = "break-word";
+  });
+//   clone.querySelectorAll("td").forEach((cell) => {
+//   (cell as HTMLElement).style.fontSize = "4px";
+// });
+
+const heading = document.createElement("h2");
+heading.textContent = "Next Appointment List";
+heading.style.marginBottom = "8px";
+heading.style.fontSize = "16px";
+heading.style.fontWeight = "600";
+
+// Create a flex row for date and legend
+const headerRow = document.createElement("div");
+headerRow.style.display = "flex";
+headerRow.style.justifyContent = "space-between";
+headerRow.style.alignItems = "center";
+headerRow.style.marginBottom = "12px";
+headerRow.style.fontSize = "12px";
+
+// Date Selected
+const dateLine = document.createElement("span");
+dateLine.textContent = `Date Selected: ${selectedDate ? selectedDate : "Next Day"}`;
+
+// Legend
+const legend = document.createElement("span");
+legend.textContent = "Legend: P. = Prescription";
+
+// Add both to the row
+headerRow.appendChild(dateLine);
+// headerRow.appendChild(legend);
+
+const headerWrapper = document.createElement("div");
+headerWrapper.appendChild(heading);
+headerWrapper.appendChild(headerRow);
+clone.prepend(headerWrapper);
+
+  clone.classList.add("pdf-export");
+
+  const wrapper = document.createElement("div");
+  wrapper.appendChild(clone);
+  wrapper.style.position = "fixed";
+  wrapper.style.top = "-9999px";
+  document.body.appendChild(wrapper);
+
+  const opt = {
+  margin: [8, 25, 8, 25],
+  filename,
+  image: { type: "jpeg", quality: 0.98 },
+  html2canvas: {
+    scale: 1.6, // you can tweak between 1.4–2 for clarity vs fit
+    useCORS: true,
+    allowTaint: true,
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: clone.scrollWidth + 100, // a bit of padding
+  },
+  jsPDF: { unit: "mm", format: "a4", orientation: "landscape" as const },
+  pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
+  };
+
+
+  try {
+    if ((document as any).fonts && (document as any).fonts.ready) {
+      await (document as any).fonts.ready;
+    }
+
+    await html2pdf()
+      .set(opt)
+      .from(clone)
+      .save();
+  } catch (err) {
+    console.error("PDF generation failed:", err);
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+};
 
 
   useEffect(() => {
@@ -202,6 +388,9 @@ const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
             </Link>
           </li>
 
+          <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
+            Doctor
+          </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
             Next Appointment List
@@ -257,7 +446,7 @@ const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
                       <label htmlFor="">Download Next Appointment List </label>
                         <button
                               type="button"
-                          
+                              onClick={handleDownloadPDF}
                               className="font-small inline-block transition-all rounded-md md:text-md py-[4px] px-[10px] md:px-[12px] bg-secondary-500 text-white hover:bg-secondary-400 mx-[4px]"
                               aria-label="Download Prescription as PDF"
                             >
@@ -275,7 +464,18 @@ const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
         
 
-        <div className="trezo-card-content relative">
+        <div className="trezo-card-content relative" ref={appointmentListRef}>
+          {/* PDF Header with selected date */}
+          <div className="pdf-only-heading" style={{ display: "none" }}>
+            <h2 style={{ margin: 0, fontWeight: 700, fontSize: 18, textAlign: "center" }}>
+              Next Appointment List
+            </h2>
+          </div>
+          <div className="pdf-only-heading" style={{ display: "none" }}>
+            <span className="font-semibold text-base">
+              Date Selected: {selectedDate ? selectedDate : "Next Day"}
+            </span>
+          </div>
           <div className="table-responsive overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -293,16 +493,16 @@ const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
                     Mobile Number
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Prescription Email
+                    Patient Email
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Prescribed Date
+                    Prescription Date
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Next Appointment Date  
+                    Next Appointment  
                   </th>   
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Doctor&apos; Name 
+                    Doctor&apos;s Name 
                   </th>   
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Actions
@@ -459,3 +659,9 @@ const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
 };
 
 export default NextAppointmentList;
+
+<style jsx global>{`
+.pdf-only {
+  display: none !important;
+}
+`}</style>
