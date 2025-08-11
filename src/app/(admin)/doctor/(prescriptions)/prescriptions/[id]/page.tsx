@@ -607,9 +607,8 @@ const handleAddNewMedicine = async (index: number) => {
  
     // alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
     Swal.fire({
-          position: "top-end",
           icon: "success",
-          title: `"${newMedicineName.trim()}" added successfully to the medicine list!`,
+          title: `"${newMedicineName.trim()}" Medicine added successfully!`,
           showConfirmButton: false,
           timer: 1500
       });
