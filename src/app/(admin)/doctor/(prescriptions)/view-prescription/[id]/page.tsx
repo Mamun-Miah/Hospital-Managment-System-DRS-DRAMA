@@ -26,6 +26,10 @@ export interface Prescription {
   next_visit_date: string | null;
   items: PrescriptionItem[];
   treatmentItems: TreatmentItem[];
+  on_examination_oe:string;
+  relevant_findings_rf:string;
+  drug_history_dh:string;
+  chief_complaint_cc:string;
 }
 
 export interface Patient {
@@ -477,14 +481,56 @@ console.log('prescriptionsData',prescriptionsData)
           </div>
 
           <div className="h-[1px] bg-gray-100 dark:bg-[#172036] -mx-[20px] md:-mx-[25px] lg:mt-[32px]"></div>
-
+          {/* C/C (Chief Complaint) */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-            Advice Given:
+            <h5>C/C (Chief Complaint)</h5>
           </span>
 
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
-              <span className="w-[7px] h-[7px] bg-gray-400 dark:bg-gray-600 absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 rounded-full"></span>
+               {prescriptionsData?.chief_complaint_cc?? ""} 
+            </li>
+          </ul>
+
+           {/* D/H (Drug History)          */}
+          <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+            <h5>D/H (Drug History)</h5>
+          </span>
+
+          <ul className="mt-[7px]">
+            <li className="relative ltr:pl-[15px]">
+               {prescriptionsData?.drug_history_dh?? ""} 
+            </li>
+          </ul>
+
+
+{/* R/F (Relevant Findings) */}
+          <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+            <h5>R/F (Relevant Findings)</h5>
+          </span>
+
+          <ul className="mt-[7px]">
+            <li className="relative ltr:pl-[15px]">
+               {prescriptionsData?.relevant_findings_rf?? ""} 
+            </li>
+          </ul>
+{/* O/E (On Examination) */}
+          <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+            <h5>O/E (On Examination)</h5>
+          </span>
+
+          <ul className="mt-[7px]">
+            <li className="relative ltr:pl-[15px]">
+               {prescriptionsData?.on_examination_oe?? ""} 
+            </li>
+          </ul>
+         {/* advise given            */}
+          <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+            <h5>Advice Given:</h5>
+          </span>
+
+          <ul className="mt-[7px]">
+            <li className="relative ltr:pl-[15px]">
                {prescriptionsData?.advise?? ""} 
             </li>
           </ul>

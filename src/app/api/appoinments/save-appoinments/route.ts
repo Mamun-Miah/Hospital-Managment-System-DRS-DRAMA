@@ -19,6 +19,10 @@ export async function POST(req: NextRequest) {
       next_appoinment,
       is_drs_derma,
       medicines,
+      on_examination_oe,
+      relevant_findings_rf,
+      drug_history_dh,
+      chief_complaint_cc,
       treatments,
     } = data;
 
@@ -49,6 +53,10 @@ export async function POST(req: NextRequest) {
         next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
         is_prescribed: "Yes",
         advise: advise,
+        chief_complaint_cc: chief_complaint_cc,
+        on_examination_oe: on_examination_oe,
+        relevant_findings_rf: relevant_findings_rf,
+        drug_history_dh: drug_history_dh,
         prescribed_doctor_name: doctor_name,
         doctor_discount_type:
           doctorDiscountType === "Flat Rate"

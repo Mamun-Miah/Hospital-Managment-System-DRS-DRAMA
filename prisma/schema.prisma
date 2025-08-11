@@ -130,6 +130,10 @@ model Prescription {
   doctor_discount_type   DiscountType?
   doctor_discount_value  Float?
   payable_doctor_amount  Float?
+  chief_complaint_cc     String?                     @db.Text
+  drug_history_dh        String?                     @db.Text
+  relevant_findings_rf   String?                     @db.Text
+  on_examination_oe      String?                     @db.Text
   patient                Patient?                    @relation(fields: [patient_id], references: [patient_id])
   doctor                 Doctor?                     @relation(fields: [doctor_id], references: [doctor_id])
   updated_at             DateTime?                   @updatedAt

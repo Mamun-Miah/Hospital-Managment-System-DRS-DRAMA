@@ -31,6 +31,10 @@ interface FormData {
   blood_group: string;
   totalPayableAmount: string,
   is_drs_derma: string;
+  chief_complaint_cc:string;
+  drug_history_dh:string;
+  relevant_findings_rf:string;
+  on_examination_oe:string;
   next_appoinment: string;
 }
 
@@ -144,6 +148,10 @@ const AddAppointment: React.FC = () => {
     totalPayableAmount: "",
     is_drs_derma:"No",
     next_appoinment: "",
+    chief_complaint_cc:"",
+    drug_history_dh:"",
+    relevant_findings_rf:"",
+    on_examination_oe:"",
   });
 //Set Doctor Data
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -240,6 +248,10 @@ async function getPrescribedData(id: string) {
           gender: data.patient.gender,
           age: data.patient.age,
           city: data.patient.city,
+          chief_complaint_cc:data.chief_complaint_cc,
+          drug_history_dh:data.drug_history_dh,
+          relevant_findings_rf:data.relevant_findings_rf,
+          on_examination_oe:data.on_examination_oe,
           weight: data.patient.weight,
           blood_group: data.patient.blood_group,
           is_drs_derma: "",
@@ -728,7 +740,7 @@ console.log(treatments)
                       type="button"
                       // onClick={() => handleAddNewMedicine(index)} 
                       disabled={loading}
-                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-green-900 text-white hover:bg-green-700"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-[#8F03E4] text-white hover:bg-green-700"
                     >
                         View Patient History
                     </button>
@@ -738,7 +750,7 @@ console.log(treatments)
             <div className="h-[1px] bg-gray-100 dark:bg-[#172036] -mx-[20px] md:-mx-[25px] my-[20px] md:my-[23px]"></div>
 
             {/* Patient Info */}
-            <h5>Patient Info</h5>
+            <h4>Patient Info</h4>
             <div className="sm:flex justify-between mt-[20px]">
               <ul className="mb-[7px] sm:mb-0">
                 <li className="mb-[7px] text-md last:mb-0">
@@ -906,7 +918,7 @@ console.log(treatments)
         </div>
 
         {/* Treatments */}
-        <h4 className="mt-16">Treatments <span className="text-danger-800">*</span></h4>
+        <h4 className="mt-16">Treatments</h4>
         {treatments.map((_singleTreatment, i) => (
           <div className="mb-10 mt-8" key={i}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
@@ -1024,39 +1036,46 @@ console.log(treatments)
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
+        <div className='flex w-4/4 gap-4'>
+
+        <div className="">
+                <button
+                  onClick={handleAddTreatments}
+                  type="button"
+                  className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+                >
+                  Add Treatments
+                  {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
+                    <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                      add
+                    </i>
+                    
+                  </span> */}
+                </button>
+        </div>
               <div>
                 <button
                   onClick={() => handleRemoveTreatment(i)}
                   type="button"
-                  className="font-medium mt-2 inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
-                >
-                  <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
+                  className="font-medium  inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
+                >Remove Treatment
+                  {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
                     <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                       remove
                     </i>
-                    Remove Treatment
-                  </span>
+                    
+                  </span> */}
                 </button>
-              </div>
+          </div>
+          
+
+          </div>    
             </div>
           </div>
         ))}
 
-        <div className="mt-5">
-          <button
-            onClick={handleAddTreatments}
-            type="button"
-            className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-blue-500 text-white hover:bg-primary-400"
-          >
-            <span className="inline-block relative ltr:pl-[29px] rtl:pr-[29px]">
-              <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                add
-              </i>
-              Add More Treatments
-            </span>
-          </button>
-        </div>
-        <h4 className="mt-16">Medicines <span className="text-danger-800">*</span></h4>
+        
+        <h4 className="mt-16">Medicines </h4>
         {medicines.map((medicine, index) => (
           <div className="flex justify-between gap-8 mt-8" key={index}>
             <div className="w-1/3">
@@ -1190,8 +1209,57 @@ console.log(treatments)
             </button>
           </span>
         </div>
+       {/* rx */}
+      
+
+      <div className="my-6 mt-20 last:mb-0">
+          <label className="mb-[12px] text-black font-medium block">C/C (Chief Complaint)</label>
+          <textarea
+            name="chief_complaint_cc"
+            value={formData.chief_complaint_cc}
+            onChange={handleChange}
+            className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+            placeholder="Write Chief Complaint"
+          ></textarea>
+        </div>
+
+
         <div className="my-8 last:mb-0">
-          <label className="mb-[12px] font-medium block">Advise</label>
+          <label className="mb-[12px] text-black font-medium block">D/H (Drug History)</label>
+          <textarea
+            name="drug_history_dh"
+            value={formData.drug_history_dh}
+            onChange={handleChange}
+            className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+            placeholder="Write Drug History"
+          ></textarea>
+        </div>
+
+
+        <div className="my-8 last:mb-0">
+          <label className="mb-[12px] text-black font-medium block">R/F (Relevant Findings)</label>
+          <textarea
+            name="relevant_findings_rf"
+            value={formData.relevant_findings_rf}
+            onChange={handleChange}
+            className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+            placeholder="Write Relevant Findings"
+          ></textarea>
+        </div>
+
+        <div className="my-8 last:mb-0">
+          <label className="mb-[12px] text-black font-medium block">O/E (On Examination)</label>
+          <textarea
+            name="on_examination_oe"
+            value={formData.on_examination_oe}
+            onChange={handleChange}
+            className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+            placeholder="Write On Examination"
+          ></textarea>
+        </div>
+
+       <div className="my-8 last:mb-0">
+          <label className="mb-[12px] text-black font-medium block">Advise</label>
           <textarea
             name="advise"
             value={formData.advise}
@@ -1199,7 +1267,7 @@ console.log(treatments)
             className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
             placeholder="Write advise"
           ></textarea>
-        </div>
+        </div> 
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
         <div className="trezo-card mt-[25px]">

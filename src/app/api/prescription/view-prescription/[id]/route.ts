@@ -24,6 +24,10 @@ export async function GET(
           payable_doctor_amount: true,
         prescribed_doctor_name: true,
         next_visit_date: true,
+        chief_complaint_cc: true,
+        drug_history_dh: true,
+        relevant_findings_rf: true,
+        on_examination_oe: true,
         advise: true,
         patient: {
           select: { patient_name: true,
