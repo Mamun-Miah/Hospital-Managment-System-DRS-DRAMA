@@ -39,10 +39,18 @@ interface Dosage {
   amount: string;
 }
 
+// interface Medicine {
+//   name: string;
+//   duration: string;
+//   dosages: Dosage[];
+// }
 interface Medicine {
   name: string;
   duration: string;
   dosages: Dosage[];
+  // Add these new optional properties
+  newMedicineName?: string;
+  newMedicineBrandName?: string;
 }
 
 interface Doctor {
@@ -175,8 +183,8 @@ const AddAppointment: React.FC = () => {
   const [error, setError] = useState("");
 
 // setNewMedicineInput, brandName state for adding new medicine 
-const [newMedicineInput, setNewMedicineInput] = useState("");
-const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
+// const [newMedicineInput, setNewMedicineInput] = useState("");
+// const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
 
 //Set Loading State
 const [loading, setLoading] = useState(false);
@@ -469,23 +477,101 @@ const handleChangeTreatment = (
     setTreatments((prev) => prev.filter((_, i) => index !== i));
   };
 
-  const handleAddMedicine = () => {
-    setMedicines([
-      ...medicines,
-      {
-        name: "Select Medicine",
-        duration: "",
-        dosages: [
-          { time: "Morning", amount: "" },
-          { time: "Mid Day", amount: "" },
-          { time: "Night", amount: "" },
-        ],
-      },
-    ]);
-  };
+  // const handleAddMedicine = () => {
+  //   setMedicines([
+  //     ...medicines,
+  //     {
+  //       name: "Select Medicine",
+  //       duration: "",
+  //       dosages: [
+  //         { time: "Morning", amount: "" },
+  //         { time: "Mid Day", amount: "" },
+  //         { time: "Night", amount: "" },
+  //       ],
+  //     },
+  //   ]);
+  // };
 
- const handleAddNewMedicine = async () => {
-  if (!newMedicineInput.trim()) {
+
+  const handleAddMedicine = () => {
+  setMedicines([
+    ...medicines,
+    {
+      name: "Select Medicine",
+      duration: "",
+      dosages: [
+        { time: "Morning", amount: "" },
+        { time: "Mid Day", amount: "" },
+        { time: "Night", amount: "" },
+      ],
+      // Add these new properties for local state
+      newMedicineName: "",
+      newMedicineBrandName: "",
+    },
+  ]);
+};
+
+//  const handleAddNewMedicine = async (index: number) => {
+
+//   const medicineToUpdate = medicines[index];
+//   const newMedicineName = medicineToUpdate.newMedicineName;
+//   const newMedicineBrandName = medicineToUpdate.newMedicineBrandName;
+//   if (!newMedicineInput.trim()) {
+//     setError("Medicine name cannot be empty.");
+//     return;
+//   }
+//   setLoading(true);
+//   setError("");
+ 
+//   try {
+//     const res = await fetch("/api/medicine/add-medicine", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         // medicineName: newMedicineInput.trim(),
+//         // brandName: newMedicineBrandInput.trim(),
+//         medicineName: newMedicineName.trim(),
+//         brandName: newMedicineBrandName.trim(),
+//         quantity: 0, // A default quantity for a new medicine
+//       }),
+//     });
+ 
+//     const result = await res.json();
+ 
+//     if (!res.ok) {
+//       throw new Error(result.error || "Failed to add new medicine.");
+//     }
+ 
+//     setOptions(prev => [
+//       ...prev,
+//       {
+//         value: newMedicineName.trim().toLowerCase().replace(/\s+/g, "_"),
+//         label: newMedicineName.trim()
+//       }
+//     ]);
+ 
+//     alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
+//     setNewMedicineInput(""); // Clear the input field
+//     setNewMedicineBrandInput("");
+ 
+ 
+//     // Re-fetch the medicine options to update the dropdowns
+//     // await getPrescribedData(id);
+//   } catch (err: any) {
+//     console.error("Error adding new medicine:", err);
+//     setError(err.message || "Failed to add new medicine.");
+//   } finally {
+//     setLoading(false);
+//   }
+//   };
+const handleAddNewMedicine = async (index: number) => {
+  const medicineToUpdate = medicines[index];
+  const newMedicineName = medicineToUpdate.newMedicineName;
+  const newMedicineBrandName = medicineToUpdate.newMedicineBrandName;
+
+  if (!newMedicineName?.trim()) { // Check the value from the medicine object
     setError("Medicine name cannot be empty.");
     return;
   }
@@ -499,9 +585,9 @@ const handleChangeTreatment = (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        medicineName: newMedicineInput.trim(),
-        brandName: newMedicineBrandInput.trim(),
-        quantity: 0, // A default quantity for a new medicine
+        medicineName: newMedicineName.trim(),
+        brandName: newMedicineBrandName?.trim(), // Use optional chaining for brandName
+        quantity: 0,
       }),
     });
  
@@ -514,26 +600,35 @@ const handleChangeTreatment = (
     setOptions(prev => [
       ...prev,
       {
-        value: newMedicineInput.trim().toLowerCase().replace(/\s+/g, "_"),
-        label: newMedicineInput.trim()
+        value: newMedicineName.trim().toLowerCase().replace(/\s+/g, "_"),
+        label: newMedicineName.trim()
       }
     ]);
  
-    alert(`"${newMedicineInput.trim()}" added successfully to the medicine list!`);
-    setNewMedicineInput(""); // Clear the input field
-    setNewMedicineBrandInput("");
- 
- 
-    // Re-fetch the medicine options to update the dropdowns
-    // await getPrescribedData(id);
+    // alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
+    Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: `"${newMedicineName.trim()}" added successfully to the medicine list!`,
+          showConfirmButton: false,
+          timer: 1500
+      });
+    
+    // Clear the input fields for this specific medicine
+    setMedicines(prevMedicines => {
+      const updatedMedicines = [...prevMedicines];
+      updatedMedicines[index].newMedicineName = "";
+      updatedMedicines[index].newMedicineBrandName = "";
+      return updatedMedicines;
+    });
+
   } catch (err: any) {
     console.error("Error adding new medicine:", err);
     setError(err.message || "Failed to add new medicine.");
   } finally {
     setLoading(false);
   }
-  };
-
+};
   const handleMedicineChange = (
     medIndex: number,
     key: "name" | "duration",
@@ -559,6 +654,18 @@ const handleChangeTreatment = (
     updated[medIndex].dosages[doseIndex][field] = value;
     setMedicines(updated);
   };
+
+const handleNewMedicineInputChange = (index: number, field: keyof Medicine, value: string) => {
+  setMedicines((prevMedicines) => {
+    const updatedMedicines = [...prevMedicines];
+    updatedMedicines[index] = {
+      ...updatedMedicines[index],
+      [field]: value
+    };
+    return updatedMedicines;
+  });
+};
+
 
   const handleRemoveMedicine = (index: number) => {
     setMedicines((prev) => prev.filter((_, i) => i !== index));
@@ -615,7 +722,17 @@ console.log(treatments)
                   height={26}
                 />
         
-                <h3>Create Prescription</h3>
+                <h3 className=''>Create Prescription</h3>
+              </div>
+              <div className='flex justify-center items-center'>
+               <button
+                      type="button"
+                      // onClick={() => handleAddNewMedicine(index)} 
+                      disabled={loading}
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-green-900 text-white hover:bg-green-700"
+                    >
+                        View Patient History
+                    </button>
               </div>
             </div>
 
@@ -729,7 +846,8 @@ console.log(treatments)
               <input
                 name="doctorFees"
                 type="number"
-                value={formData.doctor_fee > 1 ? `${formData.doctor_fee}` : "0"}
+                // value={formData.doctor_fee > 1 ? `${formData.doctor_fee}` : "0"}
+                value={Number(formData.doctor_fee) || 0}
                 disabled
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
@@ -959,20 +1077,20 @@ console.log(treatments)
                 <div className="flex gap-4 items-end">
                   <div className="flex-grow">
                     <input
-                      id="newMedicineNameInput"
+                      id={`newMedicineNameInput-${index}`} // Add unique ID for each field
                       type="text"
-                      value={newMedicineInput}
-                      onChange={(e) => setNewMedicineInput(e.target.value)}
+                      value={medicine.newMedicineName}
+                      onChange={(e) => handleNewMedicineInputChange(index, "newMedicineName", e.target.value)}
                       placeholder="Medicine Name"
                       className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     />
                   </div>
                   <div className="flex-grow">
                     <input
-                      id="newMedicineBrandInput"
+                      id={`newMedicineBrandInput-${index}`}
                       type="text"
-                      value={newMedicineBrandInput}
-                      onChange={(e) => setNewMedicineBrandInput(e.target.value)}
+                      value={medicine.newMedicineBrandName}
+                      onChange={(e) => handleNewMedicineInputChange(index, "newMedicineBrandName", e.target.value)}
                       placeholder="Brand Name"
                       className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     />
@@ -981,7 +1099,7 @@ console.log(treatments)
                 <div className="trezo-card mt-[25px]">                 
                     <button
                       type="button"
-                      onClick={handleAddNewMedicine}
+                      onClick={() => handleAddNewMedicine(index)} 
                       disabled={loading}
                       className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-green-500 text-white hover:bg-green-400"
                     >
