@@ -390,7 +390,7 @@ console.log('prescriptionsData',prescriptionsData)
               </span>
             </div>
           </div>
-
+          <h4 className="mt-10 underline">R/X</h4>
           <span className="block mt-6 font-semibold text-black dark:text-white text-[20px]  mb-2">
             Treatments:
           </span>
@@ -483,7 +483,7 @@ console.log('prescriptionsData',prescriptionsData)
           <div className="h-[1px] bg-gray-100 dark:bg-[#172036] -mx-[20px] md:-mx-[25px] lg:mt-[32px]"></div>
           {/* C/C (Chief Complaint) */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-            <h5>C/C (Chief Complaint)</h5>
+            <h5 className="">C/C (Chief Complaint)</h5>
           </span>
 
           <ul className="mt-[7px]">
