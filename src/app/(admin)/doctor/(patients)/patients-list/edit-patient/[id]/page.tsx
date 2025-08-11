@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
@@ -32,7 +32,7 @@ const ViewPatientDetails: React.FC = () => {
   const params = useParams();
   const patientId = params?.id;
   const [formData, setFormData] = useState<Patient | null>(null);
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  // const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -45,16 +45,16 @@ const ViewPatientDetails: React.FC = () => {
 //     setFormData((prev) => ({ ...prev, [name]: value }));
 //   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const filesArray = Array.from(event.target.files);
-      setSelectedImages(filesArray);
-    }
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files) {
+  //     const filesArray = Array.from(event.target.files);
+  //     setSelectedImages(filesArray);
+  //   }
+  // };
 
-  const handleRemoveImage = (index: number) => {
-    setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
+  // const handleRemoveImage = (index: number) => {
+  //   setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  // };
 
 
   useEffect(() => {
@@ -343,7 +343,7 @@ console.log(formData)
           </div>
 
 
-         <div className="sm:col-span-2 mt-[20px]">
+         {/* <div className="sm:col-span-2 mt-[20px]">
                    <label className="mb-[1px] text-black dark:text-white font-medium block">
                      Add Image
                    </label>
@@ -371,7 +371,7 @@ console.log(formData)
                        />
                      </div>
          
-                     {/* Image Previews */}
+                  
                      <div className="mt-[10px] flex flex-wrap gap-2">
                        {selectedImages.map((image, index) => (
                          <div key={index} className="relative w-[50px] h-[50px]">
@@ -393,11 +393,20 @@ console.log(formData)
                        ))}
                      </div>
                    </div>
-                 </div> 
+                 </div>  */}
 
 
           <div className="trezo-card mt-[25px]">
             <div className="trezo-card-content">
+               <button
+                type="button"
+                className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
+                onClick={() => {
+                  router.push("/doctor/patients-list/");
+                }}
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"

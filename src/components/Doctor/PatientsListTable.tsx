@@ -279,15 +279,7 @@ const handleViewClick = async (id: number) => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
-                          <div className="rounded-full w-[35px]">
-                            <Image
-                              src={patient.image_url || "/uploads/default.avif"}
-                              width={35}
-                              height={35}
-                              className="inline-block rounded-full"
-                              alt="user-image"
-                            />
-                          </div>
+                          
                           <span className="font-semibold inline-block">
                             {patient.patient_name}
                           </span>
