@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 
 
 // import Image from "next/image";
@@ -354,6 +354,17 @@ const handleViewClick = async (id: number) => {
                             </button>
                           {/* </Link> */}
 
+                            <Link href={`/doctor/patient-history/list/see-patient-history/${patient.patient_id}`}>
+                            <button
+                              type="button"
+                              className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
+                            >
+                              <span className="material-symbols-outlined !text-md">
+                              history
+                            </span>
+                              
+                            </button>
+                          </Link>
                           {/* Edit button */}
                           <Link href={`edit-patient/${patient.patient_id}`}>
                             <button
@@ -465,16 +476,26 @@ const handleViewClick = async (id: number) => {
         &times;
       </button>
       {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
-      <p className="text-lg font-bold underline">Patient Details:</p>
+      <h3 className="text-lg text-center font-bold pb-8 ">Patient Details</h3>
+           <Link href={`/doctor/patient-history/list/see-patient-history/${selectedPatient.patient_id}`}>
+            <button
+              type="button"
+              // onClick={() => handleAddNewMedicine(index)} 
+              
+              className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-blue-900 text-white hover:bg-green-700"
+            >
+                View Patient History
+            </button>
+            </Link>
       <div className="space-y-2 text-sm">
-        <Image
+        {/* <Image
           src={selectedPatient.image_url || "/uploads/default.avif"}
           width={100}
           height={100}
           className="inline-block rounded-full"
           alt="user-image"
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        /> */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
           <div>
               <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
               <p><strong>Email:</strong> {selectedPatient?.email}</p>
