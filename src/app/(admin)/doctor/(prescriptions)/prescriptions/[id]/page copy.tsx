@@ -2,12 +2,10 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
-
 import { useParams } from "next/navigation";
 // import { NextResponse } from "next/server";
 import { useEffect, useState } from "react";
 import Select, { StylesConfig, GroupBase } from "react-select";
-import Swal from 'sweetalert2';
 
 interface FormData {
   patient_id: string;
@@ -39,18 +37,10 @@ interface Dosage {
   amount: string;
 }
 
-// interface Medicine {
-//   name: string;
-//   duration: string;
-//   dosages: Dosage[];
-// }
 interface Medicine {
   name: string;
   duration: string;
   dosages: Dosage[];
-  // Add these new optional properties
-  newMedicineName?: string;
-  newMedicineBrandName?: string;
 }
 
 interface Doctor {
@@ -183,8 +173,8 @@ const AddAppointment: React.FC = () => {
   const [error, setError] = useState("");
 
 // setNewMedicineInput, brandName state for adding new medicine 
-// const [newMedicineInput, setNewMedicineInput] = useState("");
-// const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
+const [newMedicineInput, setNewMedicineInput] = useState("");
+const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
 
 //Set Loading State
 const [loading, setLoading] = useState(false);
@@ -284,13 +274,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     console.log("Prescription created:", result.prescription);
-
-    Swal.fire({
-          icon: "success",
-          title: "Prescribed successfully!",
-          showConfirmButton: false,
-          timer: 1500
-      });
     // alert("Prescription saved successfully!");
     router.push('/doctor/appointment/');
     
@@ -375,7 +358,6 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
     setFormData((prev) => ({
       ...prev,
       doctor_name: value,
-      payableDoctorFee:Number(selectedDoctor?.doctor_fee) || 0,
       doctor_fee: Number(selectedDoctor?.doctor_fee) || 0,
     }));
 
@@ -425,8 +407,6 @@ const handleChangeTreatment = (
       newData = {
         ...newData,
         treatment_name: value.toString(),
-        treatmentCost: selected ? selected.total_cost : "",
-
         treatmentAmount2: selected ? selected.total_cost : "",
         duration: selected ? Number(selected.duration_months) : 0,
       };
@@ -477,107 +457,29 @@ const handleChangeTreatment = (
     setTreatments((prev) => prev.filter((_, i) => index !== i));
   };
 
-  // const handleAddMedicine = () => {
-  //   setMedicines([
-  //     ...medicines,
-  //     {
-  //       name: "Select Medicine",
-  //       duration: "",
-  //       dosages: [
-  //         { time: "Morning", amount: "" },
-  //         { time: "Mid Day", amount: "" },
-  //         { time: "Night", amount: "" },
-  //       ],
-  //     },
-  //   ]);
-  // };
-
-
   const handleAddMedicine = () => {
-  setMedicines([
-    ...medicines,
-    {
-      name: "Select Medicine",
-      duration: "",
-      dosages: [
-        { time: "Morning", amount: "" },
-        { time: "Mid Day", amount: "" },
-        { time: "Night", amount: "" },
-      ],
-      // Add these new properties for local state
-      newMedicineName: "",
-      newMedicineBrandName: "",
-    },
-  ]);
-};
+    setMedicines([
+      ...medicines,
+      {
+        name: "Select Medicine",
+        duration: "",
+        dosages: [
+          { time: "Morning", amount: "" },
+          { time: "Mid Day", amount: "" },
+          { time: "Night", amount: "" },
+        ],
+      },
+    ]);
+  };
 
-//  const handleAddNewMedicine = async (index: number) => {
-
-//   const medicineToUpdate = medicines[index];
-//   const newMedicineName = medicineToUpdate.newMedicineName;
-//   const newMedicineBrandName = medicineToUpdate.newMedicineBrandName;
-//   if (!newMedicineInput.trim()) {
-//     setError("Medicine name cannot be empty.");
-//     return;
-//   }
-//   setLoading(true);
-//   setError("");
- 
-//   try {
-//     const res = await fetch("/api/medicine/add-medicine", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         // medicineName: newMedicineInput.trim(),
-//         // brandName: newMedicineBrandInput.trim(),
-//         medicineName: newMedicineName.trim(),
-//         brandName: newMedicineBrandName.trim(),
-//         quantity: 0, // A default quantity for a new medicine
-//       }),
-//     });
- 
-//     const result = await res.json();
- 
-//     if (!res.ok) {
-//       throw new Error(result.error || "Failed to add new medicine.");
-//     }
- 
-//     setOptions(prev => [
-//       ...prev,
-//       {
-//         value: newMedicineName.trim().toLowerCase().replace(/\s+/g, "_"),
-//         label: newMedicineName.trim()
-//       }
-//     ]);
- 
-//     alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
-//     setNewMedicineInput(""); // Clear the input field
-//     setNewMedicineBrandInput("");
- 
- 
-//     // Re-fetch the medicine options to update the dropdowns
-//     // await getPrescribedData(id);
-//   } catch (err: any) {
-//     console.error("Error adding new medicine:", err);
-//     setError(err.message || "Failed to add new medicine.");
-//   } finally {
-//     setLoading(false);
-//   }
-//   };
-const handleAddNewMedicine = async (index: number) => {
-  const medicineToUpdate = medicines[index];
-  const newMedicineName = medicineToUpdate.newMedicineName;
-  const newMedicineBrandName = medicineToUpdate.newMedicineBrandName;
-
-  if (!newMedicineName?.trim()) { // Check the value from the medicine object
+  const handleAddNewMedicine = async () => {
+  if (!newMedicineInput.trim()) {
     setError("Medicine name cannot be empty.");
     return;
   }
   setLoading(true);
-  setError("");
- 
+  setError(""); 
+  
   try {
     const res = await fetch("/api/medicine/add-medicine", {
       method: "POST",
@@ -585,50 +487,41 @@ const handleAddNewMedicine = async (index: number) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        medicineName: newMedicineName.trim(),
-        brandName: newMedicineBrandName?.trim(), // Use optional chaining for brandName
-        quantity: 0,
+        medicineName: newMedicineInput.trim(),
+        brandName: newMedicineBrandInput.trim(),
+        quantity: 0, // A default quantity for a new medicine
       }),
     });
- 
+
     const result = await res.json();
- 
+
     if (!res.ok) {
       throw new Error(result.error || "Failed to add new medicine.");
     }
- 
+
     setOptions(prev => [
       ...prev,
       {
-        value: newMedicineName.trim().toLowerCase().replace(/\s+/g, "_"),
-        label: newMedicineName.trim()
+        value: newMedicineInput.trim().toLowerCase().replace(/\s+/g, "_"),
+        label: newMedicineInput.trim()
       }
     ]);
- 
-    // alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
-    Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: `"${newMedicineName.trim()}" added successfully to the medicine list!`,
-          showConfirmButton: false,
-          timer: 1500
-      });
-    
-    // Clear the input fields for this specific medicine
-    setMedicines(prevMedicines => {
-      const updatedMedicines = [...prevMedicines];
-      updatedMedicines[index].newMedicineName = "";
-      updatedMedicines[index].newMedicineBrandName = "";
-      return updatedMedicines;
-    });
 
+    alert(`"${newMedicineInput.trim()}" added successfully to the medicine list!`);
+    setNewMedicineInput(""); // Clear the input field
+    setNewMedicineBrandInput(""); 
+
+
+    // Re-fetch the medicine options to update the dropdowns
+    // await getPrescribedData(id);
   } catch (err: any) {
     console.error("Error adding new medicine:", err);
     setError(err.message || "Failed to add new medicine.");
   } finally {
     setLoading(false);
   }
-};
+  };
+
   const handleMedicineChange = (
     medIndex: number,
     key: "name" | "duration",
@@ -654,18 +547,6 @@ const handleAddNewMedicine = async (index: number) => {
     updated[medIndex].dosages[doseIndex][field] = value;
     setMedicines(updated);
   };
-
-const handleNewMedicineInputChange = (index: number, field: keyof Medicine, value: string) => {
-  setMedicines((prevMedicines) => {
-    const updatedMedicines = [...prevMedicines];
-    updatedMedicines[index] = {
-      ...updatedMedicines[index],
-      [field]: value
-    };
-    return updatedMedicines;
-  });
-};
-
 
   const handleRemoveMedicine = (index: number) => {
     setMedicines((prev) => prev.filter((_, i) => i !== index));
@@ -704,8 +585,7 @@ useEffect(() => {
     totalPayableAmount: totalPayable.toString(),
   }));
 }, [formData.payableDoctorFee, treatments]);
-console.log(formData)
-console.log(treatments)
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -836,8 +716,7 @@ console.log(treatments)
               <input
                 name="doctorFees"
                 type="number"
-                // value={formData.doctor_fee > 1 ? `${formData.doctor_fee}` : "0"}
-                value={Number(formData.doctor_fee) || 0}
+                value={formData.doctor_fee > 1 ? `${formData.doctor_fee}` : "0"}
                 disabled
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
@@ -849,13 +728,14 @@ console.log(treatments)
               <select
                 name="doctorDiscountType"
                  value={formData.doctorDiscountType}
+                 required
                  onChange={handleChange}
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               >
                 <option value="">Select Option</option>
                 <option value="Percentage">Percentage</option>
                 <option value="Flat Rate">Flat Rate</option>
-                {/* <option value="No Discount">No Discount</option> */}
+                <option value="No Discount">No Discount</option>
               </select>
             </div>
             <div>
@@ -863,20 +743,14 @@ console.log(treatments)
                 Discount Amount
               </label>
               <input
-                    disabled={!formData.doctorDiscountType}
-                    name="doctorDiscountAmount"
-                    type="number"
-                    value={formData.doctorDiscountAmount}
-                    onClick={() => handleMouseEnter("doctorDiscountAmount")}
-                    onChange={handleChange}
-                    placeholder="Discount Amount"
-                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
-                      !formData.doctorDiscountType
-                        ? "bg-gray-100 dark:bg-gray-800"
-                        : "bg-white dark:bg-[#0c1427]"
-                    } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
-                  />
-
+                name="doctorDiscountAmount"
+                type="number"
+                value={formData.doctorDiscountAmount}
+                onClick={() => handleMouseEnter("doctorDiscountAmount")}
+                onChange={handleChange}
+                placeholder="Dicount Amount"
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+              />
             </div>
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -884,13 +758,12 @@ console.log(treatments)
               </label>
               <input
                  name="payableDoctorFee"
-                 disabled
                   type="number"
-                  value={formData.payableDoctorFee ? formData.payableDoctorFee: formData.doctor_fee}
+                  value={formData.payableDoctorFee}
                   onClick={() => handleMouseEnter("payableDoctorFee")}
                 onChange={handleChange}
-                placeholder=""
-                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+                placeholder="Dicount Amount"
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
               />
             </div>
           </div>
@@ -955,7 +828,7 @@ console.log(treatments)
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Treatment Discount Type
+                  Discount Type
                 </label>
                 <select
                   name="discountType"
@@ -968,7 +841,7 @@ console.log(treatments)
                   <option value="">Select Option</option>
                   <option value="Percentage">Percentage</option>
                   <option value="Flat Rate">Flat Rate</option>
-                  {/* <option value="No Discount">No Discount</option> */}
+                  <option value="No Discount">No Discount</option>
                 </select>
               </div>
               <div>
@@ -976,22 +849,17 @@ console.log(treatments)
                   Discount Amount
                 </label>
                 <input
-                    name="discountAmount"
-                    disabled={!treatments[i].discountType}
+                 name="discountAmount"
                     type="number"
                     value={treatments[i].discountAmount}
+                    
                     onChange={(e) =>
                       handleChangeTreatment("discountAmount", i, e.target.value)
                     }
                     onClick={() => handleMouseEnter("discountAmount")}
-                    placeholder="Discount Amount"
-                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
-                      !treatments[i].discountType
-                        ? "bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-                        : "bg-white dark:bg-[#0c1427]"
-                    } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
-                  />
-
+                  placeholder="Dicount Amount"
+                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+                />
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -1009,7 +877,7 @@ console.log(treatments)
                   type="number"
                   placeholder='Payable Treatment Cost'
                   value={
-                    treatments[i].treatmentCost ? treatments[i].treatmentCost: treatments[i].treatmentAmount2
+                    treatments[i].treatmentCost
                   }
                   
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -1067,20 +935,20 @@ console.log(treatments)
                 <div className="flex gap-4 items-end">
                   <div className="flex-grow">
                     <input
-                      id={`newMedicineNameInput-${index}`} // Add unique ID for each field
+                      id="newMedicineNameInput"
                       type="text"
-                      value={medicine.newMedicineName}
-                      onChange={(e) => handleNewMedicineInputChange(index, "newMedicineName", e.target.value)}
+                      value={newMedicineInput}
+                      onChange={(e) => setNewMedicineInput(e.target.value)}
                       placeholder="Medicine Name"
                       className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     />
                   </div>
                   <div className="flex-grow">
                     <input
-                      id={`newMedicineBrandInput-${index}`}
+                      id="newMedicineBrandInput"
                       type="text"
-                      value={medicine.newMedicineBrandName}
-                      onChange={(e) => handleNewMedicineInputChange(index, "newMedicineBrandName", e.target.value)}
+                      value={newMedicineBrandInput}
+                      onChange={(e) => setNewMedicineBrandInput(e.target.value)}
                       placeholder="Brand Name"
                       className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                     />
@@ -1089,7 +957,7 @@ console.log(treatments)
                 <div className="trezo-card mt-[25px]">                 
                     <button
                       type="button"
-                      onClick={() => handleAddNewMedicine(index)} 
+                      onClick={handleAddNewMedicine}
                       disabled={loading}
                       className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-green-500 text-white hover:bg-green-400"
                     >
@@ -1199,7 +1067,32 @@ console.log(treatments)
             <button
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
-               onClick={() => router.push('/doctor/appointment/')}
+              onClick={() =>
+                setFormData({
+                  patient_id: formData.patient_id,
+                  patient_name: formData.patient_name,
+                  doctor_name: "",
+                  doctor_fee: formData.doctor_fee,
+                  treatment_name: "",
+                  treatmentAmount2: formData.treatmentAmount2,
+                  treatmentCost:"",
+                  treatmentDuration: formData.treatmentDuration,
+                  payableDoctorFee: 0, 
+                  doctorDiscountType: "", 
+                  doctorDiscountAmount: 0, 
+                  medicine_name: "",
+                  advise: "",
+                  totalPayableAmount: "",
+                  gender: "",
+                  mobile_number:0,
+                  age: 0,
+                  city: "",
+                  weight: "",
+                  blood_group: "",
+                  is_drs_derma:"",
+                  next_appoinment:""
+                })
+              }
             >
               Cancel
             </button>
@@ -1211,7 +1104,7 @@ console.log(treatments)
                 <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                   add
                 </i>
-                {loading ? "Submitting..." : "Presribe"}
+                {loading ? "Submitting..." : "Add Appointment"}
               </span>
             </button>
           </div>
