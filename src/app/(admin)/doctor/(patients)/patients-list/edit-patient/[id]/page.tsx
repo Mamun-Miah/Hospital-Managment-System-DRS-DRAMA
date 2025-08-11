@@ -24,6 +24,8 @@ interface Patient {
   emergency_contact_phone: string;
   status: string;
   created_at: string;
+  note: string,
+  marital_status: string,
   updated_at: string;
 }
 
@@ -76,7 +78,7 @@ const ViewPatientDetails: React.FC = () => {
   }, [patientId]);
 console.log(formData)
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     if (!formData) return;
     const { name, value } = e.target;
@@ -312,6 +314,26 @@ console.log(formData)
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
+
+              <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+               Marital Status
+              </label>
+              <select
+                name="marital_status"
+                value={formData.marital_status}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                required
+              >
+                <option value="">Select Status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+            
               <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Set Appoinmnet Date
@@ -342,6 +364,20 @@ console.log(formData)
             </div>
           </div>
 
+
+            <div className="mt-5">
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Note
+              </label>
+              <textarea
+                name="note"
+                placeholder="Write Here ..."
+                value={formData.note}
+                onChange={handleChange}
+                rows={4} // you can adjust the height
+                className="rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] py-[12px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 resize-none"
+              />
+            </div>
 
          {/* <div className="sm:col-span-2 mt-[20px]">
                    <label className="mb-[1px] text-black dark:text-white font-medium block">

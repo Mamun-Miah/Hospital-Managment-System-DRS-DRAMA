@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 
 // import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +30,8 @@ interface Patient {
   created_at: string;
   updated_at: string;
   checked?: boolean;
+  marital_status:string;
+  note:string;
   image_url?: string;
   Prescription: Prescription[];
 }
@@ -209,14 +211,14 @@ const PatientsListTable: React.FC = () => {
                     Phone No.
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Assigns Doctor
+                    Email
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Last Visit
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Next Visit
-                  </th>
+                  </th> */}
                   {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Due Amount
                   </th>
@@ -257,7 +259,7 @@ const PatientsListTable: React.FC = () => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[10px]">
-                          <div className="rounded-full w-[35px]">
+                          {/* <div className="rounded-full w-[35px]">
                             <Image
                               src={patient.image_url || "/uploads/default.avif"}
                               width={35}
@@ -265,7 +267,7 @@ const PatientsListTable: React.FC = () => {
                               className="inline-block rounded-full"
                               alt="user-image"
                             />
-                          </div>
+                          </div> */}
                           <span className="font-semibold inline-block">
                             {patient.patient_name}
                           </span>
@@ -299,7 +301,7 @@ const PatientsListTable: React.FC = () => {
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          ---
+                        {patient.email}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
@@ -307,11 +309,11 @@ const PatientsListTable: React.FC = () => {
                           {new Date(patient?.created_at).toLocaleDateString()}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           ---
                         </span>
-                      </td>
+                      </td> */}
                       {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                          ---
@@ -475,15 +477,25 @@ const PatientsListTable: React.FC = () => {
               &times;
             </button>
             {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
-            <p className="text-lg font-bold underline">Patient Details:</p>
-            <div className="space-y-2 text-sm">
-              <Image
+            <h3 className="text-lg text-center font-bold pb-8 ">Patient Details</h3>
+           <Link href={`/doctor/patient-history/list/see-patient-history/${selectedPatient.patient_id}`}>
+            <button
+              type="button"
+              // onClick={() => handleAddNewMedicine(index)} 
+              
+              className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-blue-900 text-white hover:bg-green-700"
+            >
+                View Patient History
+            </button>
+            </Link>
+            <div className="space-y-2 mt-5 text-sm">
+              {/* <Image
                 src={selectedPatient.image_url || "/uploads/default.avif"}
                 width={100}
                 height={100}
                 className="inline-block rounded-full"
                 alt="user-image"
-              />
+              /> */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <p>
@@ -511,6 +523,8 @@ const PatientsListTable: React.FC = () => {
                   <p>
                     <strong>State:</strong> {selectedPatient?.state_province}
                   </p>
+                   <p><strong>Marital Status:</strong> {selectedPatient?.marital_status}</p>
+              
                  
                 </div>
                 <div>
@@ -548,6 +562,7 @@ const PatientsListTable: React.FC = () => {
                   <p>
                     <strong>Status:</strong> {selectedPatient?.status}
                   </p>
+                  <p><strong>Note:</strong> {selectedPatient?.note}</p>
                 </div>
               </div>
 

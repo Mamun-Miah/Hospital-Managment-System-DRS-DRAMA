@@ -28,6 +28,8 @@ export async function PATCH(
       blood_group: data.blood_group,
       weight: data.weight,
       city: data.city,
+       note: data.note,
+      marital_status: data.marital_status,
       state_province: data.state_province,
       postal_code: data.postal_code,
       emergency_contact_phone: data.emergency_contact_phone,

@@ -18,6 +18,8 @@ export async function POST(req: Request) {
     emergencyContactNumber,
     gender,
     status,
+    note,
+    marital_status,
     image_url
   } = await req.json();
 
@@ -49,6 +51,8 @@ export async function POST(req: Request) {
       set_next_appoinmnet:setNextAppoinmnets ?  new Date(setNextAppoinmnets) : null,
       age: age,
       blood_group: blood_group,
+      marital_status: marital_status,
+      note: note,
       weight: weight,
       emergency_contact_phone: emergencyContactNumber,
       gender,

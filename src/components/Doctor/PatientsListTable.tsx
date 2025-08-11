@@ -28,6 +28,8 @@ interface Patient {
   created_at: string;
   updated_at: string;
   checked?: boolean;
+  note?:string;
+  marital_status?:string;
   image_url?: string; // Optional field for patient image URL 
 }
 
@@ -504,6 +506,8 @@ const handleViewClick = async (id: number) => {
               <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
               <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
               <p><strong>Age:</strong> {selectedPatient?.age}</p>
+              <p><strong>Marital Status:</strong> {selectedPatient?.marital_status}</p>
+              <p><strong>Note:</strong> {selectedPatient?.note}</p>
               
           </div>
           <div>
@@ -526,6 +530,7 @@ const handleViewClick = async (id: number) => {
             <p><strong>Due Amount:</strong> 50000*</p>
             <p><strong>Paid Amount:</strong> 50000*</p> */}
             <p><strong>Status:</strong> {selectedPatient?.status}</p>
+            
           </div>
         </div>
         
