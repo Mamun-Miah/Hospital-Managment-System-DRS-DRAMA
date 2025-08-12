@@ -1329,9 +1329,9 @@ const AddAppointment: React.FC = () => {
             </button>
             {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
             <p className="text-lg font-bold underline">Patient Timeline:</p>
-            <p className="text-md">
+            <div className="text-md">
               <PatientHistoryTimeline patientId={formData.patient_id} />
-            </p>
+            </div>
           </div>
         </div>
         // view modal
