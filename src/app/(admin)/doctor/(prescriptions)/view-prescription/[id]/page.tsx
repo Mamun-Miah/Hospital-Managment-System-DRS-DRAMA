@@ -68,6 +68,7 @@ export interface TreatmentItem {
   payable_treatment_amount: number;
   treatment_name: string;
   duration_months: number;
+  next_treatment_session_interval_date:string;
 }
 
 interface DownloadPDFButtonProps {
@@ -395,7 +396,7 @@ console.log('prescriptionsData',prescriptionsData)
             Treatments:
           </span>
 
-          <div className="lg:w-4/5 ] md:-mx-[25px] px-2  ">
+          <div className="lg:w-4/5 md:-mx-[25px] px-2  ">
             <div className="table-responsive overflow-x-auto">
             <table className="w-full  mb-12 border-collapse">
                   <thead>
@@ -404,7 +405,7 @@ console.log('prescriptionsData',prescriptionsData)
                         Treatment Name
                       </th>
                       <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
-                        Duration
+                        Next Session Interval 
                       </th>
                     </tr>
                   </thead>
@@ -416,7 +417,7 @@ console.log('prescriptionsData',prescriptionsData)
                           {treatment.treatment_name}
                         </td>
                         <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
-                          {treatment.duration_months} Months
+                          {treatment.next_treatment_session_interval_date}
                         </td>
                       </tr>
                     ))}
