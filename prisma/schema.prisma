@@ -170,15 +170,15 @@ model PrescriptionItem {
 }
 
 model PrescriptionTreatmentItem {
-  id                       Int          @id @default(autoincrement())
-  prescription_id          Int
-  treatment_id             Int
-  discount_type            DiscountType @default(None)
-  discount_value           Float        @default(0)
-  payable_treatment_amount Float        @default(0)
-
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
+  id                                   Int          @id @default(autoincrement())
+  prescription_id                      Int
+  treatment_id                         Int
+  discount_type                        DiscountType @default(None)
+  discount_value                       Float        @default(0)
+  payable_treatment_amount             Float        @default(0)
+  next_treatment_session_interval_date String?
+  created_at                           DateTime     @default(now())
+  updated_at                           DateTime?    @updatedAt
 
   prescription            Prescription      @relation(fields: [prescription_id], references: [prescription_id])
   treatment               Treatmentlist?    @relation(fields: [treatment_id], references: [treatment_id])
