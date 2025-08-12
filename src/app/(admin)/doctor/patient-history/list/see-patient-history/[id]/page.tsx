@@ -438,7 +438,7 @@ export default function Page() {
                                   </>
                                 </span>
                               )}
-                              {/* Patient Onboarded section: only show accordion, not title */}
+                              {/* Patient Onboarded section: only show accordion*/}
                               {parsed.onboard_message && (
                                 <AccordionSection title="Patient Onboarded" html={parsed.onboard_message} defaultOpen={isFirstDateAccordion} />
                               )}
