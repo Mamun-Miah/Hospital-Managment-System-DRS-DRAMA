@@ -56,6 +56,7 @@ export async function GET(
       weight: patient.weight || "",
       emergency_contact_phone: patient.emergency_contact_phone || "",
       image_url: patient.image_url || "/uploads/default.avif",
+      onboarded_at: patient.created_at.toISOString(),
     };
 
     const prescriptions = patient.Prescription.map((prescription) => ({
@@ -63,8 +64,10 @@ export async function GET(
       prescribed_at: prescription.prescribed_at.toISOString(),
       total_cost: prescription.total_cost || 0,
       prescribed_doctor_name: prescription.doctor?.doctor_name || "Unknown",
+      is_drs_derma: prescription.is_drs_derma || "",
       doctor_image_url: prescription.doctor?.doctor_image || "/uploads/default.avif",
       doctor_fee: prescription.doctor?.doctor_fee ? Number(prescription.doctor.doctor_fee) : 0,
+      doctor_id: prescription.doctor?.doctor_id ? Number(prescription.doctor.doctor_id) : 0,
       advise: prescription.advise || "",
       next_visit_date: prescription.next_visit_date?.toISOString() || "",
       medicine_items: prescription.items.map((item) => ({
@@ -86,6 +89,7 @@ export async function GET(
 
     const payments = patient.Invoice.map((invoice) => ({
       payment_id: invoice.invoice_id,
+      invoice_id: invoice.invoice_id,
       invoice_number: invoice.invoice_number,
       previous_due: invoice.previous_due,
       previous_session_date: invoice.previous_session_date,
