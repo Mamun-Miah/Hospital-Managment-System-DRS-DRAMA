@@ -10,6 +10,7 @@ const AddTreatmentComponent: React.FC = () => {
     treatment_name: "",
     total_cost: "",
     duration_months: "",
+    treatment_session_interval:"",
   });
 
   const [error, setError] = useState("");
@@ -54,6 +55,7 @@ const AddTreatmentComponent: React.FC = () => {
         treatment_name: "",
         total_cost: "",
         duration_months: "",
+        treatment_session_interval:"",
       });
 
     } catch (error) {
@@ -116,6 +118,21 @@ const AddTreatmentComponent: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Treatment Session Interval <span className="text-danger-800">*</span>
+              </label>
+              <input
+                name="treatment_session_interval"
+                type="number"
+                placeholder="Treatment Session Interval"
+                value={formData.treatment_session_interval}
+                onChange={handleChange}
+                required
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
             
 
             <div>
@@ -155,11 +172,7 @@ const AddTreatmentComponent: React.FC = () => {
               type="button"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
               onClick={() =>
-                setFormData({
-                  treatment_name: "",
-                  total_cost: "",
-                  duration_months: "",
-                })
+                router.push('/doctor/add-treatment/treatment-list/')
               }
             >
               Cancel

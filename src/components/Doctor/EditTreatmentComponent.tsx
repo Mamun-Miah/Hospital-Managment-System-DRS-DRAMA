@@ -15,6 +15,7 @@ export default function EditTreatmentComponent()     {
         treatment_name: "",
         total_cost: "",
         duration_months: "",
+        treatment_session_interval:"",
     });
     
     
@@ -40,6 +41,7 @@ export default function EditTreatmentComponent()     {
             treatment_name: data.treatment_name || "",
             total_cost: data.total_cost.toString() || "",
             duration_months: data.duration_months.toString() || "",
+             treatment_session_interval:"",
           });
         }
       } catch (error) {
@@ -96,7 +98,20 @@ if (loading) return <p>Loading prescription...</p>;
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
-            
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Treatment Session Interval <span className="text-danger-800">*</span>
+              </label>
+              <input
+                name="treatment_session_interval"
+                type="number"
+                placeholder="Treatment Session Interval"
+                value={formData.treatment_session_interval}
+                onChange={handleChange}
+                required
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
 
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -138,6 +153,7 @@ if (loading) return <p>Loading prescription...</p>;
                   treatment_name: "",
                   total_cost: "",
                   duration_months: "",
+                   treatment_session_interval:"",
                 })
               }
             >
