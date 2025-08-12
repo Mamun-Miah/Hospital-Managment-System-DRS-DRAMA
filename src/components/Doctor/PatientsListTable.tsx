@@ -478,84 +478,77 @@ const handleViewClick = async (id: number) => {
 {/* view modal */}
   {isOpen && selectedPatient && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative">
+    <div
+      className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative overflow-y-auto"
+      style={{ maxHeight: "90vh" }} // limit modal height
+    >
       <button
         className="absolute top-2 right-2 text-xl text-gray-500 hover:text-black"
         onClick={() => setIsOpen(false)}
       >
         &times;
       </button>
-      {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
-      <h3 className="text-lg text-center font-bold pb-8 ">Patient Details</h3>
-           <Link href={`/doctor/patient-history/list/see-patient-history/${selectedPatient.patient_id}`}>
-            <button
-              type="button"
-              // onClick={() => handleAddNewMedicine(index)} 
-              
-              className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-blue-900 text-white hover:bg-green-700"
-            >
-                View Patient History
-            </button>
-            </Link>
-      <div className="space-y-2 text-sm">
-        {/* <Image
-          src={selectedPatient.image_url || "/uploads/default.avif"}
-          width={100}
-          height={100}
-          className="inline-block rounded-full"
-          alt="user-image"
-        /> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
-  <div>
-    <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
-    <p><strong>Email:</strong> {selectedPatient?.email}</p>
-    <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
-    <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
-    <p><strong>DOB:</strong> {selectedPatient?.date_of_birth && new Date(selectedPatient.date_of_birth).toLocaleDateString()}</p>
-    <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
-    <p><strong>Age:</strong> {selectedPatient?.age}</p>
-    <p><strong>Marital Status:</strong> {selectedPatient?.marital_status}</p>
-    <p><strong>Note:</strong> {selectedPatient?.note}</p>
-  </div>
 
-  <div>
-    <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
-    <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
-    <p><strong>State:</strong> {selectedPatient?.state_province}</p>
-    <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
-    <p><strong>Last Visit:</strong> {selectedPatient?.created_at && new Date(selectedPatient.created_at).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
-    <p><strong>Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && new Date(selectedPatient.set_next_appoinmnet).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
-    <p><strong>Status:</strong> {selectedPatient?.status}</p>
+      <h3 className="text-lg text-center font-bold pb-8">Patient Details</h3>
 
-    {/* Weight History Section */}
-    <div className="mt-4">
-      <h5 className="font-semibold mb-2">Weight History</h5>
-      {selectedPatient?.weightHistory?.length > 0 ? (
-        <ol
-          className="list-inside max-h-48 overflow-auto"
-          style={{ listStyleType: "decimal" }}
+      <Link href={`/doctor/patient-history/list/see-patient-history/${selectedPatient.patient_id}`}>
+        <button
+          type="button"
+          className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-blue-900 text-white hover:bg-green-700"
         >
-          {selectedPatient.weightHistory.map((entry) => (
-            <li key={entry.id}>
-              <span>{new Date(entry.recorded_at).toLocaleDateString('en-GB')}:</span>{' '}
-              <span>{entry.weight} kg</span>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <p>No weight history available.</p>
-      )}
-    </div>
-  </div>
-</div>
-        
-        {/* Add more fields as needed */}
+          View Patient History
+        </button>
+      </Link>
+
+      <div className="space-y-2 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
+          <div>
+            <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
+            <p><strong>Email:</strong> {selectedPatient?.email}</p>
+            <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
+            <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
+            <p><strong>DOB:</strong> {selectedPatient?.date_of_birth && new Date(selectedPatient.date_of_birth).toLocaleDateString()}</p>
+            <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
+            <p><strong>Age:</strong> {selectedPatient?.age}</p>
+            <p><strong>Marital Status:</strong> {selectedPatient?.marital_status}</p>
+            <p><strong>Note:</strong> {selectedPatient?.note}</p>
+          </div>
+
+          <div>
+            <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
+            <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
+            <p><strong>State:</strong> {selectedPatient?.state_province}</p>
+            <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
+            <p><strong>Last Visit:</strong> {selectedPatient?.created_at && new Date(selectedPatient.created_at).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
+            <p><strong>Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && new Date(selectedPatient.set_next_appoinmnet).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
+            <p><strong>Status:</strong> {selectedPatient?.status}</p>
+
+            {/* Weight History Section */}
+            <div className="mt-4">
+              <h5 className="font-semibold mb-2">Weight History</h5>
+              {selectedPatient?.weightHistory?.length > 0 ? (
+                <ol
+                  className="list-inside max-h-48 overflow-auto"
+                  style={{ listStyleType: "decimal" }}
+                >
+                  {selectedPatient.weightHistory.map((entry) => (
+                    <li key={entry.id}>
+                      <span>{new Date(entry.recorded_at).toLocaleDateString('en-GB')}:</span>{' '}
+                      <span>{entry.weight} kg</span>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p>No weight history available.</p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-// view modal
-
 )}
+
 
 
 
