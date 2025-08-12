@@ -121,6 +121,7 @@ export async function POST(req: NextRequest) {
           data: {
             prescription_id: prescriptionId,
             treatment_id: treatment.treatment_id,
+            next_treatment_session_interval_date:treat.nextTreatmentSessionInterval || "",
             discount_type:
               treat.discountType === "Flat Rate"
                 ? "Flat"
