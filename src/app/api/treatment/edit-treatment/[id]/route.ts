@@ -18,6 +18,7 @@ export async function PATCH(request: NextRequest,
                 treatment_name: editedTreatment.treatment_name,
                 total_cost: parseFloat(editedTreatment.total_cost),
                 duration_months: parseInt(editedTreatment.duration_months, 10),
+                treatment_session_interval: parseInt(editedTreatment.treatment_session_interval, 10),
             },
         });
 

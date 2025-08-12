@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 export async function POST(request: NextRequest) {
     try{
         const body =await request.json();
-        const { treatment_name, total_cost, duration_months } = body;
+        const { treatment_name, total_cost, duration_months, treatment_session_interval } = body;
         if (!treatment_name || !total_cost || !duration_months) {
             return NextResponse.json(
                 { error: "All fields are required." },
@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
                 treatment_name: treatment_name,
                 total_cost: parseFloat(total_cost),
                 duration_months: parseInt(duration_months, 10),
+                treatment_session_interval: parseInt(treatment_session_interval, 10),
                 
             },
         });

@@ -40,7 +40,7 @@ export default function Page() {
             treatment_name: data.treatment_name || "",
             total_cost: data.total_cost.toString() || "",
             duration_months: data.duration_months.toString() || "",
-            treatment_session_interval:"",
+            treatment_session_interval:data.treatment_session_interval.toString() || "",
           });
         }
       } catch (error) {
