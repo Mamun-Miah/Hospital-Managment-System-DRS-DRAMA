@@ -40,6 +40,7 @@ export async function GET(
         treatment_name: true,
         total_cost: true,
         duration_months: true,
+        treatment_session_interval:true,
       },
     });
 

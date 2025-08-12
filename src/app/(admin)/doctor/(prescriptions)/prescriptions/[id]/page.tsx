@@ -36,6 +36,7 @@ interface FormData {
   relevant_findings_rf:string;
   on_examination_oe:string;
   next_appoinment: string;
+  treatment_session_interval:string;
 }
 
 interface Dosage {
@@ -152,6 +153,7 @@ const AddAppointment: React.FC = () => {
     drug_history_dh:"",
     relevant_findings_rf:"",
     on_examination_oe:"",
+    treatment_session_interval:"",
   });
 //Set Doctor Data
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -169,7 +171,9 @@ const AddAppointment: React.FC = () => {
       discountType: "",
       discountAmount: "",
       treatmentAmount2:"",
-      treatmentCost:""
+      treatment_session_interval:"",
+      treatmentCost:"",
+      nextTreatmentSessionInterval:"",
     },
   ]);
 
@@ -207,6 +211,7 @@ async function getPrescribedData(id: string) {
       }
       const result = await res.json();
       const data = result.data;
+      console.log('Data',data)
       //get medicines value
       const medicines = data.medicines;
 
@@ -255,7 +260,8 @@ async function getPrescribedData(id: string) {
           weight: data.patient.weight,
           blood_group: data.patient.blood_group,
           is_drs_derma: "",
-          next_appoinment:""
+          next_appoinment:"",
+          treatment_session_interval:data.treatments[0].treatment_session_interval,
         });
       
         setLoading(false);
@@ -413,7 +419,9 @@ if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
         discountType: "",
         discountAmount: "",
         treatmentAmount2:"",
+        treatment_session_interval:"",
         treatmentCost:"",
+        nextTreatmentSessionInterval:""
       },
     ]);
   };
@@ -434,13 +442,26 @@ const handleChangeTreatment = (
         (item) => item.treatment_name === value
       );
 
+      let nextTreatmentSessionInterval = "";
+      if (selected && selected.treatment_session_interval) {
+          const today = new Date();
+          today.setDate(today.getDate() + Number(selected.treatment_session_interval));
+
+          const day = String(today.getDate()).padStart(2, "0");
+          const month = String(today.getMonth() + 1).padStart(2, "0");
+          const year = today.getFullYear();
+
+          nextTreatmentSessionInterval = `${day}-${month}-${year}`;
+        }
+
       newData = {
         ...newData,
         treatment_name: value.toString(),
         treatmentCost: selected ? selected.total_cost : "",
-
+        treatment_session_interval: selected ? selected.treatment_session_interval : "0",
         treatmentAmount2: selected ? selected.total_cost : "",
         duration: selected ? Number(selected.duration_months) : 0,
+        nextTreatmentSessionInterval: nextTreatmentSessionInterval,
       };
     }
 
@@ -473,7 +494,7 @@ const handleChangeTreatment = (
 
       newData = {
         ...newData,
-        treatmentCost: finalAmount < 0 ? "" : Math.round(finalAmount).toString(), // Remove `.toFixed(2)` to avoid trailing .00
+        treatmentCost: finalAmount < 0 ? "" : Math.round(finalAmount).toString(),
       };
     }
 
@@ -485,24 +506,11 @@ const handleChangeTreatment = (
 
 
 
+
   const handleRemoveTreatment = (index: number) => {
     setTreatments((prev) => prev.filter((_, i) => index !== i));
   };
 
-  // const handleAddMedicine = () => {
-  //   setMedicines([
-  //     ...medicines,
-  //     {
-  //       name: "Select Medicine",
-  //       duration: "",
-  //       dosages: [
-  //         { time: "Morning", amount: "" },
-  //         { time: "Mid Day", amount: "" },
-  //         { time: "Night", amount: "" },
-  //       ],
-  //     },
-  //   ]);
-  // };
 
 
   const handleAddMedicine = () => {
@@ -523,61 +531,7 @@ const handleChangeTreatment = (
   ]);
 };
 
-//  const handleAddNewMedicine = async (index: number) => {
 
-//   const medicineToUpdate = medicines[index];
-//   const newMedicineName = medicineToUpdate.newMedicineName;
-//   const newMedicineBrandName = medicineToUpdate.newMedicineBrandName;
-//   if (!newMedicineInput.trim()) {
-//     setError("Medicine name cannot be empty.");
-//     return;
-//   }
-//   setLoading(true);
-//   setError("");
- 
-//   try {
-//     const res = await fetch("/api/medicine/add-medicine", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         // medicineName: newMedicineInput.trim(),
-//         // brandName: newMedicineBrandInput.trim(),
-//         medicineName: newMedicineName.trim(),
-//         brandName: newMedicineBrandName.trim(),
-//         quantity: 0, // A default quantity for a new medicine
-//       }),
-//     });
- 
-//     const result = await res.json();
- 
-//     if (!res.ok) {
-//       throw new Error(result.error || "Failed to add new medicine.");
-//     }
- 
-//     setOptions(prev => [
-//       ...prev,
-//       {
-//         value: newMedicineName.trim().toLowerCase().replace(/\s+/g, "_"),
-//         label: newMedicineName.trim()
-//       }
-//     ]);
- 
-//     alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
-//     setNewMedicineInput(""); // Clear the input field
-//     setNewMedicineBrandInput("");
- 
- 
-//     // Re-fetch the medicine options to update the dropdowns
-//     // await getPrescribedData(id);
-//   } catch (err: any) {
-//     console.error("Error adding new medicine:", err);
-//     setError(err.message || "Failed to add new medicine.");
-//   } finally {
-//     setLoading(false);
-//   }
-//   };
 const handleAddNewMedicine = async (index: number) => {
   const medicineToUpdate = medicines[index];
   const newMedicineName = medicineToUpdate.newMedicineName;
@@ -963,6 +917,31 @@ console.log(treatments)
                 />
               </div>
 
+              {/* treatment_session_interval */}
+              {/* <div>
+                <label className="mb-[10px] text-black dark:text-white font-medium block">
+                  Treatment Interval (Days)
+                </label>
+                <input
+                  type="text"
+                    value={`${treatments[i].treatment_session_interval} `}
+                    disabled
+                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                />
+              </div> */}
+             <div>
+                <label className="mb-[10px] text-black dark:text-white font-medium block">
+                 Next Treatment Session Date
+                </label>
+                <input
+                  type="text"
+                    value={`${treatments[i].nextTreatmentSessionInterval} `}
+                    disabled
+                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                />
+              </div>
+
+                    
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
                   Treatment Duration
@@ -1036,6 +1015,8 @@ console.log(treatments)
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
+              <div></div>
+              <div></div>
         <div className='flex w-4/4 gap-4'>
 
         <div className="">
