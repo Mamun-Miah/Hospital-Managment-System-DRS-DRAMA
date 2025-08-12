@@ -10,7 +10,12 @@ interface Prescription {
   is_prescribed: string;
   // Add other fields if needed
 }
-
+type WeightHistoryEntry = {
+  id: number;
+  weight: string;
+  recorded_at: string; // or Date if parsed
+  patient_id: number;
+};
 interface Patient {
   patient_id: number;
   patient_name: string;
@@ -30,6 +35,7 @@ interface Patient {
   created_at: string;
   updated_at: string;
   checked?: boolean;
+   weightHistory:WeightHistoryEntry[];
   marital_status:string;
   note:string;
   image_url?: string;
@@ -568,12 +574,32 @@ const PatientsListTable: React.FC = () => {
                     <strong>Status:</strong> {selectedPatient?.status}
                   </p>
                   <p><strong>Note:</strong> {selectedPatient?.note}</p>
+                      <div className="mt-4">
+      <h5 className="font-semibold mb-2">Weight History</h5>
+      {selectedPatient?.weightHistory?.length > 0 ? (
+        <ol
+          className="list-inside max-h-48 overflow-auto"
+          style={{ listStyleType: "decimal" }}
+        >
+          {selectedPatient.weightHistory.map((entry) => (
+            <li key={entry.id}>
+              <span>{new Date(entry.recorded_at).toLocaleDateString('en-GB')}:</span>{' '}
+              <span>{entry.weight} kg</span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p>No weight history available.</p>
+      )}
+    </div>
                 </div>
               </div>
 
               {/* Add more fields as needed */}
             </div>
+            
           </div>
+          
         </div>
         // view modal
       )}

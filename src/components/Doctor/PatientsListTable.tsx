@@ -8,6 +8,13 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
+
+type WeightHistoryEntry = {
+  id: number;
+  weight: string;
+  recorded_at: string; // or Date if parsed
+  patient_id: number;
+};
 interface Patient {
   patient_id: number;
   patient_name: string;
@@ -29,6 +36,7 @@ interface Patient {
   updated_at: string;
   checked?: boolean;
   note?:string;
+  weightHistory:WeightHistoryEntry[];
   marital_status?:string;
   image_url?: string; // Optional field for patient image URL 
 }
@@ -498,41 +506,48 @@ const handleViewClick = async (id: number) => {
           alt="user-image"
         /> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
-          <div>
-              <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
-              <p><strong>Email:</strong> {selectedPatient?.email}</p>
-              <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
-               <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
-              <p><strong>DOB:</strong> {new Date(selectedPatient?.date_of_birth).toLocaleDateString()}</p>
-              <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
-              <p><strong>Age:</strong> {selectedPatient?.age}</p>
-              <p><strong>Marital Status:</strong> {selectedPatient?.marital_status}</p>
-              <p><strong>Note:</strong> {selectedPatient?.note}</p>
-              
-          </div>
-          <div>
-            <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
-              <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
-              <p><strong>State:</strong> {selectedPatient?.state_province}</p>
-            <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
-            {/* <p><strong>Assigns Doctor:</strong> DR. X*</p> */}
-            <p><strong>Last Visit:</strong> {selectedPatient?.created_at && (
-                            new Date(selectedPatient.created_at)
-                              .toLocaleDateString('en-GB') // This gives you DD/MM/YYYY
-                              .replace(/\//g, '-')         // Replace slashes with dashes
-                          )}</p>
-            <p><strong>Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && (
-                            new Date(selectedPatient.set_next_appoinmnet)
-                              .toLocaleDateString('en-GB') // This gives you DD/MM/YYYY
-                              .replace(/\//g, '-')         // Replace slashes with dashes
-                          )}</p>
-            {/* <p><strong>Treatment:</strong> DR. X*</p>
-            <p><strong>Due Amount:</strong> 50000*</p>
-            <p><strong>Paid Amount:</strong> 50000*</p> */}
-            <p><strong>Status:</strong> {selectedPatient?.status}</p>
-            
-          </div>
-        </div>
+  <div>
+    <p><strong>Name:</strong> {selectedPatient?.patient_name}</p>
+    <p><strong>Email:</strong> {selectedPatient?.email}</p>
+    <p><strong>Phone:</strong> {selectedPatient?.mobile_number}</p>
+    <p><strong>Emergency Contact:</strong> {selectedPatient?.emergency_contact_phone}</p>
+    <p><strong>DOB:</strong> {selectedPatient?.date_of_birth && new Date(selectedPatient.date_of_birth).toLocaleDateString()}</p>
+    <p><strong>Gender:</strong> {selectedPatient?.gender}</p>
+    <p><strong>Age:</strong> {selectedPatient?.age}</p>
+    <p><strong>Marital Status:</strong> {selectedPatient?.marital_status}</p>
+    <p><strong>Note:</strong> {selectedPatient?.note}</p>
+  </div>
+
+  <div>
+    <p><strong>Blood Group:</strong> {selectedPatient?.blood_group}</p>
+    <p><strong>Weight:</strong> {selectedPatient?.weight}</p>
+    <p><strong>State:</strong> {selectedPatient?.state_province}</p>
+    <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
+    <p><strong>Last Visit:</strong> {selectedPatient?.created_at && new Date(selectedPatient.created_at).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
+    <p><strong>Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && new Date(selectedPatient.set_next_appoinmnet).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
+    <p><strong>Status:</strong> {selectedPatient?.status}</p>
+
+    {/* Weight History Section */}
+    <div className="mt-4">
+      <h5 className="font-semibold mb-2">Weight History</h5>
+      {selectedPatient?.weightHistory?.length > 0 ? (
+        <ol
+          className="list-inside max-h-48 overflow-auto"
+          style={{ listStyleType: "decimal" }}
+        >
+          {selectedPatient.weightHistory.map((entry) => (
+            <li key={entry.id}>
+              <span>{new Date(entry.recorded_at).toLocaleDateString('en-GB')}:</span>{' '}
+              <span>{entry.weight} kg</span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p>No weight history available.</p>
+      )}
+    </div>
+  </div>
+</div>
         
         {/* Add more fields as needed */}
       </div>
