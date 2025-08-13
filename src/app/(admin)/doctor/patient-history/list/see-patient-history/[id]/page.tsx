@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Image from "next/image";
 
 interface PatientInfo {
   patient_id: number;
@@ -15,6 +14,7 @@ interface PatientInfo {
   weight: string;
   emergency_contact_phone: string;
   image_url?: string;
+  onboarded_at?: string;
 }
 
 interface PrescriptionItem {
@@ -37,6 +37,7 @@ interface TreatmentItem {
 interface PaymentItem {
   payment_id: number;
   invoice_number: string;
+  invoice_id: number;
   previous_session_date: string;
   next_session_date: string;
   previous_due: number;
@@ -49,6 +50,7 @@ interface PaymentItem {
 
 interface Prescription {
   prescription_id: number;
+  doctor_id: number;
   prescribed_at: string;
   total_cost: number;
   prescribed_doctor_name: string;
@@ -61,6 +63,7 @@ interface Prescription {
 }
 
 interface PatientHistoryResponse {
+  weightHistory: WeightHistoryItem[];
   patient: PatientInfo;
   prescriptions: Prescription[];
   payments?: PaymentItem[];
@@ -75,12 +78,30 @@ interface GroupedEvent {
     author: string;
     color: string;
     participants: string[];
+    prescription_id?: number;
+    doctor_id?: number;
+    invoice_id?: number;
   }[];
 }
+
+interface DateAccordionProps {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}
+
+interface WeightHistoryItem {
+  id: number;
+  weight: number;
+  recorded_at: string;
+}
+
 export default function Page() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<PatientHistoryResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedPatient, setSelectedPatient] = useState<PatientHistoryResponse | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -93,6 +114,7 @@ export default function Page() {
             patient: result.patient,
             prescriptions: result.prescriptions,
             payments: result.payments || [],
+            weightHistory: result.weightHistory || [],
           });
         }
       } catch (error) {
@@ -108,6 +130,14 @@ export default function Page() {
   const getDateKey = (dateStr: string) =>
     new Date(dateStr).toISOString().split("T")[0];
 
+  function getDateTimeKey(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  }
+
   const formatDate = (dateStr: string): string =>
     new Date(dateStr).toLocaleString("en-US", {
       weekday: "long",
@@ -116,68 +146,107 @@ export default function Page() {
       day: "numeric",
     });
 
+  const handleViewClick = async (patientId: number) => {
+    try {
+      const res = await fetch(`/api/patient/viewpatient/${patientId}`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const patientData = await res.json();
+      setSelectedPatient(patientData);
+      setIsOpen(true);
+    } catch (error) {
+      console.error("Error fetching patient:", error);
+    }
+  };
+
   if (loading) return <div className="p-6">Loading...</div>;
   if (!data || !data.patient) return <div className="p-6">No data available.</div>;
 
   const groupedTimeline: { [key: string]: GroupedEvent } = {};
 
+  // Helper for random colors
+  const getRandomColor = (): string => {
+    const colors = [
+      "bg-success-500",
+      "bg-orange-500",
+      "bg-purple-500",
+      "bg-secondary-500",
+      "bg-blue-500",
+      "bg-red-500",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+
+  if (data.patient.onboarded_at) {
+    const onboardDateKey = getDateKey(data.patient.onboarded_at);
+    if (!groupedTimeline[onboardDateKey]) {
+      groupedTimeline[onboardDateKey] = {
+        date: onboardDateKey,
+        formattedDate: formatDate(data.patient.onboarded_at),
+        events: [],
+      };
+    }
+    groupedTimeline[onboardDateKey].events.push({
+      title: "Patient Onboarded",
+      // Correct the description to be a valid JSON string
+      description: JSON.stringify({
+        // onboard_message: `Patient ${data.patient.patient_name} was registered in the system at ${getDateTimeKey(data.patient.onboarded_at)}.`,
+        onboard_message: `Patient ${data.patient.patient_name} was registered in the system at ${getDateTimeKey(data.patient.onboarded_at)}.`,
+        invoice: null,
+        treatments: null,
+        medicines: null,
+        cost: null,
+      }),
+      author: "System",
+      color: "bg-blue-500",
+      participants: data.patient.image_url ? [data.patient.image_url] : [],
+    });
+  }
+
+  // Build prescription events
   data.prescriptions.forEach((p) => {
     const dateKey = getDateKey(p.prescribed_at);
     const doctor = p.prescribed_doctor_name;
     const doctorImage = p.doctor_image_url || "/uploads/default.avif";
-    // const patientImage = p.image_url || "/uploads/default.avif";
 
-    // let fullDescription = `Advise: ${p.advise}. Total cost: ৳${p.total_cost}.`;
-
-    // if (p.medicine_items.length > 0) {
-    //   p.medicine_items.forEach((m) => {
-    //     fullDescription += ` Medicine: ${m.medicine_name} (M-${m.dose_morning}, A-${m.dose_mid_day}, N-${m.dose_night}, ${m.duration_days} days).`;
-    //   });
-    // }
-
-    // if (p.treatment_items.length > 0) {
-    //   p.treatment_items.forEach((t) => {
-    //     fullDescription += ` Treatment: ${t.treatment_name} (Fee: ৳${t.payable_treatment_amount}, Discount: ${t.discount_value}${t.discount_type === "Percentage" ? "%" : ""}).`;
-    //   });
-    // }
-    let treatmentSection = "";
-    let medicineSection = "";
+    let treatmentsHTML = "";
+    let medicineHTML = "";
+    let costHTML = "";
     let treatmentSubtotal = 0;
-    // let medicineSubtotal = 0;
     const doctorFee = p.doctor_fee || 0;
+
     if (p.treatment_items.length > 0) {
-      treatmentSection += "<strong>Treatments:</strong><br>";
+      treatmentsHTML += "<ul>";
       p.treatment_items.forEach((t) => {
         treatmentSubtotal += t.payable_treatment_amount || 0;
-        treatmentSection += `
-          • ${t.treatment_name}
-          (Fee: ৳${t.payable_treatment_amount}, 
-          Discount: ${t.discount_value}${t.discount_type === "Percentage" ? "%" : ""})<br>`;
+        treatmentsHTML += `<li>• ${t.treatment_name} (Fee: ৳${t.payable_treatment_amount}, Discount: ${t.discount_value}${t.discount_type === "Percentage" ? "%" : ""})</li>`;
       });
+      treatmentsHTML += "</ul>";
     }
 
     if (p.medicine_items.length > 0) {
-      medicineSection += "<strong>Medicines:</strong><br>";
+      medicineHTML += "<ul>";
       p.medicine_items.forEach((m) => {
-        medicineSection += `• ${m.medicine_name} (M-${m.dose_morning}, A-${m.dose_mid_day}, N-${m.dose_night}, ${m.duration_days} days)<br>`;
+        medicineHTML += `<li>• ${m.medicine_name} (M-${m.dose_morning}, A-${m.dose_mid_day}, N-${m.dose_night}, ${m.duration_days} days)</li>`;
       });
+      medicineHTML += "</ul>";
     }
-
-
-
-    let fullDescription = "";
-    if (treatmentSection) fullDescription += `${treatmentSection}<br>`;
-    if (medicineSection) fullDescription += `${medicineSection}`;
-
 
     if (p.advise && p.advise.trim() !== "") {
-      fullDescription += `Advise:${p.advise}<br><br>`;
+      treatmentsHTML += `<p><strong>Advise:</strong> ${p.advise}</p>`;
     }
-    fullDescription += `<h6>Cost Breakdown:</h6>`;
-    fullDescription += `- <strong>Treatment Subtotal:</strong> ৳${treatmentSubtotal}<br>`;
-    fullDescription += `- <strong>Doctor Fee:</strong> ৳${doctorFee}<br>`;
-    fullDescription += `<strong>Total Cost:</strong> ৳${p.total_cost}`;
 
+    costHTML += `<div>- <strong>Treatment Subtotal:</strong> ৳${treatmentSubtotal}</div>`;
+    costHTML += `<div>- <strong>Doctor Fee:</strong> ৳${doctorFee}</div>`;
+    costHTML += `<div>- <strong>Total Cost:</strong> ৳${p.total_cost}</div>`;
+
+    const descriptionHTML = JSON.stringify({
+      invoice: null,
+      // treatments: treatmentsHTML + medicineHTML,
+      treatments: treatmentsHTML,
+      medicines: medicineHTML,
+      cost: costHTML,
+    });
 
     if (!groupedTimeline[dateKey]) {
       groupedTimeline[dateKey] = {
@@ -186,17 +255,15 @@ export default function Page() {
         events: [],
       };
     }
-  // Function to generate a random color from a predefined set
-  const getRandomColor = (): string => {
-    const colors = ["bg-success-500", "bg-orange-500", "bg-purple-500", "bg-secondary-500", "bg-blue-500", "bg-red-500"];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
+
     groupedTimeline[dateKey].events.push({
-      title: `Prescribed by Dr. ${doctor}`,
-      description: fullDescription,
+      title: `Prescribed by ${doctor}`,
+      description: descriptionHTML,
       author: doctor,
-      color: getRandomColor(),//"bg-red-500",
-      participants: [doctorImage] ,
+      color: getRandomColor(),
+      participants: [doctorImage],
+      prescription_id: p.prescription_id,
+      doctor_id: p.doctor_id,
     });
 
     if (p.next_visit_date) {
@@ -210,7 +277,7 @@ export default function Page() {
       }
       groupedTimeline[nextVisitKey].events.push({
         title: `Appointment with Dr. ${doctor}`,
-        description: `Scheduled for next visit.`,
+        description: JSON.stringify({ invoice: null, treatments: "", medicines: "", cost: "" }),
         author: doctor,
         color: "bg-yellow-500",
         participants: [],
@@ -218,7 +285,7 @@ export default function Page() {
     }
   });
 
-
+  // Build payment events
   data.payments?.forEach((p) => {
     const dateKey = getDateKey(p.paid_at);
     if (!groupedTimeline[dateKey]) {
@@ -226,191 +293,218 @@ export default function Page() {
         date: dateKey,
         formattedDate: formatDate(p.paid_at),
         events: [],
+
       };
     }
-    // groupedTimeline[dateKey].events.push({
-    //   // title: `Payment of ৳${p.amount}`,
-    //   title: `Invoice Details:`,
-    //   // title: `Invoice Details, of ${p.invoice_number}`,
-    //   // description: `Paid via ${p.payment_method}. Collected by ${p.collected_by}.`,
-    //   author: p.collected_by,
-    //   color: "bg-green-600",
-    //   participants: [],
-    //   description: ""
-    // });
 
-    let invoiceDesc = "";
-
-    // if (p.invoice_number) {
-    //   invoiceDesc += `• Invoice #: ${p.invoice_number}`;
-    //   if (p.paid_at) {
-    //     const invoiceDate = new Date(p.paid_at).toISOString().split("T")[0];
-    //     invoiceDesc += ` (${invoiceDate})\n`;
-    //   } else {
-    //     invoiceDesc += `\n`;
-    //   }
-    // }
-
+    let invoiceHTML = "";
     if (p.invoice_number) {
-      invoiceDesc += `• <strong>Invoice #:</strong> ${p.invoice_number}<br>`;
+      invoiceHTML += `<div>• <strong>Invoice #:</strong> ${p.invoice_number}</div>`;
       if (p.paid_at) {
         const invoiceDate = new Date(p.paid_at).toISOString().split("T")[0];
-        invoiceDesc += `• <strong>Date:</strong> ${invoiceDate}<br>`;
+        invoiceHTML += `<div>• <strong>Date:</strong> ${invoiceDate}</div>`;
       }
     }
-
-
-    // if (p.previous_due != null) {
-    //   invoiceDesc += `• Previous Due: ৳${p.previous_due}\n`;
-    // }
-
-    // if (p.amount != null) {
-    //   invoiceDesc += `• Paid Amount: ৳${p.amount}\n`;
-    // }
-
-    // if (p.previous_session_date) {
-    //   invoiceDesc += `• Previous Session Date: ${p.previous_session_date}\n`;
-    // }
-
-    // if (p.next_session_date) {
-    //   invoiceDesc += `• Next Session Date: ${p.next_session_date}\n`;
-    // }
-
     if (p.previous_due != null) {
-      invoiceDesc += `• <strong>Previous Due:</strong> ৳${p.previous_due}<br>`;
+      invoiceHTML += `<div>• <strong>Previous Due:</strong> ৳${p.previous_due}</div>`;
     }
-
     if (p.amount != null) {
-      invoiceDesc += `• <strong>Paid Amount:</strong> ৳${p.amount}<br>`;
+      invoiceHTML += `<div>• <strong>Paid Amount:</strong> ৳${p.amount}</div>`;
     }
-
     if (p.previous_session_date) {
-      invoiceDesc += `• <strong>Previous Session Date:</strong> ${p.previous_session_date}<br>`;
+      invoiceHTML += `<div>• <strong>Previous Session Date:</strong> ${p.previous_session_date}</div>`;
     }
-
     if (p.next_session_date) {
-      invoiceDesc += `• <strong>Next Session Date:</strong> ${p.next_session_date}<br>`;
+      invoiceHTML += `<div>• <strong>Next Session Date:</strong> ${p.next_session_date}</div>`;
     }
-
-
-    // if (p.payment_method) {
-    //   invoiceDesc += `• Payment Method: ${p.payment_method}\n`;
-    // }
-
-    // if (p.payment_type) {
-    //   invoiceDesc += `• Payment Type: ${p.payment_method}\n`;
-    // }
-
     if (p.due_amount != null) {
-      invoiceDesc += `• <strong>Total Due Amount</strong> ৳${p.due_amount}\n`;
+      invoiceHTML += `<div>• <strong>Total Due Amount:</strong> ৳${p.due_amount}</div>`;
     }
 
+    const descriptionHTML = JSON.stringify({
+      invoice: invoiceHTML,
+      treatments: "",
+      medicines: "",
+      cost: "",
+    });
 
     groupedTimeline[dateKey].events.push({
-      title: `Invoice Details:`,
-      description: invoiceDesc,
+      title: "Invoice:",
+      description: descriptionHTML,
       author: p.collected_by,
       color: "bg-green-600",
       participants: [],
+      invoice_id: p.invoice_id,
     });
-
   });
-
-
 
   const sortedGroupedTimeline = Object.values(groupedTimeline).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
+  //date accordion
+  const DateAccordion = ({ title, children, defaultOpen = false }: DateAccordionProps) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+
+    return (
+      <div className="mb-4">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex justify-between items-center p-4 text-left font-semibold text-lg bg-gray-100 dark:bg-gray-800 rounded-lg shadow-sm"
+        >
+          {title}
+          <span>{isOpen ? '▲' : '▼'}</span>
+        </button>
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-screen opacity-100 mt-2' : 'max-h-0 opacity-0'
+            }`}
+        >
+          <div className="p-4 bg-white dark:bg-[#0c1427] rounded-b-lg border border-t-0 border-gray-200 dark:border-gray-700">
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+
+  // Accordion section component
+  //   const AccordionSection = ({ title, html, defaultOpen = false }: { title: string; html: string; defaultOpen?: boolean }) => {
+  //   const [open, setOpen] = useState(defaultOpen); // Use the defaultOpen prop here
+  //   if (!html || html.trim() === "") return null;
+  //   return (
+  //     <div className=" rounded-md mb-2">
+  //       <button
+  //         onClick={() => setOpen(!open)}
+  //         className="w-full flex justify-between items-center px-3 py-2 bg-gray-100 dark:bg-gray-800 font-semibold"
+  //       >
+  //         {title}
+  //         <span>{open ? "▲" : "▼"}</span>
+  //       </button>
+  //       {open && ( // 'open' state is now initialized by defaultOpen
+  //         <div
+  //           className="p-3 text-sm bg-white dark:bg-[#0c1427]"
+  //           dangerouslySetInnerHTML={{ __html: html }}
+  //         />
+  //       )}
+  //     </div>
+  //   );
+  // };
+  const AccordionSection = ({ title, html, defaultOpen = false }: { title: React.ReactNode; html: string; defaultOpen?: boolean }) => {
+    const [open, setOpen] = useState(defaultOpen);
+
+    if (!html || html.trim() === "") return null;
+
+    return (
+      <div className=" rounded-md mb-2">
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full flex justify-between items-center px-3 py-2 bg-gray-100 dark:bg-gray-800 font-semibold"
+        >
+          {/* The title can now be a string or a React element */}
+          {title}
+          <span>{open ? "▲" : "▼"}</span>
+        </button>
+        {open && (
+          <div
+            className="p-3 text-sm bg-white dark:bg-[#0c1427]"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 space-y-6">
-      {/* <h2 className="text-2xl font-bold mb-4">
-        Medical History Timeline for {data.patient.patient_name}
-      </h2> */}
       <div className="trezo-card bg-white dark:bg-[#0c1427] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-header mb-[25px] flex items-center justify-between">
-          {/* <h3 className="!mb-0">Timeline</h3>
-           */}
           <h2 className="text-2xl font-bold mb-4">
-              Medical History Timeline for {data.patient.patient_name}
+            Medical History Timeline for <a href={`/view-patient/${encodeURIComponent(data.patient.patient_id || '')}`} >{data.patient.patient_name}</a>
           </h2>
-          {data?.patient?.image_url && data.patient.image_url.trim() !== "" && (
-            <div className="w-30 h-30 rounded-full overflow-hidden">
-                <Image
-                  src={data.patient.image_url}
-                  alt={`${data.patient.patient_name}'s photo`}
-                  width={120} 
-                  height={120} 
-                  className="w-full h-full object-cover"
-                />
+          <div className="mt-4">
+            <div className='flex justify-center items-center'>
+              <button
+                type="button"
+                onClick={() => handleViewClick(data.patient.patient_id)}
+                disabled={loading}
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-[#8F03E4] text-white hover:bg-green-700"
+              >
+                Weight History
+              </button>
             </div>
-          )}
+          </div>
 
         </div>
         <div className="trezo-card-content pt-[10px] pb-[25px]">
           <div className="relative">
             <span className="block absolute top-0 bottom-0 left-[6px] md:left-[150px] mt-[5px] border-l border-dashed border-gray-100 dark:border-[#172036]"></span>
-
             {sortedGroupedTimeline.length > 0 ? (
               sortedGroupedTimeline.map((group, index) => (
-                <div key={index} className="relative pl-[25px] md:pl-[180px] mb-[40px]">
-                  <span className="md:absolute md:top-0 md:left-0 text-sm block mb-[10px] md:mb-0 w-[120px] text-right font-semibold text-blue-600 dark:text-blue-300">
-                    {group.formattedDate}
-                  </span>
+                <div key={index} className="relative mb-[40px]">
+                  <DateAccordion title={group.formattedDate} defaultOpen={index === 0}>
+                    {group.events.length > 0 && (
+                      <div className="mb-[25px]">
+                        {group.events.map((event, idx) => {
+                          const parsed = JSON.parse(event.description);
+                          const isFirstDateAccordion = index === 0;
+                          // Remove Patient Onboarded title and Invoice hyperlink title
+                          // Only show event title for prescriptions, not for onboarded or invoice events
+                          const showTitle = event.title.startsWith("Prescribed by");
+                          return (
+                            <div key={idx} className="mb-[16px]">
+                              {showTitle && (
+                                <span className="block text-black dark:text-white font-semibold text-lg">
+                                  <>
+                                    <a href={`/doctor/view-prescription/${encodeURIComponent(event.prescription_id || '')}`} className="text-blue-600 underline">
+                                      Prescribed
+                                    </a>
+                                    {" by "}
+                                    <a
+                                      href={`/doctor-profile/${encodeURIComponent(event.prescription_id || '')}`}
+                                      className="text-blue-600 underline"
+                                    >
+                                      {event.author}
+                                    </a>
+                                  </>
+                                </span>
+                              )}
+                              {/* Patient Onboarded section: only show accordion, not title */}
+                              {parsed.onboard_message && (
+                                <AccordionSection title="Patient Onboarded" html={parsed.onboard_message} defaultOpen={isFirstDateAccordion} />
+                              )}
+                              {/* Invoice Details section: move hyperlink inside accordion if invoice_id exists */}
+                              {parsed.invoice && (
+                                <AccordionSection
+                                  title={
+                                    event.invoice_id ? (
+                                      <a
+                                        href={`/doctor/invoice/view-invoice/${event.invoice_id}`}
+                                        className="text-blue-600 underline"
+                                      >
+                                        Invoice Details
+                                      </a>
+                                    ) : (
+                                      "Invoice Details"
+                                    )
+                                  }
+                                  html={
+                                    parsed.invoice
+                                  }
+                                  defaultOpen={isFirstDateAccordion}
+                                />
 
-                  {group.events.length > 0 && (
-                    <div className="mb-[25px]">
-                      {/* <span
-                        className={`block w-[12px] h-[12px] rounded-full ${group.events[0].color} mb-[5px]`}
-                      ></span> */}
-
-                      {group.events.map((event, idx) => (
-                        <div key={idx} className="mb-[16px]">
-                          {/* <span className="block text-black dark:text-white font-medium"> */}
-                          <span className="block text-black dark:text-white font-semibold text-lg">
-
-                            {event.title}
-                          </span>
-                          {/* <p className="text-sm leading-[1.7] mb-[8px]"> */}
-                          {/* <p className="text-sm leading-[1.7] mb-[8px] whitespace-pre-line">
-                            {event.description}
-                          </p> */}
-
-                          <p
-                            className="text-sm leading-[1.7] mb-[8px]"
-                            dangerouslySetInnerHTML={{ __html: event.description }}
-                          ></p>
-
-
-                          {/* {event.participants.length > 0 && (
-                            <div className="flex items-center mb-[8px]">
-                              {event.participants.map((user, id) => (
-                                <div
-                                  key={id}
-                                  className="w-[40px] h-[40px] rounded-full -mr-[12px] border-2 border-white"
-                                >
-                                  {/* <Image
-                                    src={user}
-                                    alt="participant"
-                                    width={40}
-                                    height={40}
-                                    className="rounded-full"
-                                  /> */}
-                                {/* </div> */}
-                              {/* ))} */}
-                            {/* </div> */}
-                          {/* //)}  */}
-                        </div>
-                      ))}
-
-                      <span className="block text-sm">
-                        {/* By:{" "}
-                        <span className="text-primary-500">
-                          {group.events[0].author}
-                        </span> */}
-                      </span>
-                    </div>
-                  )}
+                              )}
+                              <AccordionSection title="Treatments" html={parsed.treatments} defaultOpen={isFirstDateAccordion} />
+                              <AccordionSection title="Medicines" html={parsed.medicines} defaultOpen={isFirstDateAccordion} />
+                              <AccordionSection title="Cost Breakdown" html={parsed.cost} defaultOpen={isFirstDateAccordion} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </DateAccordion>
                 </div>
               ))
             ) : (
@@ -421,6 +515,37 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+      {/* Modal for weight history */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
+          <div className="bg-white p-4 rounded-md shadow-md w-full max-w-md overflow-y-auto relative">
+            <button
+              className="absolute top-2 right-2 text-xl text-gray-500 hover:text-black"
+              onClick={() => setIsOpen(false)}
+            >
+              &times;
+            </button>
+            <h5 className="font-semibold mb-2">Weight History</h5>
+            {(selectedPatient?.weightHistory ?? []).length > 0 ? (
+              <ol
+                className="list-inside max-h-48 overflow-auto"
+                style={{ listStyleType: "decimal" }}
+              >
+                {(selectedPatient?.weightHistory ?? []).map((entry: WeightHistoryItem) => (
+                  <li key={entry.id}>
+                    <span>{new Date(entry.recorded_at).toLocaleDateString('en-GB')}:</span>{' '}
+                    <span>{entry.weight} kg</span>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p>No weight history available.</p>
+            )}
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
