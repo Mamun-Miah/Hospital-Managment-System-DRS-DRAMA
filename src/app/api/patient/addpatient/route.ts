@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         postal_code: postalCode,
         set_next_appoinmnet: setNextAppoinmnets
           ? new Date(setNextAppoinmnets)
-          : null,
+          : new Date(),
         age,
         blood_group,
         marital_status,
