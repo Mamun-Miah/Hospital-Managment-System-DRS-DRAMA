@@ -23,75 +23,75 @@ interface Doctor {
 const DoctorListTable: React.FC = () => {
   const [allDoctors, setAllDoctors] = useState<Doctor[]>([]);
 
- 
 
-    useEffect(() => {
-        const fetchDoctors = async () => {
-        try {
-            const response = await fetch("/api/doctor/doctor-list");
-            if (!response.ok) {
-            throw new Error("Failed to fetch doctors");
-            }
-            const data: Doctor[] = await response.json();
-            setAllDoctors(data);
-        } catch (error) {
-            console.error("Error fetching doctors:", error);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch("/api/doctor/doctor-list");
+        if (!response.ok) {
+          throw new Error("Failed to fetch doctors");
         }
-        };
-    
-        fetchDoctors();
-    }, []);
-  
+        const data: Doctor[] = await response.json();
+        setAllDoctors(data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
 
 
 
   const handleDeleteDoctor = async (doctor_id: number) => {
 
     //Sweet Alert for confirmation
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: "btn btn-success",
-          cancelButton: "btn btn-danger"
-        },
-        buttonsStyling: true
-      });
-   
-      swalWithBootstrapButtons.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
-        reverseButtons: true
-      }).then (async(result) => {
-        if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: true
+    });
 
-            title: "Deleted!",
-            text: "Doctor Has been successfully deleted.",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 1500
+    swalWithBootstrapButtons.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        swalWithBootstrapButtons.fire({
+
+          title: "Deleted!",
+          text: "Doctor Has been successfully deleted.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        //Sweet Alert for confirmation ends here
+        try {
+          const response = await fetch(`/api/doctor/delete-doctor/${doctor_id}`, {
+            method: "DELETE",
           });
-//Sweet Alert for confirmation ends here
-           try {
-                const response = await fetch(`/api/doctor/delete-doctor/${doctor_id}`, {
-                  method: "DELETE",
-                });
-                if (!response.ok) {
-                  throw new Error("Failed to delete doctor");
-                }
-              
-                // Remove the deleted doctor from the state
-                setAllDoctors((prevDoctors) =>
-                  prevDoctors.filter((doctor) => doctor.doctor_id !== doctor_id)
-                );
-              } catch (error) {
-                console.error("Error deleting doctor:", error);
-              }
+          if (!response.ok) {
+            throw new Error("Failed to delete doctor");
+          }
+
+          // Remove the deleted doctor from the state
+          setAllDoctors((prevDoctors) =>
+            prevDoctors.filter((doctor) => doctor.doctor_id !== doctor_id)
+          );
+        } catch (error) {
+          console.error("Error deleting doctor:", error);
         }
-      });
+      }
+    });
 
   }
 
@@ -99,7 +99,7 @@ const DoctorListTable: React.FC = () => {
     <>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-between">
-           <h3>Doctor List</h3>
+          <h3>Doctor List</h3>
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/add-doctor"
@@ -216,19 +216,37 @@ const DoctorListTable: React.FC = () => {
                               visibility
                             </i>
                           </button> */}
+
+                          <Link
+                            // src\app\(admin)\doctor\(doctors)\doctor-profile\[id]\page.tsx
+                            // href={`doctor-profile/${doctor.doctor_id}`}
+                            href={`/doctor/view-doctor-profile/${doctor.doctor_id}`}
+
+                          >
+                            <button
+                              type="button"
+                              className="text-primary-500 leading-none custom-tooltip"
+                            // onClick={() => setOpen(true)}
+                            >
+                              <i className="material-symbols-outlined !text-md">
+                                visibility
+                              </i>
+                            </button>
+                          </Link>
+
                           <Link href={`/doctor/edit-doctor/${doctor.doctor_id}`}>
 
-                          <button
-                            type="button"
-                            className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
-                           
-                          >
-                            <i className="material-symbols-outlined !text-md">
-                              edit
-                            </i>
-                          </button>
+                            <button
+                              type="button"
+                              className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
+
+                            >
+                              <i className="material-symbols-outlined !text-md">
+                                edit
+                              </i>
+                            </button>
                           </Link>
-                          
+
                           <button
                             type="button"
                             className="text-danger-500 leading-none custom-tooltip"
