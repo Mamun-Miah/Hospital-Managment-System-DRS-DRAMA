@@ -120,6 +120,7 @@ export async function POST(req: NextRequest) {
         await prisma.prescriptionTreatmentItem.create({
           data: {
             prescription_id: prescriptionId,
+            patient_id,
             treatment_id: treatment.treatment_id,
             next_treatment_session_interval_date:treat.nextTreatmentSessionInterval || "",
             discount_type:

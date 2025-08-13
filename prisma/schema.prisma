@@ -23,30 +23,31 @@ model User {
 }
 
 model Patient {
-  patient_id              Int                    @id @default(autoincrement())
-  patient_name            String                 @db.VarChar(100)
-  mobile_number           String                 @unique @db.VarChar(15)
-  email                   String?                @db.VarChar(100)
-  date_of_birth           DateTime?              @db.Date
-  gender                  Gender?
-  address_line1           String?                @db.VarChar(255)
-  city                    String?                @db.VarChar(100)
-  state_province          String?                @db.VarChar(100)
-  set_next_appoinmnet     DateTime?              @db.Date
-  postal_code             String?                @db.VarChar(20)
-  age                     String?                @db.VarChar(20)
-  blood_group             String?                @db.VarChar(20)
-  weight                  String?                @db.VarChar(20)
-  emergency_contact_phone String?                @db.VarChar(15)
-  status                  PatientStatus
-  image_url               String?                @db.VarChar(255)
-  note                    String?                @db.LongText
-  marital_status          MaritalStatus?
-  created_at              DateTime               @default(now())
-  updated_at              DateTime?              @updatedAt
-  Prescription            Prescription[]
-  Invoice                 Invoice[]
-  weightHistory           PatientWeightHistory[]
+  patient_id                Int                         @id @default(autoincrement())
+  patient_name              String                      @db.VarChar(100)
+  mobile_number             String                      @unique @db.VarChar(15)
+  email                     String?                     @db.VarChar(100)
+  date_of_birth             DateTime?                   @db.Date
+  gender                    Gender?
+  address_line1             String?                     @db.VarChar(255)
+  city                      String?                     @db.VarChar(100)
+  state_province            String?                     @db.VarChar(100)
+  set_next_appoinmnet       DateTime?                   @db.Date
+  postal_code               String?                     @db.VarChar(20)
+  age                       String?                     @db.VarChar(20)
+  blood_group               String?                     @db.VarChar(20)
+  weight                    String?                     @db.VarChar(20)
+  emergency_contact_phone   String?                     @db.VarChar(15)
+  status                    PatientStatus
+  image_url                 String?                     @db.VarChar(255)
+  note                      String?                     @db.LongText
+  marital_status            MaritalStatus?
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime?                   @updatedAt
+  Prescription              Prescription[]
+  Invoice                   Invoice[]
+  weightHistory             PatientWeightHistory[]
+  PrescriptionTreatmentItem PrescriptionTreatmentItem[]
 }
 
 model PatientWeightHistory {
@@ -173,6 +174,8 @@ model PrescriptionTreatmentItem {
   id                                   Int          @id @default(autoincrement())
   prescription_id                      Int
   treatment_id                         Int
+  patient_id                           Int
+  session_number                       Int?         @default(1)
   discount_type                        DiscountType @default(None)
   discount_value                       Float        @default(0)
   payable_treatment_amount             Float        @default(0)
@@ -181,6 +184,7 @@ model PrescriptionTreatmentItem {
   updated_at                           DateTime?    @updatedAt
 
   prescription            Prescription      @relation(fields: [prescription_id], references: [prescription_id])
+  patient                 Patient           @relation(fields: [patient_id], references: [patient_id])
   treatment               Treatmentlist?    @relation(fields: [treatment_id], references: [treatment_id])
   PrescriptionItem        PrescriptionItem? @relation(fields: [prescriptionItemItem_id], references: [item_id])
   prescriptionItemItem_id Int?
