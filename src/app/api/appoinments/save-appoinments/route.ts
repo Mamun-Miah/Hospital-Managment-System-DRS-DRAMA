@@ -121,6 +121,7 @@ export async function POST(req: NextRequest) {
           data: {
             prescription_id: prescriptionId,
             patient_id,
+            session_number: treat.session_number == 0? 1: treat.session_number,
             treatment_id: treatment.treatment_id,
             next_treatment_session_interval_date:treat.nextTreatmentSessionInterval || "",
             discount_type:

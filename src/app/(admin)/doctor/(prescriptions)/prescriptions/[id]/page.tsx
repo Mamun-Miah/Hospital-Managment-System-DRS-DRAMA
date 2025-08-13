@@ -176,6 +176,7 @@ const AddAppointment: React.FC = () => {
       treatment_session_interval: "",
       treatmentCost: "",
       nextTreatmentSessionInterval: "",
+      session_number:0,
     },
   ]);
 
@@ -425,87 +426,82 @@ const AddAppointment: React.FC = () => {
         treatmentAmount2: "",
         treatment_session_interval: "",
         treatmentCost: "",
-        nextTreatmentSessionInterval: ""
+        nextTreatmentSessionInterval: "",
+        session_number:0,
       },
     ]);
   };
 
-  const handleChangeTreatment = (
-    name: string,
-    index: number,
-    value: string | number
-  ) => {
-    setTreatments((prev) => {
-      const updated = [...prev];
-      const current = updated[index];
-      let newData = { ...current, [name]: value };
+  const handleChangeTreatment = async (
+  name: string,
+  index: number,
+  value: string | number
+) => {
+  setTreatments((prev) => {
+    const updated = [...prev];
+    updated[index] = { ...updated[index], [name]: value };
+    return updated;
+  });
 
-      // Handle treatment selection
-      if (name === "treatment_name") {
-        const selected = treatmentList.find(
-          (item) => item.treatment_name === value
+  // If treatment_name changes, load treatment details + session_number
+  if (name === "treatment_name") {
+    const selected = treatmentList.find(
+      (item) => item.treatment_name === value
+    );
+
+    let nextTreatmentSessionInterval = "";
+    if (selected?.treatment_session_interval) {
+      const today = new Date();
+      today.setDate(today.getDate() + Number(selected.treatment_session_interval));
+
+      const day = String(today.getDate()).padStart(2, "0");
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const year = today.getFullYear();
+
+      nextTreatmentSessionInterval = `${day}-${month}-${year}`;
+    }
+
+    // Fetch session_number from API
+    try {
+      const res = await fetch(
+        `/api/prescription/get-treatment-session/${formData.patient_id}`
+      );
+      const data = await res.json();
+
+      let sessionNumber = 1; // default first session
+      if (res.ok && data.treatments) {
+        // Find if this treatment exists in latest prescription
+        const existing = data.treatments.find(
+          (t: any) => t.treatment_name === value
         );
-
-        let nextTreatmentSessionInterval = "";
-        if (selected && selected.treatment_session_interval) {
-          const today = new Date();
-          today.setDate(today.getDate() + Number(selected.treatment_session_interval));
-
-          const day = String(today.getDate()).padStart(2, "0");
-          const month = String(today.getMonth() + 1).padStart(2, "0");
-          const year = today.getFullYear();
-
-          nextTreatmentSessionInterval = `${day}-${month}-${year}`;
+        if (existing) {
+          sessionNumber = existing.session_number + 1; // increment next session
         }
+      }
 
-        newData = {
-          ...newData,
+      // Update state with treatment info + session_number
+      setTreatments((prev) => {
+        const updated = [...prev];
+        updated[index] = {
+          ...updated[index],
           treatment_name: value.toString(),
           treatmentCost: selected ? selected.total_cost : "",
-          treatment_session_interval: selected ? selected.treatment_session_interval : "0",
+          treatment_session_interval: selected
+            ? selected.treatment_session_interval
+            : "0",
           treatmentAmount2: selected ? selected.total_cost : "",
           duration: selected ? Number(selected.duration_months) : 0,
-          nextTreatmentSessionInterval: nextTreatmentSessionInterval,
+          nextTreatmentSessionInterval,
+          session_number: sessionNumber, // <- new
         };
-      }
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to fetch session number:", error);
+    }
+  }
+};
 
-      // Handle discount logic
-      if (name === "discountType" || name === "discountAmount") {
-        const treatmentAmount2 = Number(
-          name === "discountType"
-            ? current.treatmentAmount2
-            : newData.treatmentAmount2 ?? current.treatmentAmount2
-        );
-
-        const discountType =
-          name === "discountType"
-            ? value
-            : current.discountType;
-
-        const discountAmount = Number(
-          name === "discountAmount"
-            ? value
-            : current.discountAmount
-        );
-
-        let finalAmount = treatmentAmount2;
-
-        if (discountType === "Percentage") {
-          finalAmount = treatmentAmount2 - (treatmentAmount2 * discountAmount) / 100;
-        } else if (discountType === "Flat Rate") {
-          finalAmount = treatmentAmount2 - discountAmount;
-        }
-
-        newData = {
-          ...newData,
-          treatmentCost: finalAmount < 0 ? "" : Math.round(finalAmount).toString(),
-        };
-      }
-
-      updated[index] = newData;
-      return updated;
-    });
-  };
 
 
 
@@ -891,51 +887,7 @@ const AddAppointment: React.FC = () => {
               </div>
             </div>
           </div>
-<div className="my-6 mt-20 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">C/C (Chief Complaint)</label>
-            <textarea
-              name="chief_complaint_cc"
-              value={formData.chief_complaint_cc}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write Chief Complaint"
-            ></textarea>
-          </div>
 
-
-          <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">D/H (Drug History)</label>
-            <textarea
-              name="drug_history_dh"
-              value={formData.drug_history_dh}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write Drug History"
-            ></textarea>
-          </div>
-
-
-          <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">R/F (Relevant Findings)</label>
-            <textarea
-              name="relevant_findings_rf"
-              value={formData.relevant_findings_rf}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write Relevant Findings"
-            ></textarea>
-          </div>
-
-          <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">O/E (On Examination)</label>
-            <textarea
-              name="on_examination_oe"
-              value={formData.on_examination_oe}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write On Examination"
-            ></textarea>
-          </div>
           {/* Treatments */}
           <h4 className="mt-16">Treatments</h4>
           {treatments.map((_singleTreatment, i) => (
@@ -1000,7 +952,7 @@ const AddAppointment: React.FC = () => {
                   </label>
                   <input
                     type="text"
-                    value={`${treatments[i].nextTreatmentSessionInterval} `}
+                    value={`Session ${treatments[i].session_number} --> ${treatments[i].nextTreatmentSessionInterval} `}
                     disabled
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   />
@@ -1256,7 +1208,51 @@ const AddAppointment: React.FC = () => {
           {/* rx */}
 
 
-          
+          <div className="my-6 mt-20 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">C/C (Chief Complaint)</label>
+            <textarea
+              name="chief_complaint_cc"
+              value={formData.chief_complaint_cc}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write Chief Complaint"
+            ></textarea>
+          </div>
+
+
+          <div className="my-8 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">D/H (Drug History)</label>
+            <textarea
+              name="drug_history_dh"
+              value={formData.drug_history_dh}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write Drug History"
+            ></textarea>
+          </div>
+
+
+          <div className="my-8 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">R/F (Relevant Findings)</label>
+            <textarea
+              name="relevant_findings_rf"
+              value={formData.relevant_findings_rf}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write Relevant Findings"
+            ></textarea>
+          </div>
+
+          <div className="my-8 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">O/E (On Examination)</label>
+            <textarea
+              name="on_examination_oe"
+              value={formData.on_examination_oe}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write On Examination"
+            ></textarea>
+          </div>
 
           <div className="my-8 last:mb-0">
             <label className="mb-[12px] text-black font-medium block">Advise</label>
