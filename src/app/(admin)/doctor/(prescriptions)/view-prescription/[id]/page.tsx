@@ -68,6 +68,7 @@ export interface TreatmentItem {
   payable_treatment_amount: number;
   treatment_name: string;
   duration_months: number;
+  session_number:string;
   next_treatment_session_interval_date:string;
 }
 
@@ -404,6 +405,9 @@ console.log('prescriptionsData',prescriptionsData)
                       <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
                         Treatment Name
                       </th>
+                       <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
+                        Session Number
+                      </th>
                       <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
                         Next Session Interval 
                       </th>
@@ -415,6 +419,9 @@ console.log('prescriptionsData',prescriptionsData)
                       <tr key={index} className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#1b253b] dark:even:bg-[#1e2a47]">
                         <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
                           {treatment.treatment_name}
+                        </td>
+                         <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
+                          {treatment.session_number}
                         </td>
                         <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
                           {treatment.next_treatment_session_interval_date}

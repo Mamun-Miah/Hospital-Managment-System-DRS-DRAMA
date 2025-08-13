@@ -68,6 +68,7 @@ export async function GET(
             discount_value: true,
             payable_treatment_amount: true,
             next_treatment_session_interval_date:true,
+            session_number:true,
             treatment: {
               select: {
                 treatment_name: true,
