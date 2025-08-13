@@ -462,8 +462,8 @@ export default function Page() {
                                     </a>
                                     {" by "}
                                     <a
-                                      href={`/doctor-profile/${encodeURIComponent(event.prescription_id || '')}`}
-                                      className="text-blue-600 underline"
+                                      // href={`/doctor-profile/${encodeURIComponent(event.prescription_id || '')}`}
+                                      className=" "
                                     >
                                       {event.author}
                                     </a>
