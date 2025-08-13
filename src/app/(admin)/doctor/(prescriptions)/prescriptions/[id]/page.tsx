@@ -891,7 +891,51 @@ const AddAppointment: React.FC = () => {
               </div>
             </div>
           </div>
+<div className="my-6 mt-20 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">C/C (Chief Complaint)</label>
+            <textarea
+              name="chief_complaint_cc"
+              value={formData.chief_complaint_cc}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write Chief Complaint"
+            ></textarea>
+          </div>
 
+
+          <div className="my-8 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">D/H (Drug History)</label>
+            <textarea
+              name="drug_history_dh"
+              value={formData.drug_history_dh}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write Drug History"
+            ></textarea>
+          </div>
+
+
+          <div className="my-8 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">R/F (Relevant Findings)</label>
+            <textarea
+              name="relevant_findings_rf"
+              value={formData.relevant_findings_rf}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write Relevant Findings"
+            ></textarea>
+          </div>
+
+          <div className="my-8 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">O/E (On Examination)</label>
+            <textarea
+              name="on_examination_oe"
+              value={formData.on_examination_oe}
+              onChange={handleChange}
+              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              placeholder="Write On Examination"
+            ></textarea>
+          </div>
           {/* Treatments */}
           <h4 className="mt-16">Treatments</h4>
           {treatments.map((_singleTreatment, i) => (
@@ -1212,51 +1256,7 @@ const AddAppointment: React.FC = () => {
           {/* rx */}
 
 
-          <div className="my-6 mt-20 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">C/C (Chief Complaint)</label>
-            <textarea
-              name="chief_complaint_cc"
-              value={formData.chief_complaint_cc}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write Chief Complaint"
-            ></textarea>
-          </div>
-
-
-          <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">D/H (Drug History)</label>
-            <textarea
-              name="drug_history_dh"
-              value={formData.drug_history_dh}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write Drug History"
-            ></textarea>
-          </div>
-
-
-          <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">R/F (Relevant Findings)</label>
-            <textarea
-              name="relevant_findings_rf"
-              value={formData.relevant_findings_rf}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write Relevant Findings"
-            ></textarea>
-          </div>
-
-          <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">O/E (On Examination)</label>
-            <textarea
-              name="on_examination_oe"
-              value={formData.on_examination_oe}
-              onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-              placeholder="Write On Examination"
-            ></textarea>
-          </div>
+          
 
           <div className="my-8 last:mb-0">
             <label className="mb-[12px] text-black font-medium block">Advise</label>
