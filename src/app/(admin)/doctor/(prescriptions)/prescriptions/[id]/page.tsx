@@ -177,6 +177,7 @@ const AddAppointment: React.FC = () => {
       treatmentCost: "",
       nextTreatmentSessionInterval: "",
       session_number:0,
+      treatment_id:""
     },
   ]);
 
@@ -422,6 +423,7 @@ const AddAppointment: React.FC = () => {
         treatment_name: "Select Treatment",
         duration: 1,
         discountType: "",
+         treatment_id:"",
         discountAmount: "",
         treatmentAmount2: "",
         treatment_session_interval: "",
@@ -432,25 +434,51 @@ const AddAppointment: React.FC = () => {
     ]);
   };
 
-  const handleChangeTreatment = async (
+const handleChangeTreatment = async (
   name: string,
   index: number,
   value: string | number
 ) => {
+
+  const previousTreatments: typeof treatments = [...treatments];
   setTreatments((prev) => {
     const updated = [...prev];
     updated[index] = { ...updated[index], [name]: value };
     return updated;
   });
 
-  // If treatment_name changes, load treatment details + session_number
+  // Only proceed if treatment_name changed
   if (name === "treatment_name") {
     const selected = treatmentList.find(
       (item) => item.treatment_name === value
     );
 
+    if (!selected) return; // no treatment found
+
+    // Check if this treatment_id is already selected in another row
+    const isDuplicate = treatments.some(
+      (t, i) => t.treatment_id === selected.treatment_id && i !== index
+    );
+    if (isDuplicate) {
+      // Reset current row to previous value
+      setTreatments((prev) => {
+        const updated = [...prev];
+        updated[index] = { ...previousTreatments[index] };
+        return updated;
+      });
+
+      Swal.fire({
+        icon: "error",
+        title: "This treatment is already selected!",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      return;
+    }
+
+    // Calculate next treatment session interval
     let nextTreatmentSessionInterval = "";
-    if (selected?.treatment_session_interval) {
+    if (selected.treatment_session_interval) {
       const today = new Date();
       today.setDate(today.getDate() + Number(selected.treatment_session_interval));
 
@@ -470,29 +498,27 @@ const AddAppointment: React.FC = () => {
 
       let sessionNumber = 1; // default first session
       if (res.ok && data.treatments) {
-        // Find if this treatment exists in latest prescription
         const existing = data.treatments.find(
           (t: any) => t.treatment_name === value
         );
         if (existing) {
-          sessionNumber = existing.session_number + 1; // increment next session
+          sessionNumber = existing.session_number + 1;
         }
       }
 
-      // Update state with treatment info + session_number
+      // Update state
       setTreatments((prev) => {
         const updated = [...prev];
         updated[index] = {
           ...updated[index],
           treatment_name: value.toString(),
-          treatmentCost: selected ? selected.total_cost : "",
-          treatment_session_interval: selected
-            ? selected.treatment_session_interval
-            : "0",
-          treatmentAmount2: selected ? selected.total_cost : "",
-          duration: selected ? Number(selected.duration_months) : 0,
+          treatment_id: selected.treatment_id, // add id for duplicate check
+          treatmentCost: selected.total_cost,
+          treatment_session_interval: selected.treatment_session_interval || "0",
+          treatmentAmount2: selected.total_cost,
+          duration: Number(selected.duration_months) || 0,
           nextTreatmentSessionInterval,
-          session_number: sessionNumber, // <- new
+          session_number: sessionNumber,
         };
         return updated;
       });
@@ -501,6 +527,7 @@ const AddAppointment: React.FC = () => {
     }
   }
 };
+
 
 
 
