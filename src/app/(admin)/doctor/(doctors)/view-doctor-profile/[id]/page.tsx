@@ -9,12 +9,13 @@ const formatDate = (date: string | Date | null | undefined): string => {
 };
 
 
-export default async function DoctorProfilePage({ params }: { params: { id: string } }) {
-    const { id } = await params;
+export default async function DoctorProfilePage({ params }: { params:Promise <{ id: string }> }) {
+    const  id  = (await params).id;
+    const doctorId = parseInt(id);
 
     const prisma = new PrismaClient();
 
-    const doctorId = parseInt(id, 10);
+   
 
 
 
