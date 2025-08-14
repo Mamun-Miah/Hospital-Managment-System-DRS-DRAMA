@@ -1,0 +1,140 @@
+-- DropIndex
+DROP INDEX `Invoice_doctor_id_fkey` ON `invoice`;
+
+-- DropIndex
+DROP INDEX `Invoice_patient_id_fkey` ON `invoice`;
+
+-- DropIndex
+DROP INDEX `Invoice_prescription_id_fkey` ON `invoice`;
+
+-- DropIndex
+DROP INDEX `InvoiceTreatment_invoice_id_fkey` ON `invoicetreatment`;
+
+-- DropIndex
+DROP INDEX `InvoiceTreatment_treatment_id_fkey` ON `invoicetreatment`;
+
+-- DropIndex
+DROP INDEX `PatientWeightHistory_patient_id_fkey` ON `patientweighthistory`;
+
+-- DropIndex
+DROP INDEX `Prescription_doctor_id_fkey` ON `prescription`;
+
+-- DropIndex
+DROP INDEX `Prescription_patient_id_fkey` ON `prescription`;
+
+-- DropIndex
+DROP INDEX `PrescriptionItem_medicine_id_fkey` ON `prescriptionitem`;
+
+-- DropIndex
+DROP INDEX `PrescriptionItem_prescription_id_fkey` ON `prescriptionitem`;
+
+-- DropIndex
+DROP INDEX `PrescriptionItem_treatmentlistTreatment_id_fkey` ON `prescriptionitem`;
+
+-- DropIndex
+DROP INDEX `PrescriptionTreatmentItem_patient_id_fkey` ON `prescriptiontreatmentitem`;
+
+-- DropIndex
+DROP INDEX `PrescriptionTreatmentItem_prescriptionItemItem_id_fkey` ON `prescriptiontreatmentitem`;
+
+-- DropIndex
+DROP INDEX `PrescriptionTreatmentItem_prescription_id_fkey` ON `prescriptiontreatmentitem`;
+
+-- DropIndex
+DROP INDEX `PrescriptionTreatmentItem_treatment_id_fkey` ON `prescriptiontreatmentitem`;
+
+-- AlterTable
+ALTER TABLE `doctor` ADD COLUMN `blood_group` VARCHAR(20) NULL,
+    ADD COLUMN `license_number` VARCHAR(100) NULL,
+    ADD COLUMN `short_bio` VARCHAR(191) NULL,
+    ADD COLUMN `yrs_of_experience` INTEGER NULL;
+
+-- CreateTable
+CREATE TABLE `DoctorEducationalInfo` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `doctor_id` INTEGER NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `institution` VARCHAR(191) NOT NULL,
+    `from_date` DATETIME(3) NULL,
+    `to_date` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `DoctorAwardsAndRecognitionInfo` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `doctor_id` INTEGER NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `institution` VARCHAR(191) NOT NULL,
+    `from_date` DATETIME(3) NULL,
+    `to_date` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `DoctorCertificationInfo` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `doctor_id` INTEGER NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `institution` VARCHAR(191) NOT NULL,
+    `from_date` DATETIME(3) NULL,
+    `to_date` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `PatientWeightHistory` ADD CONSTRAINT `PatientWeightHistory_patient_id_fkey` FOREIGN KEY (`patient_id`) REFERENCES `Patient`(`patient_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `DoctorEducationalInfo` ADD CONSTRAINT `DoctorEducationalInfo_doctor_id_fkey` FOREIGN KEY (`doctor_id`) REFERENCES `Doctor`(`doctor_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `DoctorAwardsAndRecognitionInfo` ADD CONSTRAINT `DoctorAwardsAndRecognitionInfo_doctor_id_fkey` FOREIGN KEY (`doctor_id`) REFERENCES `Doctor`(`doctor_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `DoctorCertificationInfo` ADD CONSTRAINT `DoctorCertificationInfo_doctor_id_fkey` FOREIGN KEY (`doctor_id`) REFERENCES `Doctor`(`doctor_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Prescription` ADD CONSTRAINT `Prescription_patient_id_fkey` FOREIGN KEY (`patient_id`) REFERENCES `Patient`(`patient_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Prescription` ADD CONSTRAINT `Prescription_doctor_id_fkey` FOREIGN KEY (`doctor_id`) REFERENCES `Doctor`(`doctor_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionItem` ADD CONSTRAINT `PrescriptionItem_prescription_id_fkey` FOREIGN KEY (`prescription_id`) REFERENCES `Prescription`(`prescription_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionItem` ADD CONSTRAINT `PrescriptionItem_medicine_id_fkey` FOREIGN KEY (`medicine_id`) REFERENCES `Medicine`(`medicine_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionItem` ADD CONSTRAINT `PrescriptionItem_treatmentlistTreatment_id_fkey` FOREIGN KEY (`treatmentlistTreatment_id`) REFERENCES `Treatmentlist`(`treatment_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionTreatmentItem` ADD CONSTRAINT `PrescriptionTreatmentItem_prescription_id_fkey` FOREIGN KEY (`prescription_id`) REFERENCES `Prescription`(`prescription_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionTreatmentItem` ADD CONSTRAINT `PrescriptionTreatmentItem_patient_id_fkey` FOREIGN KEY (`patient_id`) REFERENCES `Patient`(`patient_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionTreatmentItem` ADD CONSTRAINT `PrescriptionTreatmentItem_treatment_id_fkey` FOREIGN KEY (`treatment_id`) REFERENCES `Treatmentlist`(`treatment_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PrescriptionTreatmentItem` ADD CONSTRAINT `PrescriptionTreatmentItem_prescriptionItemItem_id_fkey` FOREIGN KEY (`prescriptionItemItem_id`) REFERENCES `PrescriptionItem`(`item_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Invoice` ADD CONSTRAINT `Invoice_patient_id_fkey` FOREIGN KEY (`patient_id`) REFERENCES `Patient`(`patient_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Invoice` ADD CONSTRAINT `Invoice_doctor_id_fkey` FOREIGN KEY (`doctor_id`) REFERENCES `Doctor`(`doctor_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Invoice` ADD CONSTRAINT `Invoice_prescription_id_fkey` FOREIGN KEY (`prescription_id`) REFERENCES `Prescription`(`prescription_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `InvoiceTreatment` ADD CONSTRAINT `InvoiceTreatment_invoice_id_fkey` FOREIGN KEY (`invoice_id`) REFERENCES `Invoice`(`invoice_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `InvoiceTreatment` ADD CONSTRAINT `InvoiceTreatment_treatment_id_fkey` FOREIGN KEY (`treatment_id`) REFERENCES `Treatmentlist`(`treatment_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
