@@ -176,9 +176,41 @@ const handleViewClick = async (id: number) => {
   }
 };
 
-const handleChange = ()=>{
+const handleChange = async (patient_id: number, newStatus: string) => {
+  try {
+    const res = await fetch("/api/patient/edit-patient-status", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ patient_id, status: newStatus }),
+    });
+console.log(status)
+    if (!res.ok) throw new Error("Failed to update status");
 
-}
+    const data = await res.json();
+
+    Swal.fire({
+      icon: "success",
+      title: "Status Updated successfully!",
+      showConfirmButton: false,
+      timer: 1500
+    });
+console.log('all patieetn',allPatients)
+    // Update the status in the state without removing the patient
+    setAllPatients((prev) =>
+      prev.map((patient) =>
+        patient.patient_id === patient_id
+          ? { ...patient, status: newStatus }
+          : patient
+      )
+    );
+
+    console.log("Updated:", data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 
   return (
     <>
@@ -353,7 +385,7 @@ const handleChange = ()=>{
                 <select
                   name="status"
                   value={patient?.status}
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(patient.patient_id, e.target.value)}
                   className="h-[20px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 >
                   <option value="Active">Active</option>
