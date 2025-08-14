@@ -19,7 +19,7 @@ export async function PATCH(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {
       patient_name: data.patientName,
-      mobile_number: data.mobileNumber,
+      mobile_number: data.mobile_number,
       email: data.emailAddress,
       date_of_birth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
       address_line1: data.address,

@@ -332,7 +332,7 @@ console.log(formData)
                 <option value="Divorced">Divorced</option>
                 <option value="Widowed">Widowed</option>
               </select>
-            </div>
+            </div> 
             
               <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
