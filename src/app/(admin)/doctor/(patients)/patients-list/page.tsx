@@ -27,6 +27,7 @@ export default function Page() {
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
             Patients List
           </li>
+          
         </ol>
       </div>
 

@@ -53,6 +53,13 @@ const PatientsListTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+
+ const [filterStatus, setFilterStatus] = useState<"all" | "active" | "deactivate">("all");
+
+
+
+
+
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -74,15 +81,18 @@ const PatientsListTable: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const results = allPatients.filter(
-      (patient) =>
-        patient.patient_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const results = allPatients
+    .filter(patient =>
+      (filterStatus === "all" ? true : patient.status === filterStatus) && // status filter
+      (patient.patient_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.mobile_number.toLowerCase().includes(searchTerm.toLowerCase())
+        patient.mobile_number.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-    setFilteredPatients(results);
-    setCurrentPage(1);
-  }, [searchTerm, allPatients]);
+
+  setFilteredPatients(results);
+  setCurrentPage(1); // reset to first page
+}, [searchTerm, filterStatus, allPatients]);
+
 
   const totalItems = filteredPatients.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -95,25 +105,6 @@ const PatientsListTable: React.FC = () => {
       setCurrentPage(page);
     }
   };
-
-  // const handleCheckboxChange = (id: number) => {
-  //   setAllPatients((prev) =>
-  //     prev.map((patient) =>
-  //       patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
-  //     )
-  //   );
-  //   setFilteredPatients((prev) =>
-  //     prev.map((patient) =>
-  //       patient.patient_id === id ? { ...patient, checked: !patient.checked } : patient
-  //     )
-  //   );
-  // };
-
-  // const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const isChecked = e.target.checked;
-  //   setAllPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
-  //   setFilteredPatients((prev) => prev.map((p) => ({ ...p, checked: isChecked })));
-  // };
 
  const handleDelete = async (id: number) => {
   const swalWithBootstrapButtons = Swal.mixin({
@@ -228,10 +219,26 @@ console.log('all patieetn',allPatients)
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              
             </form>
+            
           </div>
+          
 
-          <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
+          <div className="trezo-card-subtitle flex  mt-[15px] sm:mt-0">
+            <div className="mr-5">
+            <select
+                  name="status"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value as "all" | "active" | "deactivate")}
+                  className="h-[37px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                >
+                  <option value="all">Sort Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Deactivated">Deactivated</option>
+                </select>
+            </div>
+             
             <Link
               href="/doctor/add-patient"
               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
@@ -243,7 +250,10 @@ console.log('all patieetn',allPatients)
                 Add New Patient
               </span>
             </Link>
+
+            
           </div>
+         
         </div>
 
         <div className="trezo-card-content">
