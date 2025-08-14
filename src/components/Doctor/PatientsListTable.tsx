@@ -176,7 +176,9 @@ const handleViewClick = async (id: number) => {
   }
 };
 
+const handleChange = ()=>{
 
+}
 
   return (
     <>
@@ -247,7 +249,7 @@ const handleViewClick = async (id: number) => {
                     Last Visit
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Next Appoinmnet
+                  Scheduled Next Visit
                   </th>
                   {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Due Amount
@@ -346,9 +348,18 @@ const handleViewClick = async (id: number) => {
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {patient?.status}
-                        </span>
+                    
+               
+                <select
+                  name="status"
+                  value={patient?.status}
+                  onChange={handleChange}
+                  className="h-[20px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Deactivated">Deactivated</option>
+                </select>
+            
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
@@ -520,7 +531,7 @@ const handleViewClick = async (id: number) => {
             <p><strong>State:</strong> {selectedPatient?.state_province}</p>
             <p><strong>Postal Code:</strong> {selectedPatient?.postal_code}</p>
             <p><strong>Last Visit:</strong> {selectedPatient?.created_at && new Date(selectedPatient.created_at).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
-            <p><strong>Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && new Date(selectedPatient.set_next_appoinmnet).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
+            <p><strong>Scheduled Next Visit:</strong> {selectedPatient?.set_next_appoinmnet && new Date(selectedPatient.set_next_appoinmnet).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
             <p><strong>Status:</strong> {selectedPatient?.status}</p>
 
             {/* Weight History Section */}

@@ -91,7 +91,8 @@ model Doctor {
   postal_code       String?        @db.VarChar(20)
   doctor_fee        Decimal?       @db.Decimal(10, 2)
   status            DoctorStatus
-  short_bio         String?
+  date_of_birth     DateTime?      @db.Date
+  short_bio         String?        @db.LongText
   blood_group       String?        @db.VarChar(20)
   yrs_of_experience Int?
   license_number    String?        @db.VarChar(100)

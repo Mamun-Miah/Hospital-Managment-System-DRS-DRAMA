@@ -336,7 +336,7 @@ console.log(formData)
             
               <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
-                Set Appoinmnet Date
+                Set Next Consultation Date
               </label>
               <input
                 name="set_next_appoinmnet"
