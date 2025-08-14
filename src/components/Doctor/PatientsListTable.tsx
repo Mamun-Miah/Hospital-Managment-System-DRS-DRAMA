@@ -183,14 +183,14 @@ const handleChange = async (patient_id: number, newStatus: string) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ patient_id, status: newStatus }),
     });
-console.log(status)
+// console.log(newStatus)
     if (!res.ok) throw new Error("Failed to update status");
 
     const data = await res.json();
 
     Swal.fire({
       icon: "success",
-      title: "Status Updated successfully!",
+      title: `Status ${newStatus} successfully!`,
       showConfirmButton: false,
       timer: 1500
     });
