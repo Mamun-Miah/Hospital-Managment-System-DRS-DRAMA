@@ -26,7 +26,7 @@ export async function PATCH(
       city: data.city,
       state_province: data.stateProvince,
       postal_code: data.postalCode,
-      set_next_appoinmnet: data.setNextAppoinmnets ? new Date(data.setNextAppoinmnets) : undefined,
+      set_next_appoinmnet: data.setNextAppoinmnets ? new Date(data.setNextAppoinmnets) : new Date(),
       age: data.age,
       blood_group: data.blood_group,
       marital_status: data.marital_status,
