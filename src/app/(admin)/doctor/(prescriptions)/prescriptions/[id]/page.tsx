@@ -72,6 +72,18 @@ type OptionType = {
 };
 
 
+interface Treatment {
+  treatment_name: string;
+  duration: number;
+  discountType: string;
+  treatment_id: string | number; // assuming it could be number from DB
+  discountAmount: string | number;
+  treatmentAmount2: string | number;
+  treatment_session_interval: string | number;
+  treatmentCost: string | number;
+  nextTreatmentSessionInterval: string;
+  session_number: number;
+}
 
 // Searchable dropdown styles
 const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
@@ -166,19 +178,8 @@ const AddAppointment: React.FC = () => {
   const [treatmentList, setTreatmentList] = useState<
     { treatment_name: string;[key: string]: any }[]
   >([]);
-  const [treatments, setTreatments] = useState([
-    {
-      treatment_name: "Select Treatment",
-      duration: 0,
-      discountType: "",
-      discountAmount: "",
-      treatmentAmount2: "",
-      treatment_session_interval: "",
-      treatmentCost: "",
-      nextTreatmentSessionInterval: "",
-      session_number:0,
-      treatment_id:""
-    },
+  const [treatments, setTreatments] = useState<Treatment[]>([
+    
   ]);
 
   //Set Medicine List 
@@ -448,7 +449,7 @@ const handleChangeTreatment = async (
     return updated;
   });
 
-  // 1️⃣ Treatment selection logic
+  // 1️ Treatment selection logic
   if (name === "treatment_name") {
     const selected = treatmentList.find(
       (item) => item.treatment_name === value
@@ -524,7 +525,7 @@ const handleChangeTreatment = async (
     }
   }
 
-  // 2️⃣ Discount calculation logic (from old code)
+  // 2️Discount calculation logic (from old code)
   if (name === "discountType" || name === "discountAmount") {
   setTreatments((prev) => {
     const updated = [...prev];
@@ -997,11 +998,11 @@ const handleChangeTreatment = async (
           {/* Treatments */}
           <h4 className="mt-16">Treatments</h4>
           {treatments.map((_singleTreatment, i) => (
-            <div className="mb-10 mt-8" key={i}>
+            <div className="mb-4 mt-8" key={i}>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
                 <div>
-                  <label className="mb-[10px] text-black dark:text-white font-medium block">
-                    Treatment List
+                  <label className="mb-[10px] text-black dark:text-white text-[15px] font-bold block">
+                     {`Current Session--> ${treatments[i].session_number}`}
                   </label>
                   <select
                     name="treatment_name"
@@ -1012,7 +1013,7 @@ const handleChangeTreatment = async (
 
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   >
-                    <option value="">Select Treatment</option>
+                    <option value="">Select Treatment Name</option>
                     {treatmentList.map((treatment, treatment_name) => (
                       <option
                         key={treatment_name}
@@ -1053,12 +1054,13 @@ const handleChangeTreatment = async (
                 />
               </div> */}
                 <div>
+                  
                   <label className="mb-[10px] text-black dark:text-white font-medium block">
                     Next Treatment Session Date
                   </label>
                   <input
                     type="text"
-                    value={`Session ${treatments[i].session_number} --> ${treatments[i].nextTreatmentSessionInterval} `}
+                    value={` ${treatments[i].nextTreatmentSessionInterval} `}
                     disabled
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   />
@@ -1138,24 +1140,7 @@ const handleChangeTreatment = async (
                   />
                 </div>
 
-                <div className='flex w-4/4 gap-4'>
-
-                  <div className="">
-                    <button
-                      onClick={handleAddTreatments}
-                      type="button"
-                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
-                    >
-                      Add Treatments
-                      {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
-                    <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
-                      add
-                    </i>
-                    
-                  </span> */}
-                    </button>
-                  </div>
-                  <div>
+                <div>
                     <button
                       onClick={() => handleRemoveTreatment(i)}
                       type="button"
@@ -1169,13 +1154,31 @@ const handleChangeTreatment = async (
                   </span> */}
                     </button>
                   </div>
-
-
-                </div>
               </div>
             </div>
-          ))}
 
+          ))}
+                 
+
+            <div className="">
+              <button
+                onClick={handleAddTreatments}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Treatments
+                {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
+              <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
+                add
+              </i>
+              
+            </span> */}
+              </button>
+            </div>
+                  
+
+
+             
 
           <h4 className="mt-16">Medicines </h4>
           {medicines.map((medicine, index) => (
