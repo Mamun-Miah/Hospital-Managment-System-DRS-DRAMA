@@ -8,6 +8,21 @@ interface EducationalInfo {
     to_date: string;
 }
 
+interface AwardInfo {
+    name: string;
+    institution: string;
+    from_date: string;
+    to_date: string;
+}
+
+interface CertificationInfo {
+    name: string;
+    institution: string;
+    from_date: string;
+    to_date: string;
+}
+
+
 
 export async function POST(req: Request) {
     const {
@@ -29,7 +44,10 @@ export async function POST(req: Request) {
         yrs_of_experience,
         date_of_birth,
         doctor_image,
-        educational_info
+        educational_info,
+        awards_info,
+        certification_info
+
     } = await req.json();
 
     if (!doctorName || !phone_number || !status) {
@@ -54,6 +72,27 @@ export async function POST(req: Request) {
         to_date: new Date(edu.to_date),
     }));
 
+    const formattedAwardsInfo = awards_info.map((award: AwardInfo) => ({
+        ...award,
+        from_date: new Date(award.from_date),
+        to_date: new Date(award.to_date),
+    }));
+
+    const formattedCertificationInfo = certification_info.map((cert: CertificationInfo) => ({
+        ...cert,
+        from_date: new Date(cert.from_date),
+        to_date: new Date(cert.to_date),
+    }));
+    // const formattedCertificationInfo = (certification_info || []).map(
+    //     (cert: CertificationInfo) => ({
+    //         ...cert,
+    //         from_date: new Date(cert.from_date),
+    //         to_date: new Date(cert.to_date),
+    //     })
+
+    // );
+    // console.log('Certifications to create:', formattedCertificationInfo);
+
     const newDoctor = await prisma.doctor.create({
         data: {
             doctor_name: doctorName,
@@ -75,7 +114,13 @@ export async function POST(req: Request) {
             status,
             doctor_image,
             educationalInfo: {
-                create: formattedEducationalInfo, // Use the create method for nested writes
+                create: formattedEducationalInfo,
+            },
+            awards: {
+                create: formattedAwardsInfo,
+            },
+            certifications: {
+                create: formattedCertificationInfo,
             },
         },
     });
