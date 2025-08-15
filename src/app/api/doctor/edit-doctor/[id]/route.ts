@@ -2,13 +2,34 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
+interface EducationalInfo {
+  degree: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
+interface AwardInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
+interface CertificationInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
 export async function PATCH(request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },){
+  { params }: { params: Promise<{ id: string }> },) {
 
-const doctorId = (await params).id;
-const id = parseInt(doctorId);
+  const doctorId = (await params).id;
+  const id = parseInt(doctorId);
 
-try {
+  try {
     const data = await request.json();
 
     // Update the doctor by ID
@@ -25,7 +46,37 @@ try {
         state_province: data.stateProvince,
         postal_code: data.postal_code,
         status: data.status,
-        doctor_fee: data.doctorFee
+        doctor_fee: data.doctorFee,
+        short_bio: data.short_bio,
+        license_number: data.license_number,
+        date_of_birth: data.date_of_birth,
+        blood_group: data.blood_group,
+        gender: data.gender,
+        yrs_of_experience: data.yrs_of_experience,
+        educationalInfo: {
+          create: (data.educationalInfo || []).map((edu: EducationalInfo) => ({
+            degree: edu.degree,
+            institution: edu.institution,
+            from_date: new Date(edu.from_date),
+            to_date: new Date(edu.to_date),
+          })),
+        },
+        awards: {
+          create: (data.awards || []).map((award: AwardInfo) => ({
+            name: award.name,
+            institution: award.institution,
+            from_date: new Date(award.from_date),
+            to_date: new Date(award.to_date),
+          })),
+        },
+        certifications: {
+          create: (data.certifications || []).map((cert: CertificationInfo) => ({
+            name: cert.name,
+            institution: cert.institution,
+            from_date: new Date(cert.from_date),
+            to_date: new Date(cert.to_date),
+          })),
+        },
       },
     });
 

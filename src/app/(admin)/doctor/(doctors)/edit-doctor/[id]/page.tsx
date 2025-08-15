@@ -7,6 +7,27 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import Swal from 'sweetalert2';
 
+interface EducationalInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
+interface AwardInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
+interface CertificationInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
 export default function EditDoctor() {
   const router = useRouter();
   const params = useParams();
@@ -31,6 +52,21 @@ export default function EditDoctor() {
     date_of_birth: "",
     doctor_image: "",
   });
+
+
+  const [educationalInfo, setEducationalInfo] = useState<EducationalInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
+
+  const [awardsInfo, setAwardsInfo] = useState<AwardInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
+
+  // // CertificationInfo
+  const [certificationInfo, setCertificationInfo] = useState<CertificationInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
+
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [error, setError] = useState("");
@@ -64,10 +100,39 @@ export default function EditDoctor() {
           blood_group: data.blood_group || "",
           gender: data.gender || "",
           yrs_of_experience: data.yrs_of_experience || "",
-          date_of_birth: data.date_of_birth || "",
+          // date_of_birth: data.date_of_birth || "",
+          date_of_birth: data.date_of_birth ? new Date(data.date_of_birth).toISOString().split('T')[0] : "",
+
           doctor_image: data.doctor_image || "",
 
         });
+        /// Check if data.educationalInfo exists and has items. If not, default to an empty entry.
+        const formattedEducation = (data.educationalInfo || []).map((edu: EducationalInfo) => ({
+          ...edu,
+          from_date: edu.from_date ? new Date(edu.from_date).toISOString().split('T')[0] : "",
+          to_date: edu.to_date ? new Date(edu.to_date).toISOString().split('T')[0] : "",
+        }));
+        setEducationalInfo(formattedEducation.length > 0 ? formattedEducation : [{ name: "", institution: "", from_date: "", to_date: "" }]);
+
+
+        // Awards Info:
+        // Check if data.awards exists and has items. If not, default to an empty entry.
+        const formattedAwards = (data.awards || []).map((award: AwardInfo) => ({
+          ...award,
+          from_date: award.from_date ? new Date(award.from_date).toISOString().split('T')[0] : "",
+          to_date: award.to_date ? new Date(award.to_date).toISOString().split('T')[0] : "",
+        }));
+        setAwardsInfo(formattedAwards.length > 0 ? formattedAwards : [{ name: "", institution: "", from_date: "", to_date: "" }]);
+
+
+        // Certification Info:
+        // Check if data.certifications exists and has items. If not, default to an empty entry.
+        const formattedCertifications = (data.certifications || []).map((cert: CertificationInfo) => ({
+          ...cert,
+          from_date: cert.from_date ? new Date(cert.from_date).toISOString().split('T')[0] : "",
+          to_date: cert.to_date ? new Date(cert.to_date).toISOString().split('T')[0] : "",
+        }));
+        setCertificationInfo(formattedCertifications.length > 0 ? formattedCertifications : [{ name: "", institution: "", from_date: "", to_date: "" }]);
 
         setLoading(false);
       } catch (error) {
@@ -97,7 +162,65 @@ export default function EditDoctor() {
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
+  // Handler for changes in educational fields
+  const handleChangeEducation = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...educationalInfo];
+    list[index] = { ...list[index], [name]: value };
+    setEducationalInfo(list);
+  };
 
+  // Handler to add a new educational entry
+  const handleAddEducation = () => {
+    setEducationalInfo([...educationalInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an educational entry
+  const handleRemoveEducation = (index: number) => {
+    const list = [...educationalInfo];
+    list.splice(index, 1);
+    setEducationalInfo(list);
+  };
+
+
+  const handleChangeAwards = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...awardsInfo];
+    list[index] = { ...list[index], [name]: value };
+    setAwardsInfo(list);
+  };
+
+  // Handler to add a new award entry
+  const handleAddAward = () => {
+    setAwardsInfo([...awardsInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an award entry
+  const handleRemoveAward = (index: number) => {
+    const list = [...awardsInfo];
+    list.splice(index, 1);
+    setAwardsInfo(list);
+  };
+
+
+  const handleChangeCertification = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...certificationInfo];
+    list[index] = { ...list[index], [name]: value };
+    setCertificationInfo(list);
+  };
+
+  // Handler to add a new certification entry
+  const handleAddCertification = () => {
+    setCertificationInfo([...certificationInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an certification entry
+  const handleRemoveCertification = (index: number) => {
+    const list = [...certificationInfo];
+    list.splice(index, 1);
+    setCertificationInfo(list);
+  };
 
 
 
@@ -513,6 +636,282 @@ export default function EditDoctor() {
                 ))}
               </div>
             </div>
+
+
+            {/* Doctor Educational Info Starts Here*/}
+            <h4 className="mt-16">Educational Information</h4>
+            {educationalInfo.map((education, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Degree Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., MBBS, MD"
+                      value={education.name}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Institution
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., Harvard Medical School"
+                      value={education.institution}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={education.from_date}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={education.to_date}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {educationalInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveEducation(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddEducation}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Educational Entry
+              </button>
+            </div>
+            {/* Doctor Educational Info Ends Here*/}
+
+
+            <hr className="my-8" />
+
+            {/* Doctor Awards and Recognition Info Starts Here*/}
+            <h4 className="mt-16">Awards and Recognition</h4>
+            {awardsInfo.map((award, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Award Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., Physician of the Year"
+                      value={award.name}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Awarded By (Institution)
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., American Medical Association"
+                      value={award.institution}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={award.from_date}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={award.to_date}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {awardsInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveAward(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddAward}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Award Entry
+              </button>
+            </div>
+            {/* Doctor Awards and Recognition Info Ends Here*/}
+
+
+
+            <hr className="my-8" />
+
+            {/* Doctor Certification Info Starts Here*/}
+            <h4 className="mt-16">Certifications</h4>
+            {certificationInfo.map((award, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Certification Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., Best Hair Transplant Surgeon"
+                      value={award.name}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Awarded By (Institution)
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., BD Medical Association"
+                      value={award.institution}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={award.from_date}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={award.to_date}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {certificationInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveCertification(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddCertification}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Certification Entry
+              </button>
+            </div>
+            {/* Doctor Certification Info Ends Here*/}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           </div>
 
           {error && <p className="text-red-500 mt-4">{error}</p>}
