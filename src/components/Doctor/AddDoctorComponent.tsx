@@ -14,12 +14,19 @@ const AddDoctor: React.FC = () => {
     specialization: "",
     address: "",
     city: "",
-    designation:"",
+    designation: "",
     stateProvince: "",
     status: "",
     doctorFee: 0, // Optional field for doctor's visit fee
     postal_code: "",
+    short_bio: "",
+    license_number: "",
+    blood_group: "",
+    gender: "",
+    yrs_of_experience: "",
+    date_of_birth: "",
     doctor_image: "", // Optional field for image URL
+
   });
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -90,11 +97,11 @@ const AddDoctor: React.FC = () => {
       }
 
       Swal.fire({
-          
-          icon: "success",
-          title: "Doctor added successfully!",
-          showConfirmButton: false,
-          timer: 1500
+
+        icon: "success",
+        title: "Doctor added successfully!",
+        showConfirmButton: false,
+        timer: 1500
       });
       router.push('/doctor/doctor-list/');
       setFormData({
@@ -105,11 +112,17 @@ const AddDoctor: React.FC = () => {
         city: "",
         stateProvince: "",
         specialization: "",
-        designation:"",
+        designation: "",
         doctorFee: 0,
         status: "",
         postal_code: "",
-        doctor_image: "", 
+        short_bio: "",
+        license_number: "",
+        blood_group: "",
+        gender: "",
+        yrs_of_experience: "",
+        date_of_birth: "",
+        doctor_image: "",
       });
       setSelectedImages([]);
     } catch (err) {
@@ -228,7 +241,7 @@ const AddDoctor: React.FC = () => {
               />
             </div>
 
-              <div>
+            <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Designation
               </label>
@@ -255,6 +268,100 @@ const AddDoctor: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Short Bio
+              </label>
+              <input
+                name="short_bio"
+                type="text"
+                placeholder="Enter Doctor's Bio"
+                value={formData.short_bio}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Date Of Birth
+              </label>
+              <input
+                name="date_of_birth"
+                type="date"
+                placeholder="Enter DOB"
+                value={formData.date_of_birth}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                License Number
+              </label>
+              <input
+                name="license_number"
+                type="text"
+                placeholder="Enter Doctor's License Number"
+                value={formData.license_number}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Years of Experience
+              </label>
+              <input
+                name="yrs_of_experience"
+                type="number"
+                placeholder="Enter Doctor's YOE"
+                value={formData.yrs_of_experience}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Blood Group
+              </label>
+              <select
+                name="blood_group"
+                value={formData.blood_group}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                required
+              >
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Gender
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+
+              </select>
+            </div>
+
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Doctor Visit Fee <span className="text-danger-800">*</span>
@@ -362,7 +469,13 @@ const AddDoctor: React.FC = () => {
                   doctorFee: 0, // Reset doctor fee
                   status: "",
                   postal_code: "",
-                  designation:"",
+                  short_bio: "",
+                  license_number: "",
+                  blood_group: "",
+                  gender: "",
+                  yrs_of_experience: "",
+                  date_of_birth: "",
+                  designation: "",
                   doctor_image: "", // Reset image URL
                 })
               }
