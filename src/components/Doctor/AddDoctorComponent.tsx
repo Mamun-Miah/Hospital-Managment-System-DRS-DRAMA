@@ -5,6 +5,13 @@ import Image from "next/image";
 import Swal from 'sweetalert2';
 import { useRouter } from "next/navigation";
 
+interface EducationalInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
 const AddDoctor: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -29,6 +36,10 @@ const AddDoctor: React.FC = () => {
 
   });
 
+  const [educationalInfo, setEducationalInfo] = useState<EducationalInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
+
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,6 +60,26 @@ const AddDoctor: React.FC = () => {
 
   const handleRemoveImage = (index: number) => {
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
+  // Handler for changes in educational fields
+  const handleChangeEducation = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...educationalInfo];
+    list[index] = { ...list[index], [name]: value };
+    setEducationalInfo(list);
+  };
+
+  // Handler to add a new educational entry
+  const handleAddEducation = () => {
+    setEducationalInfo([...educationalInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an educational entry
+  const handleRemoveEducation = (index: number) => {
+    const list = [...educationalInfo];
+    list.splice(index, 1);
+    setEducationalInfo(list);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,9 +108,14 @@ const AddDoctor: React.FC = () => {
         }
       }
 
-      const patientData = {
+      // const patientData = {
+      //   ...formData,
+      //   doctor_image: imageUrl,
+      // };
+      const doctorData = {
         ...formData,
         doctor_image: imageUrl,
+        educational_info: educationalInfo,
       };
 
       const response = await fetch("/api/doctor/add-doctor", {
@@ -87,7 +123,7 @@ const AddDoctor: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(patientData),
+        body: JSON.stringify(doctorData),
       });
 
       const data = await response.json();
@@ -124,6 +160,9 @@ const AddDoctor: React.FC = () => {
         date_of_birth: "",
         doctor_image: "",
       });
+      setEducationalInfo([
+        { name: "", institution: "", from_date: "", to_date: "" },
+      ]);
       setSelectedImages([]);
     } catch (err) {
       setError(
@@ -447,8 +486,101 @@ const AddDoctor: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+
+
+
+
+
+
+
+            {/* Doctor Educational Info */}
+            <h4 className="mt-16">Educational Information</h4>
+            {educationalInfo.map((education, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Degree Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., MBBS, MD"
+                      value={education.name}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Institution
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., Harvard Medical School"
+                      value={education.institution}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={education.from_date}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={education.to_date}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {educationalInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveEducation(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddEducation}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Educational Entry
+              </button>
+            </div>
+
+
+
+
+          </div >
+        </div >
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
@@ -495,8 +627,8 @@ const AddDoctor: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
-    </form>
+      </div >
+    </form >
   );
 };
 

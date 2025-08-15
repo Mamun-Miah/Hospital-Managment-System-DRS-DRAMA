@@ -1,6 +1,14 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from 'next/server';
 
+interface EducationalInfo {
+    degree: string;
+    institution: string;
+    from_date: string;
+    to_date: string;
+}
+
+
 export async function POST(req: Request) {
     const {
         doctorName,
@@ -21,6 +29,7 @@ export async function POST(req: Request) {
         yrs_of_experience,
         date_of_birth,
         doctor_image,
+        educational_info
     } = await req.json();
 
     if (!doctorName || !phone_number || !status) {
@@ -37,6 +46,13 @@ export async function POST(req: Request) {
             { error: 'Doctor with this phone number already exists' },
         )
     }
+
+    // Format the dates correctly before saving
+    const formattedEducationalInfo = educational_info.map((edu: EducationalInfo) => ({
+        ...edu,
+        from_date: new Date(edu.from_date),
+        to_date: new Date(edu.to_date),
+    }));
 
     const newDoctor = await prisma.doctor.create({
         data: {
@@ -57,7 +73,10 @@ export async function POST(req: Request) {
             date_of_birth: date_of_birth ? new Date(date_of_birth) : null,
             doctor_fee: parseInt(doctorFee),
             status,
-            doctor_image
+            doctor_image,
+            educationalInfo: {
+                create: formattedEducationalInfo, // Use the create method for nested writes
+            },
         },
     });
     return NextResponse.json({ success: true, doctor: newDoctor }, { status: 201 });
