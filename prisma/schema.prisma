@@ -22,6 +22,8 @@ model User {
   createdAt DateTime @default(now())
 }
 
+
+
 model Patient {
   patient_id                Int                         @id @default(autoincrement())
   patient_name              String                      @db.VarChar(100)
