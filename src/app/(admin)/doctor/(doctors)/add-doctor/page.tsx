@@ -2,30 +2,30 @@
 
 import AddDoctor from "@/components/Doctor/AddDoctorComponent";
 import Link from "next/link";
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+// import { useSession } from 'next-auth/react';
+// import { useRouter } from 'next/navigation';
+// import { useEffect, useState } from 'react';
 
 export default function Page() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [allowed, setAllowed] = useState(false);
+  // const { data: session, status } = useSession();
+  // const router = useRouter();
+  // const [allowed, setAllowed] = useState(false);
 
-  useEffect(() => {
-    if (status === 'loading') return;
+  // useEffect(() => {
+  //   if (status === 'loading') return;
 
-    if (!session) {
-      router.replace('/authentication/sign-in/');
-    } else if (session.user?.role !== 'admin') {
-      router.replace('/dashboard/ecommerce/');
-    } else {
-      setAllowed(true);
-    }
-  }, [session, status, router]);
+  //   if (!session) {
+  //     router.replace('/authentication/sign-in/');
+  //   } else if (session.user?.role !== 'admin') {
+  //     router.replace('/dashboard/ecommerce/');
+  //   } else {
+  //     setAllowed(true);
+  //   }
+  // }, [session, status, router]);
 
-  if (status === 'loading' || !allowed) {
-    return <div>Loading...</div>;
-  }
+  // if (status === 'loading' || !allowed) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <>
