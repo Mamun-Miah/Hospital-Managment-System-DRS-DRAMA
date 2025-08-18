@@ -148,6 +148,12 @@ const AddDoctor: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Filter out any empty entries from the arrays
+    const filteredAwards = awardsInfo.filter(award => award.name.trim() !== '' || award.institution.trim() !== '');
+    const filteredCertifications = certificationInfo.filter(cert => cert.name.trim() !== '' || cert.institution.trim() !== '');
+    const filteredEducation = educationalInfo.filter(edu => edu.name.trim() !== '' || edu.institution.trim() !== '');
+
     setLoading(true);
 
     let imageUrl = "";
@@ -178,9 +184,12 @@ const AddDoctor: React.FC = () => {
       const doctorData = {
         ...formData,
         doctor_image: imageUrl,
-        educational_info: educationalInfo,
-        awards_info: awardsInfo,
-        certification_info: certificationInfo,
+        // educational_info: educationalInfo,
+        // awards_info: awardsInfo,
+        // certification_info: certificationInfo,
+        educational_info: filteredEducation,
+        awards_info: filteredAwards,
+        certification_info: filteredCertifications,
       };
 
       const response = await fetch("/api/doctor/add-doctor", {
