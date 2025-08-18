@@ -5,6 +5,27 @@ import Image from "next/image";
 import Swal from 'sweetalert2';
 import { useRouter } from "next/navigation";
 
+interface EducationalInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
+interface AwardInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
+interface CertificationInfo {
+  name: string;
+  institution: string;
+  from_date: string;
+  to_date: string;
+}
+
 const AddDoctor: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -14,13 +35,33 @@ const AddDoctor: React.FC = () => {
     specialization: "",
     address: "",
     city: "",
-    designation:"",
+    designation: "",
     stateProvince: "",
     status: "",
     doctorFee: 0, // Optional field for doctor's visit fee
     postal_code: "",
+    short_bio: "",
+    license_number: "",
+    blood_group: "",
+    gender: "",
+    yrs_of_experience: "",
+    date_of_birth: "",
     doctor_image: "", // Optional field for image URL
+
   });
+
+  const [educationalInfo, setEducationalInfo] = useState<EducationalInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
+
+  const [awardsInfo, setAwardsInfo] = useState<AwardInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
+
+  // // CertificationInfo
+  const [certificationInfo, setCertificationInfo] = useState<CertificationInfo[]>([
+    { name: "", institution: "", from_date: "", to_date: "" },
+  ]);
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [error, setError] = useState("");
@@ -42,6 +83,66 @@ const AddDoctor: React.FC = () => {
 
   const handleRemoveImage = (index: number) => {
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+
+  // Handler for changes in educational fields
+  const handleChangeEducation = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...educationalInfo];
+    list[index] = { ...list[index], [name]: value };
+    setEducationalInfo(list);
+  };
+
+  // Handler to add a new educational entry
+  const handleAddEducation = () => {
+    setEducationalInfo([...educationalInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an educational entry
+  const handleRemoveEducation = (index: number) => {
+    const list = [...educationalInfo];
+    list.splice(index, 1);
+    setEducationalInfo(list);
+  };
+
+
+  const handleChangeAwards = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...awardsInfo];
+    list[index] = { ...list[index], [name]: value };
+    setAwardsInfo(list);
+  };
+
+  // Handler to add a new award entry
+  const handleAddAward = () => {
+    setAwardsInfo([...awardsInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an award entry
+  const handleRemoveAward = (index: number) => {
+    const list = [...awardsInfo];
+    list.splice(index, 1);
+    setAwardsInfo(list);
+  };
+
+
+  const handleChangeCertification = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const list = [...certificationInfo];
+    list[index] = { ...list[index], [name]: value };
+    setCertificationInfo(list);
+  };
+
+  // Handler to add a new certification entry
+  const handleAddCertification = () => {
+    setCertificationInfo([...certificationInfo, { name: "", institution: "", from_date: "", to_date: "" }]);
+  };
+
+  // Handler to remove an certification entry
+  const handleRemoveCertification = (index: number) => {
+    const list = [...certificationInfo];
+    list.splice(index, 1);
+    setCertificationInfo(list);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,9 +171,16 @@ const AddDoctor: React.FC = () => {
         }
       }
 
-      const patientData = {
+      // const patientData = {
+      //   ...formData,
+      //   doctor_image: imageUrl,
+      // };
+      const doctorData = {
         ...formData,
         doctor_image: imageUrl,
+        educational_info: educationalInfo,
+        awards_info: awardsInfo,
+        certification_info: certificationInfo,
       };
 
       const response = await fetch("/api/doctor/add-doctor", {
@@ -80,7 +188,7 @@ const AddDoctor: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(patientData),
+        body: JSON.stringify(doctorData),
       });
 
       const data = await response.json();
@@ -90,11 +198,11 @@ const AddDoctor: React.FC = () => {
       }
 
       Swal.fire({
-          
-          icon: "success",
-          title: "Doctor added successfully!",
-          showConfirmButton: false,
-          timer: 1500
+
+        icon: "success",
+        title: "Doctor added successfully!",
+        showConfirmButton: false,
+        timer: 1500
       });
       router.push('/doctor/doctor-list/');
       setFormData({
@@ -105,12 +213,30 @@ const AddDoctor: React.FC = () => {
         city: "",
         stateProvince: "",
         specialization: "",
-        designation:"",
+        designation: "",
         doctorFee: 0,
         status: "",
         postal_code: "",
-        doctor_image: "", 
+        short_bio: "",
+        license_number: "",
+        blood_group: "",
+        gender: "",
+        yrs_of_experience: "",
+        date_of_birth: "",
+        doctor_image: "",
       });
+      setEducationalInfo([
+        { name: "", institution: "", from_date: "", to_date: "" },
+      ]);
+      setAwardsInfo([ // Reset awards info
+        { name: "", institution: "", from_date: "", to_date: "" },
+      ]);
+
+      setCertificationInfo([ // Reset certification info
+        { name: "", institution: "", from_date: "", to_date: "" },
+      ]);
+
+
       setSelectedImages([]);
     } catch (err) {
       setError(
@@ -228,7 +354,7 @@ const AddDoctor: React.FC = () => {
               />
             </div>
 
-              <div>
+            <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Designation
               </label>
@@ -255,6 +381,100 @@ const AddDoctor: React.FC = () => {
                 className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               />
             </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Short Bio
+              </label>
+              <input
+                name="short_bio"
+                type="text"
+                placeholder="Enter Doctor's Bio"
+                value={formData.short_bio}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Date Of Birth
+              </label>
+              <input
+                name="date_of_birth"
+                type="date"
+                placeholder="Enter DOB"
+                value={formData.date_of_birth}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                License Number
+              </label>
+              <input
+                name="license_number"
+                type="text"
+                placeholder="Enter Doctor's License Number"
+                value={formData.license_number}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Years of Experience
+              </label>
+              <input
+                name="yrs_of_experience"
+                type="number"
+                placeholder="Enter Doctor's YOE"
+                value={formData.yrs_of_experience}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              />
+            </div>
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Blood Group
+              </label>
+              <select
+                name="blood_group"
+                value={formData.blood_group}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                required
+              >
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-[10px] text-black dark:text-white font-medium block">
+                Gender
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+
+              </select>
+            </div>
+
             <div>
               <label className="mb-[10px] text-black dark:text-white font-medium block">
                 Doctor Visit Fee <span className="text-danger-800">*</span>
@@ -340,8 +560,295 @@ const AddDoctor: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+
+
+            {/* Doctor Educational Info Starts Here*/}
+            <h4 className="mt-16">Educational Information</h4>
+            {educationalInfo.map((education, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Degree Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., MBBS, MD"
+                      value={education.name}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Institution
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., Harvard Medical School"
+                      value={education.institution}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={education.from_date}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={education.to_date}
+                      onChange={(e) => handleChangeEducation(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {educationalInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveEducation(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddEducation}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Educational Entry
+              </button>
+            </div>
+            {/* Doctor Educational Info Ends Here*/}
+
+
+            <hr className="my-8" />
+
+            {/* Doctor Awards and Recognition Info Starts Here*/}
+            <h4 className="mt-16">Awards and Recognition</h4>
+            {awardsInfo.map((award, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Award Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., Physician of the Year"
+                      value={award.name}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Awarded By (Institution)
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., American Medical Association"
+                      value={award.institution}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={award.from_date}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={award.to_date}
+                      onChange={(e) => handleChangeAwards(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {awardsInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveAward(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddAward}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Award Entry
+              </button>
+            </div>
+            {/* Doctor Awards and Recognition Info Ends Here*/}
+
+
+
+            <hr className="my-8" />
+
+            {/* Doctor Certification Info Starts Here*/}
+            <h4 className="mt-16">Certifications</h4>
+            {certificationInfo.map((award, i) => (
+              <div key={i} className="mb-4 mt-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[25px]">
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Certification Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="e.g., Best Hair Transplant Surgeon"
+                      value={award.name}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      Awarded By (Institution)
+                    </label>
+                    <input
+                      name="institution"
+                      type="text"
+                      placeholder="e.g., BD Medical Association"
+                      value={award.institution}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      From Date
+                    </label>
+                    <input
+                      name="from_date"
+                      type="date"
+                      value={award.from_date}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-[10px] text-black dark:text-white font-medium block">
+                      To Date
+                    </label>
+                    <input
+                      name="to_date"
+                      type="date"
+                      value={award.to_date}
+                      onChange={(e) => handleChangeCertification(i, e)}
+                      className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  {certificationInfo.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveCertification(i)}
+                      type="button"
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-danger-400"
+                    >
+                      Remove Entry
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="">
+              <button
+                onClick={handleAddCertification}
+                type="button"
+                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+              >
+                Add Certification Entry
+              </button>
+            </div>
+            {/* Doctor Certification Info Ends Here*/}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div >
+        </div >
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
@@ -362,9 +869,17 @@ const AddDoctor: React.FC = () => {
                   doctorFee: 0, // Reset doctor fee
                   status: "",
                   postal_code: "",
-                  designation:"",
+                  short_bio: "",
+                  license_number: "",
+                  blood_group: "",
+                  gender: "",
+                  yrs_of_experience: "",
+                  date_of_birth: "",
+                  designation: "",
                   doctor_image: "", // Reset image URL
+
                 })
+
               }
             >
               Cancel
@@ -382,8 +897,8 @@ const AddDoctor: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
-    </form>
+      </div >
+    </form >
   );
 };
 
