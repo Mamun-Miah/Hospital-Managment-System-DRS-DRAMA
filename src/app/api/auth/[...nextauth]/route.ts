@@ -39,7 +39,8 @@ const handler = NextAuth({
         const permissions = user.roles.flatMap(r =>
           r.role.permissions.map(p => p.permission.name)
         )
-
+console.log(permissions);
+console.log(roles)
         return {
           id: user.id,
           email: user.email,
