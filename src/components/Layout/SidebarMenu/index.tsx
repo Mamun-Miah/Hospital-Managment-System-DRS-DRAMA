@@ -3298,6 +3298,26 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                   <ul className="sidebar-sub-menu">
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
+                        href="/all-staff/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/all-staff/" ? "active" : ""
+                        }`}
+                      >
+                        All Staff
+                      </Link>
+                    </li>
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
+                        href="/staff-permissions/"
+                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
+                          pathname === "/staff-permissions/" ? "active" : ""
+                        }`}
+                      >
+                        Staff Permissions
+                      </Link>
+                    </li>
+                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                      <Link
                         href="/settings/"
                         className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
                           pathname === "/settings/" ? "active" : ""
