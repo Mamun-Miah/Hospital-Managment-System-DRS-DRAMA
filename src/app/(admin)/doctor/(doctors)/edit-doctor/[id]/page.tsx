@@ -254,6 +254,9 @@ export default function EditDoctor() {
       const patientData = {
         ...formData,
         doctor_image: imageUrl,
+        educationalInfo,
+        awardsInfo,
+        certificationInfo,
       };
 
       const response = await fetch(`/api/doctor/edit-doctor/${doctorIds}`, {
@@ -297,6 +300,7 @@ export default function EditDoctor() {
         date_of_birth: "",
         doctor_image: "",
       });
+      // console.log(formData);
       setSelectedImages([]);
     } catch (err) {
       setError(
