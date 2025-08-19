@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("add-patient")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
   const patient_id = (await params).id;
   const id = parseInt(patient_id);
 

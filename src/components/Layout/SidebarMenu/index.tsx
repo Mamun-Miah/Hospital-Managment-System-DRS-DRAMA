@@ -25,10 +25,10 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
   };
     const { data: session } = useSession()
      if (!session) return ""
-    const listDoctor = session?.user.permissions.includes("add-doctor");
+    // const listDoctor = session?.user.permissions.includes("add-doctor");
     const addPatient = session?.user.permissions.includes("add-patient");
-    const treatmentList = session?.user.permissions.includes("list-treatment");
-    const medicineList = session?.user.permissions.includes("list-medicine");
+    // const treatmentList = session?.user.permissions.includes("list-treatment");
+    // const medicineList = session?.user.permissions.includes("list-medicine");
     const todayAppoinments = session?.user.permissions.includes("todays-appointment");
    
 
@@ -1494,114 +1494,97 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 </div>
               </div>
             </div>
-            
-             <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
-              <button
-                className={`accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
-                  openIndex === 13 ? "open" : ""
+            <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link
+              href="/doctor/doctor-list/"
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/doctor/doctor-list/" ? "active" : ""
                 }`}
-                type="button"
-                onClick={() => toggleAccordion(13)}
               >
                  <Image
                   src="/images/doctor1.png"
                   alt="logo-icon"
-                  width={22}
-                  height={22}
+                  width={18}
+                  height={18}
+                  className="me-4"
                 />
-                <span className="title ms-3 leading-none">Doctor</span>
-              </button>
-
-              <div
-                className={`accordion-collapse ${
-                  openIndex === 13 ? "open" : "hidden"
+                 Doctor List
+              </Link>
+            </div>
+            <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link
+              href="/doctor/add-treatment/treatment-list/"
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/doctor/add-treatment/treatment-list/" ? "active" : ""
                 }`}
               >
-                <div className="pt-[4px]">
-                  <ul className="sidebar-sub-menu">
-                    
-                    {/* {role === "admin" ? (
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/doctor/add-doctor/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/doctor/add-doctor/" ? "active" : ""
-                        }`}
-                      >
-                        Add Doctor
-                      </Link>
-                    </li>) : ""} */}
+                 <Image
+                  src="/images/Treatment.png"
+                  alt="logo-icon"
+                  width={18}
+                  height={18}
+                  className="me-4"
+                />
+                 Treatment List
+              </Link>
+            </div>
 
-                        
-                    {listDoctor && (
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/doctor/doctor-list/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/doctor/doctor-list/" ? "active" : ""
-                        }`}
-                      >
-                        Doctor List
-                      </Link>
-                    </li>
-                      )}
+            <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link
+              href="/doctor/medicine/"
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/doctor/medicine/" ? "active" : ""
+                }`}
+              >
+                 <Image
+                  src="/images/Medicine.png"
+                  alt="logo-icon"
+                  width={18}
+                  height={18}
+                  className="me-4"
+                />
+                 Medicine List
+              </Link>
+            </div>
+            {todayAppoinments &&(
+            <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link
+              href="/doctor/appointment/"
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/doctor/appointment/" ? "active" : ""
+                }`}
+              >
+                 <Image
+                  src="/images/Appointment.png"
+                  alt="logo-icon"
+                  width={18}
+                  height={18}
+                  className="me-4"
+                />
+                 Today&apos;s Appointments
+              </Link>
+            </div>
+            )}
 
-                   
-
-                      {treatmentList &&(
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/doctor/add-treatment/treatment-list/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/doctor/add-treatment/" ? "active" : ""
-                        }`}
-                      >
-                        Treatment List
-                      </Link>
-                    </li>
-                      )}
-                    {medicineList && (
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/doctor/medicine/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/doctor/medicine/" ? "active" : ""
-                        }`}
-                      >
-                        Medicine List
-                      </Link>
-                    </li>
-                    )}
-                    
-                  {todayAppoinments &&(
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/doctor/appointment/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/doctor/appointments/" ? "active" : ""
-                        }`}
-                      >
-                       Today&apos;s Appointments
-                      </Link>
-                    </li>
-                      )}
-
-                     <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/doctor/prescription-list/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/doctor/prescription-list/" ? "active" : ""
-                        }`}
-                      >
-                        Prescription List
-                      </Link>
-                    </li>
-
-                    
-                  </ul>
-                </div>
-              </div>
-            </div>  
+            <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+              <Link
+              href="/doctor/prescription-list/"
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/doctor/prescription-list/" ? "active" : ""
+                }`}
+              >
+                 <Image
+                  src="/images/Prescription.png"
+                  alt="logo-icon"
+                  width={18}
+                  height={18}
+                  className="me-4"
+                />
+                 Prescription List
+              </Link>
+            </div>
+            
+             
 
             <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <button

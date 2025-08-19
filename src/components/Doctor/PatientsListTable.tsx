@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 // import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { useSession } from 'next-auth/react'
 
 
 type WeightHistoryEntry = {
@@ -42,6 +43,10 @@ interface Patient {
 }
 
 const PatientsListTable: React.FC = () => {
+  const { data: session } = useSession()
+   const addPatient = session?.user.permissions.includes("add-patient");
+   const deletePatient = session?.user.permissions.includes("delete-patient");
+   const patientHistory = session?.user.permissions.includes("patient-history");
 
   //modal state
   const [isOpen, setIsOpen] = useState(false);
@@ -238,7 +243,7 @@ console.log('all patieetn',allPatients)
                   <option value="Deactivated">Deactivated</option>
                 </select>
             </div>
-             
+             {addPatient &&(
             <Link
               href="/doctor/add-patient"
               className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
@@ -250,7 +255,7 @@ console.log('all patieetn',allPatients)
                 Add New Patient
               </span>
             </Link>
-
+          )}
             
           </div>
          
@@ -416,7 +421,7 @@ console.log('all patieetn',allPatients)
                               <i className="material-symbols-outlined !text-md">visibility</i>
                             </button>
                           {/* </Link> */}
-
+                          {patientHistory && (
                             <Link href={`/doctor/patient-history/list/see-patient-history/${patient.patient_id}`}>
                             <button
                               type="button"
@@ -428,7 +433,9 @@ console.log('all patieetn',allPatients)
                               
                             </button>
                           </Link>
+                          )}
                           {/* Edit button */}
+                          {addPatient && (
                           <Link href={`edit-patient/${patient.patient_id}`}>
                             <button
                               type="button"
@@ -437,8 +444,10 @@ console.log('all patieetn',allPatients)
                               <i className="material-symbols-outlined !text-md">edit</i>
                             </button>
                           </Link>
+                            )}
 
                           {/* Delete button */}
+                          {deletePatient && (
                           <button
                             type="button"
                             className="text-danger-500 leading-none custom-tooltip"
@@ -446,6 +455,7 @@ console.log('all patieetn',allPatients)
                           >
                             <i className="material-symbols-outlined !text-md">delete</i>
                           </button>
+                          )}
                         </div>
                       </td>
 
@@ -543,7 +553,7 @@ console.log('all patieetn',allPatients)
       </button>
 
       <h3 className="text-lg text-center font-bold pb-8">Patient Details</h3>
-
+    {patientHistory && (
       <Link href={`/doctor/patient-history/list/see-patient-history/${selectedPatient.patient_id}`}>
         <button
           type="button"
@@ -552,7 +562,7 @@ console.log('all patieetn',allPatients)
           View Patient History
         </button>
       </Link>
-
+      )}    
       <div className="space-y-2 text-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4">
           <div>
