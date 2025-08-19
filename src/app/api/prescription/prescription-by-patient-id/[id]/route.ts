@@ -9,7 +9,7 @@ export async function GET(
 ) {
 const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("prescription-history")){
+  if (!session?.user.permissions?.includes("prescription-list")){
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 

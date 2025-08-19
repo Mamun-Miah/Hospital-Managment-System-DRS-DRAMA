@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth"
 export async function GET() {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("invoice-list")){
+  if (!session?.user.permissions?.includes("invoice")){
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
   try {

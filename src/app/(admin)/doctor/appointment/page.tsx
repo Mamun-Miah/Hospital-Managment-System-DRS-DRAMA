@@ -45,7 +45,8 @@ interface Patient {
 
 const PatientsListTable: React.FC = () => {
   const { data: session } = useSession()
-    const createPrescription = session?.user.permissions.includes("create-prescription")
+    const createPrescription = session?.user.permissions.includes("todays-appointment");
+    const addPatient = session?.user.permissions.includes("add-patient");
   //modal state
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -173,7 +174,7 @@ const PatientsListTable: React.FC = () => {
               />
             </form>
           </div>
-
+          {addPatient && (
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/add-patient"
@@ -187,6 +188,7 @@ const PatientsListTable: React.FC = () => {
               </span>
             </Link>
           </div>
+          )}
         </div>
 
         <div className="trezo-card-content">
@@ -350,6 +352,7 @@ const PatientsListTable: React.FC = () => {
                         </span>
                       </td> */}
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        
                         <div className="flex items-center gap-[9px]">
                           {/* View button */}
                           {/* <Link href={`view-patient/${patient.patient_id}`}> */}
@@ -367,6 +370,8 @@ const PatientsListTable: React.FC = () => {
                             </span>
                           </Link>
                           )}
+                          {addPatient && (
+                            <>
                           <button
                             type="button"
                             className="text-primary-500 leading-none custom-tooltip"
@@ -391,7 +396,8 @@ const PatientsListTable: React.FC = () => {
                               </i>
                             </button>
                           </Link>
-
+                          </>
+                            )}
                           {/* Delete button */}
                           {/* <button
                             type="button"

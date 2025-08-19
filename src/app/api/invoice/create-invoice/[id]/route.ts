@@ -10,7 +10,7 @@ export async function PATCH(
 
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("create-invoice")){
+  if (!session?.user.permissions?.includes("invoice")){
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
   const id = (await params).id;

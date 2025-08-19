@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Select, { StylesConfig, GroupBase } from "react-select";
 import Swal from 'sweetalert2';
 import PatientHistoryTimeline from '@/components/Doctor/PatientHistoryTimeline';
+import { useSession } from 'next-auth/react'
 
 
 interface FormData {
@@ -131,6 +132,10 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
 
 //Export Component
 const AddAppointment: React.FC = () => {
+
+  const { data: session } = useSession()
+      // const listDoctor = session?.user.permissions.includes("add-doctor");
+      const patientHistory = session?.user.permissions.includes("patient-history");
   //Get Id from Params
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -769,6 +774,7 @@ const handleChangeTreatment = async (
 
                   <h3 className=''>Create Prescription</h3>
                 </div>
+                {patientHistory && (
                 <div className='flex justify-center items-center'>
                   <button
                     type="button"
@@ -780,6 +786,7 @@ const handleChangeTreatment = async (
                     View Patient History
                   </button>
                 </div>
+                )}
               </div>
 
               <div className="h-[1px] bg-gray-100 dark:bg-[#172036] -mx-[20px] md:-mx-[25px] my-[20px] md:my-[23px]"></div>

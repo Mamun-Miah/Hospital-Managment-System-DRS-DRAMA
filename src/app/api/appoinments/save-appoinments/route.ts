@@ -8,7 +8,7 @@ import { authOptions } from "@/lib/auth"
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("create-prescription")){
+  if (!session?.user.permissions?.includes("todays-appointment")){
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
   try {

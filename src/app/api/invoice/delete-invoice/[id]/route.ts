@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("invoice")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
   const id = (await params).id;
   if (!id) {
     return NextResponse.json({ message: "Cannot find id" });

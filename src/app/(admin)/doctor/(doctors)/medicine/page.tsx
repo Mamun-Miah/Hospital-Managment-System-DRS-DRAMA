@@ -213,6 +213,7 @@ const MedicineList: React.FC = () => {
                       </td>
 
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                        {addMedicine && (
                         <div className="flex items-center gap-[9px]">
                           {/* <button
                             type="button"
@@ -246,6 +247,7 @@ const MedicineList: React.FC = () => {
                             </i>
                           </button>
                         </div>
+                        )}
                       </td>
                     </tr>
                   ))
