@@ -92,7 +92,7 @@ function DownloadPDFButton({
     const filename = `${patientName.replace(/\s+/g, "_")}_${dateStr}.pdf`;
 
     const opt = {
-      margin: [0, 10, 0, 10], // mm
+      margin: [0, 5, 0, 10], // mm
       filename,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
@@ -565,8 +565,8 @@ export default function Page() {
       </div>
 
       {/* prescription pdf starts here  */}
-      {/* <div className="pdf-only" style={{ display: "none" }}> */}
-      <div className="pdf-only">
+      <div className="pdf-only" style={{ display: "none" }}>
+        {/* <div className="pdf-only"> */}
         <div
           id="prescription"
           ref={(el) => { prescriptionRef.current = el; }}
@@ -604,7 +604,7 @@ export default function Page() {
             <div className="mt-4 md:mt-0">
               {/* <div className="bg-gray-200 w-[140px] h-[40px]"></div> Barcode placeholder */}
               <BarcodeComponent value={`/doctor/view-prescription/${prescriptionsData?.prescription_id}`} width={0.5} height={25} />
-              <div><strong>Visit ID:</strong> {prescriptionsData?.prescription_id}</div>
+              <div><strong>Prescription ID:</strong> {prescriptionsData?.prescription_id}</div>
               <div><strong>Visit Date:</strong> {prescriptionsData?.prescribed_at}</div>
               <div><strong>Visit Time:</strong> {prescriptionsData?.prescribed_at_time}</div>
               <div><strong>Gender:</strong> {prescriptionsData?.patient.gender}</div>
@@ -624,7 +624,7 @@ export default function Page() {
 
               {/* C/C (Chief Complaint) */}
               <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                <h6 className="">C/C (Chief Complaint)</h6>
+                <h6 className=""><strong>C/C (Chief Complaint)</strong></h6>
               </span>
 
               <ul className="mt-[7px]">
@@ -635,7 +635,7 @@ export default function Page() {
 
               {/* D/H (Drug History)  */}
               <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                <h6>D/H (Drug History)</h6>
+                <h6><strong>D/H (Drug History)</strong></h6>
               </span>
 
               <ul className="mt-[7px]">
@@ -647,7 +647,7 @@ export default function Page() {
 
               {/* R/F (Relevant Findings) */}
               <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                <h6>R/F (Relevant Findings)</h6>
+                <h6><strong>R/F (Relevant Findings)</strong></h6>
               </span>
 
               <ul className="mt-[7px]">
@@ -657,7 +657,7 @@ export default function Page() {
               </ul>
               {/* O/E (On Examination) */}
               <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                <h6>O/E (On Examination)</h6>
+                <h6><strong>O/E (On Examination)</strong></h6>
               </span>
 
               <ul className="mt-[7px]">
@@ -685,7 +685,7 @@ export default function Page() {
 
               {/* advise given            */}
               <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                <h6>Advice Given:</h6>
+                <h6><strong>Advice Given:</strong></h6>
               </span>
 
               <ul className="mt-[7px]">
