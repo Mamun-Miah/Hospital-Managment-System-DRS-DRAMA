@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { useSession } from "next-auth/react"
 
 interface Medicine {
   medicine_id: string;
@@ -11,6 +12,8 @@ interface Medicine {
 }
 
 const MedicineList: React.FC = () => {
+  const { data: session } = useSession()
+    const addMedicine = session?.user.permissions.includes("add-medicine")
   const [allMedicine, setAllMedicine] = useState<Medicine[]>([]);
   const [filteredMedicine, setFilteredMedicine] =
     useState<Medicine[]>(allMedicine);
@@ -151,6 +154,7 @@ const MedicineList: React.FC = () => {
               />
             </form>
           </div>
+          {addMedicine &&(
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/medicine/add-medicine"
@@ -164,6 +168,7 @@ const MedicineList: React.FC = () => {
               </span>
             </Link>
           </div>
+          )}
         </div>
 
         <div className="trezo-card-content">

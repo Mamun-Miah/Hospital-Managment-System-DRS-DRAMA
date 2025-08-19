@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react"
 
 interface Treatment {
   treatment_id: string;
@@ -11,6 +12,9 @@ interface Treatment {
 }
 
 const TreatmentList: React.FC = () => {
+  const { data: session } = useSession()
+    const addTreatment = session?.user.permissions.includes("add-treatment")
+
   const [allTreatment, setAllTreatment] = useState<Treatment[]>([]);
 
   // console.log("allTreatment", allTreatment);
@@ -89,7 +93,7 @@ const TreatmentList: React.FC = () => {
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
-        <h5 className="!mb-0">Treatmet List</h5>
+        <h5 className="!mb-0">Treatment List</h5>
 
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
@@ -129,6 +133,7 @@ const TreatmentList: React.FC = () => {
               />
             </form>
           </div>
+          {addTreatment &&(
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/add-treatment"
@@ -142,6 +147,7 @@ const TreatmentList: React.FC = () => {
               </span>
             </Link>
           </div>
+          )}
         </div>
 
         <div className="trezo-card-content">

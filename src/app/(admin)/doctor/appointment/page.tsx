@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 
 // import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react"
 
 interface Prescription {
   is_prescribed: string;
@@ -43,6 +44,8 @@ interface Patient {
 }
 
 const PatientsListTable: React.FC = () => {
+  const { data: session } = useSession()
+    const createPrescription = session?.user.permissions.includes("create-prescription")
   //modal state
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -351,7 +354,7 @@ const PatientsListTable: React.FC = () => {
                           {/* View button */}
                           {/* <Link href={`view-patient/${patient.patient_id}`}> */}
                           {/* / */}
-
+                          {createPrescription &&(
                           <Link
                             href={`/doctor/prescriptions/${patient.patient_id}`}
                             className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] border text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white"
@@ -363,6 +366,7 @@ const PatientsListTable: React.FC = () => {
                               Prescribe
                             </span>
                           </Link>
+                          )}
                           <button
                             type="button"
                             className="text-primary-500 leading-none custom-tooltip"

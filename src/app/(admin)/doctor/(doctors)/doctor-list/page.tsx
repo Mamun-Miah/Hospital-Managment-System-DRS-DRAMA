@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import { useSession } from "next-auth/react"
 
 interface Doctor {
   doctor_id: number;
@@ -21,8 +22,12 @@ interface Doctor {
 }
 
 const DoctorListTable: React.FC = () => {
-  const [allDoctors, setAllDoctors] = useState<Doctor[]>([]);
 
+
+  const { data: session } = useSession()
+  const addDoctor = session?.user.permissions.includes("add-doctor")
+
+  const [allDoctors, setAllDoctors] = useState<Doctor[]>([]);
 
 
   useEffect(() => {
@@ -100,6 +105,7 @@ const DoctorListTable: React.FC = () => {
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-between">
           <h3>Doctor List</h3>
+          {addDoctor &&(
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/add-doctor"
@@ -113,6 +119,7 @@ const DoctorListTable: React.FC = () => {
               </span>
             </Link>
           </div>
+          )}
         </div>
 
         <div className="trezo-card-content">

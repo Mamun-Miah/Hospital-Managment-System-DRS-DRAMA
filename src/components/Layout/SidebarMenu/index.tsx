@@ -24,7 +24,14 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
     setOpenIndex((prevIndex) => (prevIndex === index ? null : index));
   };
     const { data: session } = useSession()
-    if (!session) return ""
+     if (!session) return ""
+    const listDoctor = session?.user.permissions.includes("add-doctor");
+    const addPatient = session?.user.permissions.includes("add-patient");
+    const treatmentList = session?.user.permissions.includes("list-treatment");
+    const medicineList = session?.user.permissions.includes("list-medicine");
+    const todayAppoinments = session?.user.permissions.includes("todays-appointment");
+   
+
     // const role = session.user?.role;
 
   return (
@@ -1470,7 +1477,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
 
                           
 
-
+                      {addPatient && (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/add-patient/"
@@ -1482,7 +1489,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       </Link>
                     </li>
 
-                   
+                   )}
                   </ul>
                 </div>
               </div>
@@ -1526,7 +1533,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                     </li>) : ""} */}
 
                         
-
+                    {listDoctor && (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/doctor-list/"
@@ -1537,10 +1544,11 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                         Doctor List
                       </Link>
                     </li>
+                      )}
 
                    
 
-
+                      {treatmentList &&(
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/add-treatment/treatment-list/"
@@ -1551,7 +1559,8 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                         Treatment List
                       </Link>
                     </li>
-
+                      )}
+                    {medicineList && (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/medicine/"
@@ -1562,9 +1571,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                         Medicine List
                       </Link>
                     </li>
-
+                    )}
                     
-
+                  {todayAppoinments &&(
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/doctor/appointment/"
@@ -1575,6 +1584,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                        Today&apos;s Appointments
                       </Link>
                     </li>
+                      )}
 
                      <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link

@@ -10,9 +10,9 @@ import {
   Stethoscope,
   Calendar,
   FileText,
-  PenTool,
-  Eye,
-  History,
+  // PenTool,
+  // Eye,
+  // History,
   Receipt,
   CalendarDays,
   Activity,
@@ -29,21 +29,21 @@ export default function RoleManagementForm() {
   const [roleName, setRoleName] = useState("")
   const [permissions, setPermissions] = useState<Permission[]>([
     { permission_id: "add-doctor", name: "Add Doctor", icon: <UserPlus className="h-4 w-4" />, checked: false },
-    { permission_id: "list-doctor", name: "List Doctor", icon: <Users className="h-4 w-4" />, checked: false },
+    // { permission_id: "list-doctor", name: "List Doctor", icon: <Users className="h-4 w-4" />, checked: false },
     { permission_id: "add-patient", name: "Add Patient", icon: <User className="h-4 w-4" />, checked: false },
-    { permission_id: "list-patient", name: "List Patient", icon: <Users className="h-4 w-4" />, checked: false },
+    { permission_id: "delete-patient", name: "Delete Patient", icon: <Users className="h-4 w-4" />, checked: false },
     { permission_id: "add-medicine", name: "Add Medicine", icon: <Pill className="h-4 w-4" />, checked: false },
-    { permission_id: "list-medicine", name: "List Medicine", icon: <Pill className="h-4 w-4" />, checked: false },
+    // { permission_id: "list-medicine", name: "List Medicine", icon: <Pill className="h-4 w-4" />, checked: false },
     { permission_id: "add-treatment", name: "Add Treatment", icon: <Stethoscope className="h-4 w-4" />, checked: false },
-    { permission_id: "list-treatment", name: "List Treatment", icon: <Stethoscope className="h-4 w-4" />, checked: false },
+    // { permission_id: "list-treatment", name: "List Treatment", icon: <Stethoscope className="h-4 w-4" />, checked: false },
     { permission_id: "todays-appointment", name: "Today's Appointment", icon: <Calendar className="h-4 w-4" />, checked: false },
     { permission_id: "prescription-list", name: "Prescription List", icon: <FileText className="h-4 w-4" />, checked: false },
-    { permission_id: "create-prescription", name: "Create Prescription", icon: <PenTool className="h-4 w-4" />, checked: false },
-    { permission_id: "prescription-details", name: "Prescription Details", icon: <Eye className="h-4 w-4" />, checked: false },
-    { permission_id: "prescription-history", name: "Prescription History", icon: <History className="h-4 w-4" />, checked: false },
+    // { permission_id: "create-prescription", name: "Create Prescription", icon: <PenTool className="h-4 w-4" />, checked: false },
+    // { permission_id: "prescription-details", name: "Prescription Details", icon: <Eye className="h-4 w-4" />, checked: false },
+    // { permission_id: "prescription-history", name: "Prescription History", icon: <History className="h-4 w-4" />, checked: false },
     { permission_id: "invoice-list", name: "Invoice List", icon: <Receipt className="h-4 w-4" />, checked: false },
-    { permission_id: "invoice-details", name: "Invoice Details", icon: <Eye className="h-4 w-4" />, checked: false },
-    { permission_id: "create-invoice", name: "Create Invoice", icon: <PenTool className="h-4 w-4" />, checked: false },
+    // { permission_id: "invoice-details", name: "Invoice Details", icon: <Eye className="h-4 w-4" />, checked: false },
+    // { permission_id: "create-invoice", name: "Create Invoice", icon: <PenTool className="h-4 w-4" />, checked: false },
     { permission_id: "next-appointment", name: "Next Appointment", icon: <CalendarDays className="h-4 w-4" />, checked: false },
     { permission_id: "patient-history", name: "Patient History", icon: <Activity className="h-4 w-4" />, checked: false },
   ])
@@ -91,7 +91,7 @@ console.log(permissions)
       {/* Permissions Section */}
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Permissions</h2>
+          <h2 className="text-lg font-medium text-gray-900">HMS Permissions</h2>
         </div>
         <div className="px-6 py-4">
           <div className="space-y-4">
