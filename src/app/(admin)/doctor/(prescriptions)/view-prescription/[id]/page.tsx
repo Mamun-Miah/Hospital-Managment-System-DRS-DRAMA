@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useRef, useCallback } from "react";
 import html2pdf from "html2pdf.js";
+import BarcodeComponent from "@/components/Doctor/BarCodeComponent";
 
 
 export interface Prescription {
@@ -91,7 +92,7 @@ function DownloadPDFButton({
     const filename = `${patientName.replace(/\s+/g, "_")}_${dateStr}.pdf`;
 
     const opt = {
-      margin: [0, 10, 10, 10], // mm
+      margin: [0, 10, 0, 10], // mm
       filename,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
@@ -590,7 +591,8 @@ export default function Page() {
           <div className="flex flex-col md:flex-row justify-between mt-6">
             {/* Left */}
             <div>
-              <div className="bg-gray-200 w-[140px] h-[40px]"></div> {/* Barcode placeholder */}
+              {/* <div className="bg-gray-200 w-[140px] h-[40px]"></div> Barcode placeholder */}
+              <BarcodeComponent value={`/doctor/view-prescription/${prescriptionsData?.prescription_id}`} width={0.5} height={25} />
               <div><strong>Patient ID:</strong> {prescriptionsData?.patient_id}</div>
               <div><strong>Name:</strong> {prescriptionsData?.patient.patient_name}</div>
               <div><strong>Age:</strong> {prescriptionsData?.patient.age}</div>
@@ -600,7 +602,8 @@ export default function Page() {
 
             {/* Right */}
             <div className="mt-4 md:mt-0">
-              <div className="bg-gray-200 w-[140px] h-[40px]"></div> {/* Barcode placeholder */}
+              {/* <div className="bg-gray-200 w-[140px] h-[40px]"></div> Barcode placeholder */}
+              <BarcodeComponent value={`/doctor/view-prescription/${prescriptionsData?.prescription_id}`} width={0.5} height={25} />
               <div><strong>Visit ID:</strong> {prescriptionsData?.prescription_id}</div>
               <div><strong>Visit Date:</strong> {prescriptionsData?.prescribed_at}</div>
               <div><strong>Visit Time:</strong> {prescriptionsData?.prescribed_at_time}</div>
@@ -704,7 +707,7 @@ export default function Page() {
               <ul >
                 {prescriptionsData?.treatmentItems?.map((t, i) => (
                   <li key={i}>
-                    {t.treatment_name} ({t.session_number}) - Next session: {t.next_treatment_session_interval_date}
+                    {t.treatment_name}({t.session_number}) - Next session: {t.next_treatment_session_interval_date}
                   </li>
                 ))}
               </ul>
@@ -724,15 +727,25 @@ export default function Page() {
           </div>
 
           {/* Footer */}
-          <hr className="my-6 border-gray-300" />
-          <div className="text-center mt-10">
-            <p className="italic mb-6">Electronic Signature</p>
-            <p className="font-bold">{prescriptionsData?.doctor?.doctor_name}</p>
+          {/* <hr className="my-6 border-gray-300" /> */}
+          <div className="text-right mt-70">
+            <div className="italic">Electronic Signature</div>
+            <div className="font-bold">{prescriptionsData?.doctor?.doctor_name}</div>
           </div>
+          <hr className="my-4 border-gray-300" />
+
+
+          {/* Left Side - Footer Info */}
+          <div className="text-center">
+            <div className="font-bold">DRS DERMA</div>
+            <div>7/A, Main Road, Mohammadia Housing Society, Mohammadpur, Dhaka, Bangladesh, 1207</div>
+            <div>
+              <span className="font-semibold">Phone:</span><span>+880 1670 600067 | </span>
+              <span className="font-semibold">Email:</span><span>info@drsdermabd.com</span>
+            </div>
+          </div>
+          {/* Left Side - Footer Info ENDS*/}
         </div>
-
-
-
       </div>
 
 
