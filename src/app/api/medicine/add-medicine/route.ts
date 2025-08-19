@@ -1,8 +1,16 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 
 export async function POST(req: NextRequest) {
+    const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("add-medicine")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
     const response = await req.json()
 
     if (!response) {

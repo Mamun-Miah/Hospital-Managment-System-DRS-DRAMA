@@ -1,7 +1,15 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function POST(request: NextRequest) {
+     const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("add-treatment")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+    
     try{
         const body =await request.json();
         const { treatment_name, total_cost, duration_months, treatment_session_interval } = body;

@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function GET(req: Request) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("next-appointment")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
+
   try {
     const { searchParams } = new URL(req.url);
     const inputDateParam = searchParams.get('date');

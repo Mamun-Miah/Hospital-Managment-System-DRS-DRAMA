@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { generateInvoiceNumber } from "@/lib/invoice";
 import { generatePrescriptionNumber } from "@/lib/prescriptionIdGeneration";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("create-prescription")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
   try {
     const data = await req.json();
 

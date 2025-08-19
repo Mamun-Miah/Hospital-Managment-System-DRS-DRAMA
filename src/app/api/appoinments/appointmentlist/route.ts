@@ -1,7 +1,14 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function GET() {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("todays-appointment")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // start of day
