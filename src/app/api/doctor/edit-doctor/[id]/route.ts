@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 interface EducationalInfo {
   id?: number;
@@ -42,6 +44,13 @@ export async function PATCH(
   // The 'params' object is  a Promise, 
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("add-doctor")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
   //  Await the params promise to get the resolved object.
   const resolvedParams = await params;
   //  Now you can safely access the 'id' property.

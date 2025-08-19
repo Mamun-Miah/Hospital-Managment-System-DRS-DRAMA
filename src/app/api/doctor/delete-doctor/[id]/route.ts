@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function DELETE(req: NextRequest,
   { params }: { params: Promise<{ id: string }> },) {
+
+    const session = await getServerSession(authOptions)
+
+  if (!session?.user.permissions?.includes("add-doctor")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
 
      const doctorId = (await params).id;
     const id = parseInt(doctorId);
