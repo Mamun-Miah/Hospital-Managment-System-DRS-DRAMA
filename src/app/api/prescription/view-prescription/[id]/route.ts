@@ -20,8 +20,8 @@ export async function GET(
         patient_id: true,
         doctor_id: true,
         doctor_discount_type: true,
-          doctor_discount_value: true,
-          payable_doctor_amount: true,
+        doctor_discount_value: true,
+        payable_doctor_amount: true,
         prescribed_doctor_name: true,
         next_visit_date: true,
         chief_complaint_cc: true,
@@ -30,22 +30,24 @@ export async function GET(
         on_examination_oe: true,
         advise: true,
         patient: {
-          select: { patient_name: true,
+          select: {
+            patient_name: true,
             city: true,
             mobile_number: true,
-            gender:true,
-            age:true,
-            blood_group:true,
-            weight:true,
-           },
+            gender: true,
+            age: true,
+            blood_group: true,
+            weight: true,
+          },
         },
         doctor: {
-          select: { doctor_name: true,
+          select: {
+            doctor_name: true,
             phone_number: true,
             designation: true,
-            doctor_fee:true,
-           },
-          
+            doctor_fee: true,
+          },
+
         },
         items: {
           select: {
@@ -67,17 +69,17 @@ export async function GET(
             discount_type: true,
             discount_value: true,
             payable_treatment_amount: true,
-            next_treatment_session_interval_date:true,
-            session_number:true,
+            next_treatment_session_interval_date: true,
+            session_number: true,
             treatment: {
               select: {
                 treatment_name: true,
                 total_cost: true,
-                duration_months:true,
-                
+                duration_months: true,
+
               },
             },
-           
+
 
           },
         },
@@ -99,10 +101,11 @@ export async function GET(
     const formattedNextVisitDate = nextVisitDate
       ? `${String(nextVisitDate.getDate()).padStart(2, "0")}.${String(nextVisitDate.getMonth() + 1).padStart(2, "0")}.${nextVisitDate.getFullYear()}`
       : null;
-    
+
     const formatted = {
       ...prescription,
-      prescribed_at: formattedPrescribedDate,   
+      prescribed_at: formattedPrescribedDate,
+      prescribed_at_time: `${String(prescribedDate.getHours()).padStart(2, "0")}:${String(prescribedDate.getMinutes()).padStart(2, "0")}`,
       next_visit_date: formattedNextVisitDate,
       items: prescription.items.map((item) => {
         return {
