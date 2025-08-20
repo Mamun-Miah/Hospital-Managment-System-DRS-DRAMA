@@ -8,12 +8,12 @@ interface BarcodeProps {
     height?: number;
 }
 
-export default function Barcode({ value, width = 2, height = 50 }: BarcodeProps) {
-    const svgRef = useRef<SVGSVGElement>(null);
+export default function Barcode({ value, width = 0.5, height = 25 }: BarcodeProps) {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        if (svgRef.current) {
-            JsBarcode(svgRef.current, value, {
+        if (canvasRef.current) {
+            JsBarcode(canvasRef.current, value, {
                 format: "CODE128",
                 lineColor: "#000000",
                 width,
@@ -24,5 +24,5 @@ export default function Barcode({ value, width = 2, height = 50 }: BarcodeProps)
         }
     }, [value, width, height]);
 
-    return <svg ref={svgRef}></svg>;
+    return <canvas ref={canvasRef}></canvas>;
 }

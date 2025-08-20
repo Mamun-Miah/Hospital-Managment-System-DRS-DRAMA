@@ -102,7 +102,7 @@ function DownloadPDFButton({
         allowTaint: true,
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
-      pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] as never },
     };
 
     // Disable the button visually could be added here if desired
@@ -111,7 +111,7 @@ function DownloadPDFButton({
         .set(opt)
         .from(element)
         .save();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("PDF generation failed:", err);
     }
   }, [prescriptionRef, prescriptionsData]);
@@ -162,7 +162,7 @@ export default function Page() {
         allowTaint: true,
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
-      pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] as never },
     };
 
     try {
@@ -704,4 +704,3 @@ export default function Page() {
     </>
   );
 }
-
