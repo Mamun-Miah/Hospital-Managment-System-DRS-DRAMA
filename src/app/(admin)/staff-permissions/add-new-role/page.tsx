@@ -26,7 +26,7 @@ interface Permission {
 }
 
 export default function RoleManagementForm() {
-  const [roleName, setRoleName] = useState("")
+  const [roleName, setRoleName] = useState("");
   const [permissions, setPermissions] = useState<Permission[]>([
     { permission_id: "add-doctor", name: "Add/Edit/Delete Doctor", icon: <UserPlus className="h-4 w-4" />, checked: false },
     // { permission_id: "list-doctor", name: "List Doctor", icon: <Users className="h-4 w-4" />, checked: false },
@@ -54,16 +54,27 @@ export default function RoleManagementForm() {
     )
   }
 
-  const handleSave = () => {
+  const handleSave = async() => {
     const selectedPermissions = permissions.filter((p) => p.checked)
-    console.log("Saving role:", {
-      name: roleName,
-      permissions: selectedPermissions.map((p) => ({ id: p.permission_id, name: p.name })),
-    })
-    // Here you would typically send the data to your backend
-    alert(`Role "${roleName}" saved with ${selectedPermissions.length} permissions!`)
+
+    const permissionsId = selectedPermissions.map((p) =>  p.permission_id);
+
+    // console.log('selected',selectedPermissions)
+    // console.log("Saving role:", {
+    //   name: roleName,
+    //   permissions: selectedPermissions.map((p) =>  p.permission_id),
+    // })
+    const addNewRole = await fetch(`/api/add-new-role`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({name: roleName,
+          permissionId:permissionsId}),
+      });
+      const result = await addNewRole.json();
+      console.log('new role id',result)
+    // alert(`Role "${roleName}" saved with ${permissionsId} permissions!`)
   }
-console.log(permissions)
+// console.log(permissions)
   return (
     <div className="space-y-6">
       {/* Role Information Section */}
