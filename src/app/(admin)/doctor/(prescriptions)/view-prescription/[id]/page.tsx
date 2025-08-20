@@ -602,7 +602,7 @@ export default function Page() {
             <div className="flex flex-col md:flex-row justify-between mt-6">
               {/* Left */}
               <div>
-                <BarcodeComponent value={`/doctor/view-prescription/${prescriptionsData?.prescription_id}`} width={0.5} height={25} />
+                <BarcodeComponent value={`${prescriptionsData?.prescription_id}`} width={3} height={25} />
                 <div><strong>Patient ID:</strong> {prescriptionsData?.patient_id}</div>
                 <div><strong>Name:</strong> {prescriptionsData?.patient.patient_name}</div>
                 <div><strong>Age:</strong> {prescriptionsData?.patient.age}</div>
@@ -611,7 +611,7 @@ export default function Page() {
 
               {/* Right */}
               <div className="mt-4 md:mt-0">
-                <BarcodeComponent value={`/doctor/view-prescription/${prescriptionsData?.prescription_id}`} width={0.5} height={25} />
+                <BarcodeComponent value={`${prescriptionsData?.prescription_id}`} width={3} height={25} />
                 <div><strong>Prescription ID:</strong> {prescriptionsData?.prescription_id}</div>
                 <div><strong>Visit Date:</strong> {prescriptionsData?.prescribed_at}</div>
                 <div><strong>Visit Time:</strong> {prescriptionsData?.prescribed_at_time}</div>
