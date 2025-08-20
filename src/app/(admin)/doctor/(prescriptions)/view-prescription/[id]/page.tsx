@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import Prescriptions from "@/components/Doctor/Prescriptions";
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useRef, useCallback } from "react";
 import html2pdf from "html2pdf.js";
+import BarcodeComponent from "@/components/Doctor/BarCodeComponent";
 
 
 export interface Prescription {
   prescription_id: number;
-  prescribed_at: string; 
+  prescribed_at: string;
   is_prescribed: "Yes" | "No";
   is_drs_derma: "Yes" | "No";
   total_cost: number;
@@ -26,10 +25,11 @@ export interface Prescription {
   next_visit_date: string | null;
   items: PrescriptionItem[];
   treatmentItems: TreatmentItem[];
-  on_examination_oe:string;
-  relevant_findings_rf:string;
-  drug_history_dh:string;
-  chief_complaint_cc:string;
+  on_examination_oe: string;
+  relevant_findings_rf: string;
+  drug_history_dh: string;
+  chief_complaint_cc: string;
+  prescribed_at_time?: string;
 }
 
 export interface Patient {
@@ -37,28 +37,28 @@ export interface Patient {
   city: string;
   mobile_number: string;
   gender: "Male" | "Female" | "Other";
-  age: string; 
+  age: string;
   blood_group: string;
-  weight: string; 
+  weight: string;
 }
 
 export interface Doctor {
   doctor_name: string;
   phone_number: string;
   specialization: string;
-  designation:string
+  designation: string
 }
 
 export interface PrescriptionItem {
   item_id: number;
-  
-  
+
+
   dose_morning: string | null;
   dose_mid_day: string | null;
   dose_night: string | null;
   duration_days: number | null;
   medicine_name: string | null;
-  
+
 }
 
 export interface TreatmentItem {
@@ -68,8 +68,8 @@ export interface TreatmentItem {
   payable_treatment_amount: number;
   treatment_name: string;
   duration_months: number;
-  session_number:string;
-  next_treatment_session_interval_date:string;
+  session_number: string;
+  next_treatment_session_interval_date: string;
 }
 
 interface DownloadPDFButtonProps {
@@ -88,12 +88,12 @@ function DownloadPDFButton({
 
     const patientName = prescriptionsData?.patient.patient_name || "prescription";
     const dateStr = prescriptionsData?.prescribed_at
-      // ? new Date(prescriptionsData.prescribed_at).toISOString().split("T")[0]
-      // : new Date().toISOString().split("T")[0];
+    // ? new Date(prescriptionsData.prescribed_at).toISOString().split("T")[0]
+    // : new Date().toISOString().split("T")[0];
     const filename = `${patientName.replace(/\s+/g, "_")}_${dateStr}.pdf`;
 
     const opt = {
-      margin: [0, 10, 10, 10], // mm
+      margin: [0, 5, 0, 10], // mm
       filename,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
@@ -102,7 +102,7 @@ function DownloadPDFButton({
         allowTaint: true,
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
-      pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] as never },
     };
 
     // Disable the button visually could be added here if desired
@@ -111,7 +111,7 @@ function DownloadPDFButton({
         .set(opt)
         .from(element)
         .save();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("PDF generation failed:", err);
     }
   }, [prescriptionRef, prescriptionsData]);
@@ -138,49 +138,49 @@ function DownloadPDFButton({
 
 export default function Page() {
 
-const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null);
-const prescriptionRef = useRef<HTMLDivElement | null>(null);
+  const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null);
+  const prescriptionRef = useRef<HTMLDivElement | null>(null);
 
-const params = useParams();
-const prescriptionId = params?.id;
+  const params = useParams();
+  const prescriptionId = params?.id;
 
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-const handlePrint = async () => {
-  if (!prescriptionRef.current) return;
-  const element = prescriptionRef.current;
+  const handlePrint = async () => {
+    if (!prescriptionRef.current) return;
+    const element = prescriptionRef.current;
 
-  
-  const opt = {
-    margin: [0, 10, 10, 10], // in mm
-    filename: "temp.pdf",
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-    },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
-    pagebreak: { mode: ["avoid-all", "css", "legacy"] as any },
-  };
 
-  try {
-    // Generate the PDF (jsPDF instance)
-    const worker = html2pdf().set(opt).from(element);
-     
-    const pdf = (await worker.toPdf().get("pdf")) as { output: (type: string) => Blob }; // jsPDF instance
-    const blob = pdf.output("blob");
+    const opt = {
+      margin: [0, 10, 10, 10], // in mm
+      filename: "temp.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] as never },
+    };
 
-    const blobUrl = URL.createObjectURL(blob);
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) {
-      alert("Popup blocked. Please allow popups to print the prescription.");
-      return;
-    }
+    try {
+      // Generate the PDF (jsPDF instance)
+      const worker = html2pdf().set(opt).from(element);
 
-    //a  HTML wrapper that embeds the PDF and triggers print
-    printWindow.document.write(`
+      const pdf = (await worker.toPdf().get("pdf")) as { output: (type: string) => Blob }; // jsPDF instance
+      const blob = pdf.output("blob");
+
+      const blobUrl = URL.createObjectURL(blob);
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        alert("Popup blocked. Please allow popups to print the prescription.");
+        return;
+      }
+
+      //a  HTML wrapper that embeds the PDF and triggers print
+      printWindow.document.write(`
       <html>
         <head>
           <title>Print Prescription</title>
@@ -209,51 +209,51 @@ const handlePrint = async () => {
         </body>
       </html>
     `);
-    printWindow.document.close();
-  } catch (err) {
-    console.error("Print PDF generation failed:", err);
-    // fallback to native print if needed
-    if (document.fonts) {
-      document.fonts.ready.then(() => window.print());
-    } else {
-      window.print();
-    }
-  }
-};
-
-
-useEffect(() => {
-  if (!prescriptionId) return;
-
-  const fetchPrescriptionData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(`/api/prescription/view-prescription/${prescriptionId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch prescription");
-      }
-      const data = await response.json();
-      
-      setPrescriptionsData(data);
+      printWindow.document.close();
     } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
+      console.error("Print PDF generation failed:", err);
+      // fallback to native print if needed
+      if (document.fonts) {
+        document.fonts.ready.then(() => window.print());
+      } else {
+        window.print();
+      }
     }
   };
 
-  fetchPrescriptionData();
-}, [prescriptionId]);
 
-if (loading) return <p>Loading prescription...</p>;
-if (error) return <p>Error: {error}</p>;
-if (!prescriptionsData || !prescriptionsData.patient) {
-  return <div>Loading...</div>; 
-}
+  useEffect(() => {
+    if (!prescriptionId) return;
+
+    const fetchPrescriptionData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`/api/prescription/view-prescription/${prescriptionId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch prescription");
+        }
+        const data = await response.json();
+
+        setPrescriptionsData(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrescriptionData();
+  }, [prescriptionId]);
+
+  if (loading) return <p>Loading prescription...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!prescriptionsData || !prescriptionsData.patient) {
+    return <div>Loading...</div>;
+  }
 
 
-console.log('prescriptionsData',prescriptionsData)
+  console.log('prescriptionsData', prescriptionsData)
 
   return (
     <>
@@ -284,8 +284,7 @@ console.log('prescriptionsData',prescriptionsData)
       </div>
 
       <div
-        id="prescription"
-        ref={(el) => { prescriptionRef.current = el; }}
+        id="prescription-view"
         className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md"
       >
 
@@ -293,17 +292,17 @@ console.log('prescriptionsData',prescriptionsData)
           <div className="sm:flex justify-between">
             <div className="mt-8">
               <h4 className="!mb-[7px] !text-[20px] !font-semibold">
-               {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
+                {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
               </h4>
               <span className="block md:text-md mt-[5px]">
-             {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.designation}
+                {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.designation}
               </span>
-                  <div className="sm:flex justify-between mt-[10px]">
-                    <ul className="mb-[7px] sm:mb-0">
-                      <li className="mb-[7px] last:mb-0">
-                        <span className="text-black dark:text-white">{prescriptionsData?.doctor?.specialization?? ""}</span>
-                      </li>
-                      {/* <li className="mb-[7px] last:mb-0">
+              <div className="sm:flex justify-between mt-[10px]">
+                <ul className="mb-[7px] sm:mb-0">
+                  <li className="mb-[7px] last:mb-0">
+                    <span className="text-black dark:text-white">{prescriptionsData?.doctor?.specialization ?? ""}</span>
+                  </li>
+                  {/* <li className="mb-[7px] last:mb-0">
                         Degree:{" "}
                         <span className="text-black dark:text-white">{prescriptionsData?.doctor?.doctor_degree?? ""}</span>
                       </li>
@@ -315,9 +314,9 @@ console.log('prescriptionsData',prescriptionsData)
                         Mobile Number:{" "}
                         <span className="text-black dark:text-white">{prescriptionsData?.patient.mobile_number?? ""}</span>
                       </li> */}
-                    </ul>
-                  </div>
-            </div>  
+                </ul>
+              </div>
+            </div>
 
             <div className="mt-[20px] sm:mt-0">
               <Image
@@ -335,7 +334,7 @@ console.log('prescriptionsData',prescriptionsData)
                 height={26}
               />
 
-            
+
               <span className="block md:text-md mt-[5px]">
                 Dhaka, Bangladesh
               </span>
@@ -351,44 +350,44 @@ console.log('prescriptionsData',prescriptionsData)
           <div className="sm:flex justify-between mt-[10px]">
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] last:mb-0">
-                ID: <span className="text-black dark:text-white">{prescriptionsData?.patient_id?? ""}</span>
+                ID: <span className="text-black dark:text-white">{prescriptionsData?.patient_id ?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Name:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.patient_name?? ""}</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.patient_name ?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Address:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.city?? ""}</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.city ?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Mobile Number:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.mobile_number?? ""}</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.mobile_number ?? ""}</span>
               </li>
             </ul>
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] last:mb-0">
                 Gender :{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.gender?? ""}</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.gender ?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
-                Age: <span className="text-black dark:text-white">{prescriptionsData?.patient.age?? ""}</span>
+                Age: <span className="text-black dark:text-white">{prescriptionsData?.patient.age ?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Blood Group:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.blood_group?? ""}</span>
+                <span className="text-black dark:text-white">{prescriptionsData?.patient.blood_group ?? ""}</span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Weight:
-                <span className="text-black dark:text-white"> {prescriptionsData?.patient.weight?? ""} KG</span>
+                <span className="text-black dark:text-white"> {prescriptionsData?.patient.weight ?? ""} KG</span>
               </li>
             </ul>
             <div>
               <span className="block text-black dark:text-white font-semibold">
-                Date: {prescriptionsData?.prescribed_at?? ""}
+                Date: {prescriptionsData?.prescribed_at ?? ""}
               </span>
               <span className="block text-black dark:text-white font-semibold mt-3">
-                Next Date: {prescriptionsData?.next_visit_date?? ""}
+                Next Date: {prescriptionsData?.next_visit_date ?? ""}
               </span>
             </div>
           </div>
@@ -399,37 +398,37 @@ console.log('prescriptionsData',prescriptionsData)
 
           <div className="lg:w-4/5 md:-mx-[25px] px-2  ">
             <div className="table-responsive overflow-x-auto">
-            <table className="w-full  mb-12 border-collapse">
-                  <thead>
-                    <tr className="bg-gray-50  dark:bg-[#15203c]">
-                      <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
-                        Treatment Name
-                      </th>
-                       <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
-                        Session Number
-                      </th>
-                      <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
-                        Next Session Interval 
-                      </th>
-                    </tr>
-                  </thead>
+              <table className="w-full  mb-12 border-collapse">
+                <thead>
+                  <tr className="bg-gray-50  dark:bg-[#15203c]">
+                    <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
+                      Treatment Name
+                    </th>
+                    <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
+                      Session Number
+                    </th>
+                    <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">
+                      Next Session Interval
+                    </th>
+                  </tr>
+                </thead>
 
-                  <tbody className="text-sm text-black dark:text-white">
-                    {prescriptionsData.treatmentItems.map((treatment, index) => (
-                      <tr key={index} className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#1b253b] dark:even:bg-[#1e2a47]">
-                        <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
-                          {treatment.treatment_name}
-                        </td>
-                         <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
-                          {treatment.session_number}
-                        </td>
-                        <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
-                          {treatment.next_treatment_session_interval_date}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <tbody className="text-sm text-black dark:text-white">
+                  {prescriptionsData.treatmentItems.map((treatment, index) => (
+                    <tr key={index} className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#1b253b] dark:even:bg-[#1e2a47]">
+                      <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
+                        {treatment.treatment_name}
+                      </td>
+                      <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
+                        {treatment.session_number}
+                      </td>
+                      <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
+                        {treatment.next_treatment_session_interval_date}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
 
             </div>
@@ -496,50 +495,50 @@ console.log('prescriptionsData',prescriptionsData)
 
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
-               {prescriptionsData?.chief_complaint_cc?? ""} 
+              {prescriptionsData?.chief_complaint_cc ?? ""}
             </li>
           </ul>
 
-           {/* D/H (Drug History)          */}
+          {/* D/H (Drug History)          */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
             <h5>D/H (Drug History)</h5>
           </span>
 
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
-               {prescriptionsData?.drug_history_dh?? ""} 
+              {prescriptionsData?.drug_history_dh ?? ""}
             </li>
           </ul>
 
 
-{/* R/F (Relevant Findings) */}
+          {/* R/F (Relevant Findings) */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
             <h5>R/F (Relevant Findings)</h5>
           </span>
 
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
-               {prescriptionsData?.relevant_findings_rf?? ""} 
+              {prescriptionsData?.relevant_findings_rf ?? ""}
             </li>
           </ul>
-{/* O/E (On Examination) */}
+          {/* O/E (On Examination) */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
             <h5>O/E (On Examination)</h5>
           </span>
 
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
-               {prescriptionsData?.on_examination_oe?? ""} 
+              {prescriptionsData?.on_examination_oe ?? ""}
             </li>
           </ul>
-         {/* advise given            */}
+          {/* advise given            */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
             <h5>Advice Given:</h5>
           </span>
 
           <ul className="mt-[7px]">
             <li className="relative ltr:pl-[15px]">
-               {prescriptionsData?.advise?? ""} 
+              {prescriptionsData?.advise ?? ""}
             </li>
           </ul>
 
@@ -562,6 +561,144 @@ console.log('prescriptionsData',prescriptionsData)
               MBBS, MD, MS (Reg No: 321456)
             </span>
           </div> */}
+        </div>
+      </div>
+
+      {/* prescription pdf starts here  */}
+      <div className="pdf-only" style={{ display: "none" }}>
+        <div
+          id="prescription-pdf"
+          ref={(el) => {
+            prescriptionRef.current = el;
+          }}
+          className="bg-white text-black p-6 md:p-8 rounded-md shadow-sm"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            // A4 height in portrait mode is 297mm.
+            // We use a value slightly less to account for margins.
+            // This ensures the footer is pushed to the bottom of the page.
+            minHeight: "287mm",
+          }}
+        >
+          <div style={{ flex: "1 0 auto" }}>
+            {/* Main Content */}
+            {/* Header Row */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-start">
+              {/* Doctor Info */}
+              <div className="max-w-[70%]">
+                <h2 className="text-lg font-bold">{prescriptionsData?.doctor?.doctor_name}</h2>
+                <p className="text-sm">{prescriptionsData?.doctor?.designation}</p>
+                <p className="text-sm">{prescriptionsData?.doctor?.specialization}</p>
+              </div>
+
+              {/* Hospital Logo */}
+              <div className="mt-4 md:mt-0">
+                <Image src="/images/logo.png" alt="logo" width={120} height={40} />
+              </div>
+            </div>
+
+            {/* Patient + Visit Info */}
+            <div className="flex flex-col md:flex-row justify-between mt-6">
+              {/* Left */}
+              <div>
+                <BarcodeComponent value={`${prescriptionsData?.prescription_id}`} width={3} height={25} />
+                <div><strong>Patient ID:</strong> {prescriptionsData?.patient_id}</div>
+                <div><strong>Name:</strong> {prescriptionsData?.patient.patient_name}</div>
+                <div><strong>Age:</strong> {prescriptionsData?.patient.age}</div>
+                <div><strong>Address:</strong> {prescriptionsData?.patient.city}</div>
+              </div>
+
+              {/* Right */}
+              <div className="mt-4 md:mt-0">
+                <BarcodeComponent value={`${prescriptionsData?.prescription_id}`} width={3} height={25} />
+                <div><strong>Prescription ID:</strong> {prescriptionsData?.prescription_id}</div>
+                <div><strong>Visit Date:</strong> {prescriptionsData?.prescribed_at}</div>
+                <div><strong>Visit Time:</strong> {prescriptionsData?.prescribed_at_time}</div>
+                <div><strong>Gender:</strong> {prescriptionsData?.patient.gender}</div>
+              </div>
+            </div>
+
+            <hr className="my-6 border-gray-300" />
+
+            {/* Prescription Body */}
+            <div className="flex flex-col md:flex-row relative">
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-6 bg-white px-2 font-bold ml-2">Rx</div>
+
+              {/* Left Column */}
+              <div className="flex-1 pr-4 border-r border-gray-300">
+                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                  <h6 className=""><strong>C/C (Chief Complaint)</strong></h6>
+                </span>
+                <ul className="mt-[7px]">
+                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.chief_complaint_cc ?? ""}</li>
+                </ul>
+
+                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                  <h6><strong>D/H (Drug History)</strong></h6>
+                </span>
+                <ul className="mt-[7px]">
+                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.drug_history_dh ?? ""}</li>
+                </ul>
+
+                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                  <h6><strong>R/F (Relevant Findings)</strong></h6>
+                </span>
+                <ul className="mt-[7px]">
+                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.relevant_findings_rf ?? ""}</li>
+                </ul>
+
+                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                  <h6><strong>O/E (On Examination)</strong></h6>
+                </span>
+                <ul className="mt-[7px]">
+                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.on_examination_oe ?? ""}</li>
+                </ul>
+
+                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                  <h6><strong>Advice Given:</strong></h6>
+                </span>
+                <ul className="mt-[7px]">
+                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.advise ?? ""}</li>
+                </ul>
+              </div>
+              <br />
+              <div className="flex-1 pl-4 mt-3">
+                <ul>
+                  {prescriptionsData?.treatmentItems?.map((t, i) => (
+                    <li key={i}>
+                      {t.treatment_name}({t.session_number}) - Next session: {t.next_treatment_session_interval_date}
+                    </li>
+                  ))}
+                </ul>
+                {prescriptionsData.items.map((item, i) => (
+                  <div key={i} className="flex">
+                    •  {item.medicine_name},  ({item.dose_morning || "0"}+{item.dose_mid_day || "0"}+{item.dose_night || "0"}) - {item.duration_days ? `${item.duration_days} days` : ""}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ flexShrink: 0 }}>
+            {/* Footer */}
+            <div className="text-right">
+              <div className="italic">Electronic Signature</div>
+              <div className="font-bold">{prescriptionsData?.doctor?.doctor_name}</div>
+            </div>
+            <hr className="my-4 border-gray-300" />
+
+            {/* Left Side - Footer Info */}
+            <div className="text-center">
+              <div className="font-bold">DRS DERMA</div>
+              <div>7/A, Main Road, Mohammadia Housing Society, Mohammadpur, Dhaka, Bangladesh, 1207</div>
+              <div>
+                <span className="font-semibold">Phone:</span><span>+880 1670 600067 | </span>
+                <span className="font-semibold">Email:</span><span>info@drsdermabd.com</span>
+              </div>
+            </div>
+            {/* Left Side - Footer Info ENDS*/}
+          </div>
         </div>
       </div>
     </>
