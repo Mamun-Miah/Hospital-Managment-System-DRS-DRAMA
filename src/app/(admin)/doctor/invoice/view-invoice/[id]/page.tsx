@@ -3,6 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRef } from "react";
+import html2pdf from "html2pdf.js";
+
 
 interface Treatment {
   treatment_name: string;
@@ -31,6 +34,7 @@ const ViewInvoice: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   const totatTreatmentCost: number = treatments.reduce(
     (acc, item) => acc + item.payable_treatment_amount,
@@ -56,6 +60,38 @@ const ViewInvoice: React.FC = () => {
 
   if (!invoice) return <div>Loading...</div>;
 
+  const handleDownloadPDF = () => {
+    if (invoiceRef.current) {
+      const element = invoiceRef.current;
+      const opt = {
+        margin: 0.5,
+        filename: "invoice.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true, },
+        jsPDF: { unit: "in", format: "a4", orientation: "portrait" as const },
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+  };
+
+  const handlePrint = () => {
+    if (invoiceRef.current) {
+      const printContents = invoiceRef.current.innerHTML;
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(`
+        <html>
+          <head><title>Invoice</title></head>
+          <body>${printContents}</body>
+        </html>
+      `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
+
+
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
@@ -76,6 +112,22 @@ const ViewInvoice: React.FC = () => {
         </ol>
       </div>
 
+      <div className="flex justify-end gap-2 mb-4">
+        <button
+          onClick={handleDownloadPDF}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
+        >
+          Download PDF
+        </button>
+        <button
+          onClick={handlePrint}
+          className="bg-green-500 text-white px-4 py-2 rounded-md shadow hover:bg-green-600"
+        >
+          Print
+        </button>
+      </div>
+
+      <div ref={invoiceRef}>sample pdf print</div>
       <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
         <div className="sm:flex items-center justify-between">
           <div>
