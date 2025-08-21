@@ -2,6 +2,8 @@
 
 import type React from "react"
 import { useState } from "react"
+import Swal from 'sweetalert2';
+
 import {
   UserPlus,
   Users,
@@ -72,6 +74,13 @@ export default function RoleManagementForm() {
           permissionId:permissionsId}),
       });
       const result = await addNewRole.json();
+      Swal.fire({
+      
+              icon: "success",
+              title: "Role added successfully!",
+              showConfirmButton: false,
+              timer: 1500
+            });
       console.log('new role id',result, permissionsId)
     // alert(`Role "${roleName}" saved with ${permissionsId} permissions!`)
   }

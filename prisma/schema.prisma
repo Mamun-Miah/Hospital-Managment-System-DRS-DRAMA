@@ -14,32 +14,32 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String    @unique
+  email     String     @unique
   password  String
   roles     UserRole[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Role {
-  id          Int            @id @default(autoincrement())
-  name        String         @unique
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
   description String?
   permissions RolePermission[]
   users       UserRole[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 model Permission {
-  id          Int            @id @default(autoincrement())
-  name        String         @unique
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
   description String?
   roles       RolePermission[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 /// Join table: User ↔ Role
@@ -63,7 +63,6 @@ model RolePermission {
 
   @@unique([roleId, permissionId]) // prevent duplicates
 }
-
 
 model Patient {
   patient_id                Int                         @id @default(autoincrement())
@@ -222,7 +221,7 @@ model Prescription {
   is_prescribed          String                      @default("No")
   is_drs_derma           String                      @default("No")
   next_visit_date        DateTime?                   @db.Date
-  advise                 String?
+  advise                 String?                     @db.Text
   prescribed_doctor_name String                      @default("N/A")
   doctor_discount_type   DiscountType?
   doctor_discount_value  Float?
