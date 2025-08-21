@@ -10,7 +10,7 @@ export async function GET(
 
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("prescription-list")){
+  if (!session?.user.permissions?.includes("prescription-list")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
@@ -115,7 +115,8 @@ export async function GET(
     const formatted = {
       ...prescription,
       prescribed_at: formattedPrescribedDate,
-      prescribed_at_time: `${String(prescribedDate.getHours()).padStart(2, "0")}:${String(prescribedDate.getMinutes()).padStart(2, "0")}`,
+      // prescribed_at_time: `${String(prescribedDate.getHours()).padStart(2, "0")}:${String(prescribedDate.getMinutes()).padStart(2, "0")}`,
+      prescribed_at_time: `${String(prescribedDate.getUTCHours()).padStart(2, "0")}:${String(prescribedDate.getUTCMinutes()).padStart(2, "0")}`,
       next_visit_date: formattedNextVisitDate,
       items: prescription.items.map((item) => {
         return {
