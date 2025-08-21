@@ -20,6 +20,7 @@ import {
 
 interface Permission {
   permission_id: string
+  id:string
   name: string
   icon: React.ReactNode
   checked: boolean
@@ -28,36 +29,36 @@ interface Permission {
 export default function RoleManagementForm() {
   const [roleName, setRoleName] = useState("");
   const [permissions, setPermissions] = useState<Permission[]>([
-    { permission_id: "add-doctor", name: "Add/Edit/Delete Doctor", icon: <UserPlus className="h-4 w-4" />, checked: false },
+    { permission_id: "add-doctor",id:"20", name: "Add/Edit/Delete Doctor", icon: <UserPlus className="h-4 w-4" />, checked: false },
     // { permission_id: "list-doctor", name: "List Doctor", icon: <Users className="h-4 w-4" />, checked: false },
-    { permission_id: "add-patient", name: "Add/Edit Patient", icon: <User className="h-4 w-4" />, checked: false },
-    { permission_id: "delete-patient", name: "Delete Patient", icon: <Users className="h-4 w-4" />, checked: false },
-    { permission_id: "add-medicine", name: "Add/Edit/Delete Medicine", icon: <Pill className="h-4 w-4" />, checked: false },
+    { permission_id: "add-patient",id:"21", name: "Add/Edit Patient", icon: <User className="h-4 w-4" />, checked: false },
+    { permission_id: "delete-patient",id:"22", name: "Delete Patient", icon: <Users className="h-4 w-4" />, checked: false },
+    { permission_id: "add-medicine",id:"23", name: "Add/Edit/Delete Medicine", icon: <Pill className="h-4 w-4" />, checked: false },
     // { permission_id: "list-medicine", name: "List Medicine", icon: <Pill className="h-4 w-4" />, checked: false },
-    { permission_id: "add-treatment", name: "Add/Edit/Delete Treatment", icon: <Stethoscope className="h-4 w-4" />, checked: false },
+    { permission_id: "add-treatment",id:"24", name: "Add/Edit/Delete Treatment", icon: <Stethoscope className="h-4 w-4" />, checked: false },
     // { permission_id: "list-treatment", name: "List Treatment", icon: <Stethoscope className="h-4 w-4" />, checked: false },
-    { permission_id: "todays-appointment", name: "Today's Appointment", icon: <Calendar className="h-4 w-4" />, checked: false },
-    { permission_id: "prescription-list", name: "Prescription List", icon: <FileText className="h-4 w-4" />, checked: false },
+    { permission_id: "todays-appointment",id:"25", name: "Today's Appointment", icon: <Calendar className="h-4 w-4" />, checked: false },
+    { permission_id: "prescription-list",id:"26", name: "Prescription List", icon: <FileText className="h-4 w-4" />, checked: false },
     // { permission_id: "create-prescription", name: "Create Prescription", icon: <PenTool className="h-4 w-4" />, checked: false },
     // { permission_id: "prescription-details", name: "Prescription Details", icon: <Eye className="h-4 w-4" />, checked: false },
     // { permission_id: "prescription-history", name: "Prescription History", icon: <History className="h-4 w-4" />, checked: false },
-    { permission_id: "invoice", name: "Invoice", icon: <Receipt className="h-4 w-4" />, checked: false },
+    { permission_id: "invoice", name: "Invoice",id:"27", icon: <Receipt className="h-4 w-4" />, checked: false },
     // { permission_id: "invoice-details", name: "Invoice Details", icon: <Eye className="h-4 w-4" />, checked: false },
     // { permission_id: "create-invoice", name: "Create Invoice", icon: <PenTool className="h-4 w-4" />, checked: false },
-    { permission_id: "next-appointment", name: "Next Appointment", icon: <CalendarDays className="h-4 w-4" />, checked: false },
-    { permission_id: "patient-history", name: "Patient History", icon: <Activity className="h-4 w-4" />, checked: false },
+    { permission_id: "next-appointment",id:"28", name: "Next Appointment", icon: <CalendarDays className="h-4 w-4" />, checked: false },
+    { permission_id: "patient-history",id:"29", name: "Patient History", icon: <Activity className="h-4 w-4" />, checked: false },
   ])
 
   const handlePermissionChange = (permissionId: string, checked: boolean) => {
     setPermissions((prev) =>
-      prev.map((permission) => (permission.permission_id === permissionId ? { ...permission, checked } : permission)),
+      prev.map((permission) => (permission.id === permissionId ? { ...permission, checked } : permission)),
     )
   }
 
   const handleSave = async() => {
     const selectedPermissions = permissions.filter((p) => p.checked)
 
-    const permissionsId = selectedPermissions.map((p) =>  p.permission_id);
+    const permissionsId = selectedPermissions.map((p) =>  p.id);
 
     // console.log('selected',selectedPermissions)
     // console.log("Saving role:", {
@@ -71,7 +72,7 @@ export default function RoleManagementForm() {
           permissionId:permissionsId}),
       });
       const result = await addNewRole.json();
-      console.log('new role id',result)
+      console.log('new role id',result, permissionsId)
     // alert(`Role "${roleName}" saved with ${permissionsId} permissions!`)
   }
 // console.log(permissions)
@@ -113,19 +114,19 @@ export default function RoleManagementForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {permissions.map((permission) => (
                 <div
-                  key={permission.permission_id}
+                  key={permission.id}
                   className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <input
                     type="checkbox"
-                    id={permission.permission_id}
+                    id={permission.id}
                     checked={permission.checked}
-                    onChange={(e) => handlePermissionChange(permission.permission_id, e.target.checked)}
+                    onChange={(e) => handlePermissionChange(permission.id, e.target.checked)}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                   />
                   <div className="flex items-center space-x-2 flex-1">
                     <div className="text-gray-500">{permission.icon}</div>
-                    <label htmlFor={permission.permission_id} className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
+                    <label htmlFor={permission.id} className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
                       {permission.name}
                     </label>
                   </div>
