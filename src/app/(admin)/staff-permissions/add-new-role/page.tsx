@@ -64,7 +64,7 @@ export default function RoleManagementForm() {
     //   name: roleName,
     //   permissions: selectedPermissions.map((p) =>  p.permission_id),
     // })
-    const addNewRole = await fetch(`/api/add-new-role`, {
+    const addNewRole = await fetch(`/api/role-permission/add-new-role`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({name: roleName,
