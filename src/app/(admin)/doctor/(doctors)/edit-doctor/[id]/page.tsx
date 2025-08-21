@@ -41,6 +41,7 @@ export default function EditDoctor() {
     address: "",
     city: "",
     stateProvince: "",
+    designation: "",
     doctorFee: "",
     status: "",
     postal_code: "",
@@ -92,6 +93,7 @@ export default function EditDoctor() {
           address: data.address_line1 || "",
           city: data.city || "",
           stateProvince: data.state_province || "",
+          designation: data.designation || "",
           doctorFee: data.doctor_fee || "",
           status: data.status || "",
           postal_code: data.postal_code || "",
@@ -289,6 +291,7 @@ export default function EditDoctor() {
         address: "",
         city: "",
         stateProvince: "",
+        designation: "",
         status: "",
         doctorFee: "", // Optional field for doctor's visit fee
         postal_code: "",
@@ -443,6 +446,19 @@ export default function EditDoctor() {
                   type="text"
                   placeholder="Enter State/Province"
                   value={formData.stateProvince}
+                  onChange={handleChange}
+                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+                />
+              </div>
+              <div>
+                <label className="mb-[10px] text-black dark:text-white font-medium block">
+                  Designation
+                </label>
+                <input
+                  name="designation"
+                  type="text"
+                  placeholder="Enter Designation"
+                  value={formData.designation}
                   onChange={handleChange}
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
@@ -934,6 +950,7 @@ export default function EditDoctor() {
                     address: "",
                     city: "",
                     stateProvince: "",
+                    designation: "",
                     status: "",
                     doctorFee: "", // Reset doctor fee
                     postal_code: "",
