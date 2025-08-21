@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const { name, permissionId } = data;
 
-    if (!name || !permissionId || !Array.isArray(permissionId)) {
+    if (!name && !permissionId || !Array.isArray(permissionId)) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
 

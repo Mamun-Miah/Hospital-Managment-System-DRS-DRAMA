@@ -61,12 +61,7 @@ export default function RoleManagementForm() {
     const selectedPermissions = permissions.filter((p) => p.checked)
 
     const permissionsId = selectedPermissions.map((p) =>  p.id);
-
-    // console.log('selected',selectedPermissions)
-    // console.log("Saving role:", {
-    //   name: roleName,
-    //   permissions: selectedPermissions.map((p) =>  p.permission_id),
-    // })
+   
     const addNewRole = await fetch(`/api/role-permission/add-new-role`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,6 +69,7 @@ export default function RoleManagementForm() {
           permissionId:permissionsId}),
       });
       const result = await addNewRole.json();
+      
       Swal.fire({
       
               icon: "success",
