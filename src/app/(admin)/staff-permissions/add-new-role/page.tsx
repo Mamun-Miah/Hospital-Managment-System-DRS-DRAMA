@@ -41,7 +41,7 @@ export default function RoleManagementForm() {
     // { permission_id: "create-prescription", name: "Create Prescription", icon: <PenTool className="h-4 w-4" />, checked: false },
     // { permission_id: "prescription-details", name: "Prescription Details", icon: <Eye className="h-4 w-4" />, checked: false },
     // { permission_id: "prescription-history", name: "Prescription History", icon: <History className="h-4 w-4" />, checked: false },
-    { permission_id: "invoice-list", name: "Invoice", icon: <Receipt className="h-4 w-4" />, checked: false },
+    { permission_id: "invoice", name: "Invoice", icon: <Receipt className="h-4 w-4" />, checked: false },
     // { permission_id: "invoice-details", name: "Invoice Details", icon: <Eye className="h-4 w-4" />, checked: false },
     // { permission_id: "create-invoice", name: "Create Invoice", icon: <PenTool className="h-4 w-4" />, checked: false },
     { permission_id: "next-appointment", name: "Next Appointment", icon: <CalendarDays className="h-4 w-4" />, checked: false },
