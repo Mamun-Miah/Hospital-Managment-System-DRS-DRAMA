@@ -48,7 +48,7 @@ export async function PATCH(
 
   const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("add-doctor")){
+  if (!session?.user.permissions?.includes("add-doctor")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
   //  Await the params promise to get the resolved object.
@@ -99,6 +99,7 @@ export async function PATCH(
           address_line1: data.address,
           city: data.city,
           state_province: data.stateProvince,
+          designation: data.designation,
           postal_code: data.postal_code,
           status: data.status,
           doctor_fee: data.doctorFee ? Number(data.doctorFee) : null,
