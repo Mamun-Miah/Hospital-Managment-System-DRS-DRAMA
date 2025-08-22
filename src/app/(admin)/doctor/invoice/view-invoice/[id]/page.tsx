@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
 import BarcodeComponent from "@/components/Doctor/BarCodeComponent";
+import numberToWords from "@/components/Doctor/NumberToWords";
 
 
 interface Treatment {
@@ -333,8 +334,8 @@ const ViewInvoice: React.FC = () => {
             <table className="table-invoice">
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'left' }}>Service Name</th>
-                  <th style={{ textAlign: 'right' }}>Amount</th>
+                  <th className="mb-1" style={{ textAlign: 'left' }}>Service Name</th>
+                  <th className="mb-1" style={{ textAlign: 'right' }}>Amount</th>
                 </tr>
               </thead>
               <tbody>
@@ -355,7 +356,7 @@ const ViewInvoice: React.FC = () => {
 
             <div className="mt-4 flex justify-between items-end">
               <div>
-                <p><span className="font-bold">In Word:</span> Taka - One Thousand Five Hundred Only</p>
+                <p><span className="font-bold">In Word:</span> Taka - {numberToWords(invoice.paid_amount)} Only</p>
                 <p className="mt-2"><span className="font-bold">Prepared By:</span> DRS DERMA</p>
               </div>
               <div className="summary-table">
@@ -366,11 +367,19 @@ const ViewInvoice: React.FC = () => {
                     <tr className="border-t"><td className="font-bold">Net Payable Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{totalCost.toFixed(2)}</td></tr>
                     <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr>
                     <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{dueAmount.toFixed(2)}</td></tr> */}
-                    <tr><td>Sub Total Tk.</td><td style={{ textAlign: 'right' }}>21</td></tr>
-                    <tr><td>+VAT (2.25%) Tk.</td><td style={{ textAlign: 'right' }}>0.00</td></tr>
-                    <tr className="border-t"><td className="font-bold">Net Payable Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>1221</td></tr>
-                    <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr>
-                    <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{1221}</td></tr>
+                    <tr><td>Total Treatment Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost}</td></tr>
+                    <tr><td>Previous Due:</td><td style={{ textAlign: 'right' }}>BDT. {invoice.previous_due}</td></tr>
+                    <tr><td>Total Cost:</td><td style={{ textAlign: 'right' }}>BDT.{" "}
+                      {totatTreatmentCost +
+                        invoice.doctor_fee +
+                        invoice.previous_due}</td></tr>
+                    <tr className="border-t"><td className="font-bold">Paid Amount:</td><td className="font-bold" style={{ textAlign: 'right' }}>BDT. {invoice.paid_amount}</td></tr>
+                    {/* <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr> */}
+                    <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>BDT.{" "}
+                      {totatTreatmentCost +
+                        invoice.doctor_fee +
+                        invoice.previous_due -
+                        invoice.paid_amount}</td></tr>
                   </tbody>
                 </table>
               </div>
