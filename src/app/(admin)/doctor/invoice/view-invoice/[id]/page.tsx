@@ -197,202 +197,205 @@ const ViewInvoice: React.FC = () => {
       </div>
 
       {/* <div ref={invoiceRef} >sample pdf print</div> */}
-      <div ref={invoiceRef} className="bg-white">
 
-        <style>
-          {`
-            .invoice-container {
-              padding: 0.25in 1in 0.25in 1in;
-            
-              font-size: 10px;
-              color: #000;
-              display: flex;
-              flex-direction: column;
-              /* Added box-sizing for better layout consistency */
-              box-sizing: border-box;
-              /* Ensure it has a height to structure content correctly */
-              min-height: 8.27in;
-            }
-            .invoice-header, .invoice-footer, .invoice-section {
-              width: 100%;
-            }
-            .text-center { text-align: center; }
-            .font-bold { font-weight: bold; }
-            .flex { display: flex; }
-            .justify-between { justify-content: space-between; }
-            .justify-center { justify-content: center; }
-            .items-center { align-items: center; }
-            .mt-1 { margin-top: 0.25rem; }
-            .mt-2 { margin-top: 0.5rem; }
-            .mt-4 { margin-top: 1rem; }
-            .mb-4 { margin-bottom: 1rem; }
-            .w-1/3 { width: 33.3333%; }
-            .p-1 { padding: 0.25rem; }
-            .border-b { border-bottom: 1px solid #000; }
-            .border-t { border-top: 1px solid #000; }
-            .info-grid {
-                display: grid;
-                grid-template-columns: auto 1fr;
-                gap: 0 1rem;
-            }
-            .info-grid > dt { font-weight: bold; }
-            .table-invoice { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-            .table-invoice th, .table-invoice td { padding: 4px 8px; }
-            .table-invoice thead { border-top: 1px solid #000; border-bottom: 1px solid #000; }
-            .paid-stamp {
-                border: 2px solid #000;
-                color: #000;
-                font-size: 1rem;
-                font-weight: bold;
-                padding: 0.5rem 1rem;
-                display: inline-block;
-               
-                opacity: 0.8;
-                position: absolute;
-                left: 1in;
-                bottom: 1.5in;
-            }
-            .summary-table {
-                width: 250px;
-                margin-left: auto;
+      <div>
+        <div ref={invoiceRef} className="bg-white">
+
+          <style>
+            {`
+              .invoice-container {
+                padding: 0.25in 1in 0.25in 1in;
+              
                 font-size: 10px;
-            }
-            .summary-table td {
-                padding: 2px 5px;
-            }
-          `}
-        </style>
-        <div className="invoice-container">
-          {/* Header */}
-          <div className="invoice-header text-center">
-            {/* Using a placeholder for the logo */}
-            <div className="flex justify-center">
-              <Image src="/images/logo.png" alt="logo" width={120} height={40} />
-            </div>
-            <div className="text-xs">21 Shyamoli, Mirpur Road, Dhaka-1207 Bangladesh, Phone: 09666700100, Hotline: 10633</div>
-          </div>
-
-          {/* Barcodes and HN */}
-          <div className="invoice-section mt-4">
-            <div className="flex justify-between items-center">
-              {/* <Barcode value="C12405223947" /> */}
-              <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
-              <div className="text-center mt-2">
-                <span className="font-bold text-lg">HN : {invoice.invoice_number}</span>
+                color: #000;
+                display: flex;
+                flex-direction: column;
+                /* Added box-sizing for better layout consistency */
+                box-sizing: border-box;
+                /* Ensure it has a height to structure content correctly */
+                min-height: 8.27in;
+              }
+              .invoice-header, .invoice-footer, .invoice-section {
+                width: 100%;
+              }
+              .text-center { text-align: center; }
+              .font-bold { font-weight: bold; }
+              .flex { display: flex; }
+              .justify-between { justify-content: space-between; }
+              .justify-center { justify-content: center; }
+              .items-center { align-items: center; }
+              .mt-1 { margin-top: 0.25rem; }
+              .mt-2 { margin-top: 0.5rem; }
+              .mt-4 { margin-top: 1rem; }
+              .mb-4 { margin-bottom: 1rem; }
+              .w-1/3 { width: 33.3333%; }
+              .p-1 { padding: 0.25rem; }
+              .border-b { border-bottom: 1px solid #000; }
+              .border-t { border-top: 1px solid #000; }
+              .info-grid {
+                  display: grid;
+                  grid-template-columns: auto 1fr;
+                  gap: 0 1rem;
+              }
+              .info-grid > dt { font-weight: bold; }
+              .table-invoice { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+              .table-invoice th, .table-invoice td { padding: 4px 8px; }
+              .table-invoice thead { border-top: 1px solid #000; border-bottom: 1px solid #000; }
+              .paid-stamp {
+                  border: 2px solid #000;
+                  color: #000;
+                  font-size: 1rem;
+                  font-weight: bold;
+                  padding: 0.5rem 1rem;
+                  display: inline-block;
+                  
+                  opacity: 0.8;
+                  position: absolute;
+                  left: 1in;
+                  bottom: 2.5in;
+              }
+              .summary-table {
+                  width: 250px;
+                  margin-left: auto;
+                  font-size: 10px;
+              }
+              .summary-table td {
+                  padding: 2px 5px;
+              }
+            `}
+          </style>
+          <div className="invoice-container">
+            {/* Header */}
+            <div className="invoice-header text-center">
+              {/* Using a placeholder for the logo */}
+              <div className="flex justify-center">
+                <Image src="/images/logo.png" alt="logo" width={120} height={40} />
               </div>
-              {/* <Barcode value="12405730000" /> */}
-              <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
+              <div className="text-xs">21 Shyamoli, Mirpur Road, Dhaka-1207 Bangladesh, Phone: 09666700100, Hotline: 10633</div>
             </div>
-          </div>
 
-          {/* Patient and Invoice Info */}
-          <div className="invoice-section mt-4 flex justify-between">
-            {/* Left Column */}
-            <div className="w-1/3">
-              <dl className="info-grid">
-                {/* <dt>Con. No.</dt><dd>: {invoice.invoice_number}</dd> */}
-                <dt>Bill ID.</dt><dd>: {invoice.invoice_number}</dd>
-                <dt>Name</dt><dd>: {invoice.patient?.patient_name || 'N/A'}</dd>
-                <dt>Age</dt><dd>: {calculateAge(invoice.patient?.date_of_birth)}</dd>
-                <dt>Address</dt><dd>: {invoice.patient?.address_line1 || ''}, {invoice.patient?.city || ''}, {invoice.patient?.state_province || ''}, {invoice.patient?.postal_code || ''}</dd>
-              </dl>
+            {/* Barcodes and HN */}
+            <div className="invoice-section mt-4">
+              <div className="flex justify-between items-center">
+                {/* <Barcode value="C12405223947" /> */}
+                <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
+                <div className="text-center mt-2">
+                  <span className="font-bold text-lg">HN : {invoice.invoice_number}</span>
+                </div>
+                {/* <Barcode value="12405730000" /> */}
+                <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
+              </div>
             </div>
-            {/* Middle Column */}
-            <div className="w-1/3">
-              <dl className="info-grid">
-                {/* <dt>App. No.</dt><dd>: 12405730000</dd> */}
-                <dt>Date</dt><dd>: {formattedDate(invoice.invoice_creation_date)}</dd>
-                <dt>Gender</dt><dd>: {invoice.patient?.gender || ''}</dd>
-                <dt>Department</dt><dd>: ENT & Head-Neck Surgery</dd>
-              </dl>
-            </div>
-            {/* Right Column */}
-            <div className="w-1/3">
-              <dl className="info-grid">
-                {/* <dt>Inv. Sl.</dt><dd>: 19</dd> */}
-                <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
-                {/* <dt>Contact No</dt><dd>: 01717099460</dd> */}
-                <dt>Patient. Status</dt><dd>: {invoice.patient?.status}</dd>
-                {/* <dt>Consultant</dt><dd>: DR. M MUINUL HAFIZ, MBBS, DAND, DLO, MS (ENT)</dd> */}
-                <dt>Next App. Date</dt><dd>: {formattedDate(invoice.patient?.set_next_appoinmnet)}</dd>
-                <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
-                <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd>
-              </dl>
-            </div>
-          </div>
-          {/* 
-          <div className="invoice-section mt-2">
-            <dl className="info-grid"> */}
 
-          {/* <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
-              <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd> */}
-          {/* </dl>
-          </div> */}
+            {/* Patient and Invoice Info */}
+            <div className="invoice-section mt-4 flex justify-between">
+              {/* Left Column */}
+              <div className="w-1/3">
+                <dl className="info-grid">
+                  {/* <dt>Con. No.</dt><dd>: {invoice.invoice_number}</dd> */}
+                  <dt>Bill ID.</dt><dd>: {invoice.invoice_number}</dd>
+                  <dt>Name</dt><dd>: {invoice.patient?.patient_name || 'N/A'}</dd>
+                  <dt>Age</dt><dd>: {calculateAge(invoice.patient?.date_of_birth)}</dd>
+                  <dt>Address</dt><dd>: {invoice.patient?.address_line1 || ''}, {invoice.patient?.city || ''}, {invoice.patient?.state_province || ''}, {invoice.patient?.postal_code || ''}</dd>
+                </dl>
+              </div>
+              {/* Middle Column */}
+              <div className="w-1/3">
+                <dl className="info-grid">
+                  {/* <dt>App. No.</dt><dd>: 12405730000</dd> */}
+                  <dt>Date</dt><dd>: {formattedDate(invoice.invoice_creation_date)}</dd>
+                  <dt>Gender</dt><dd>: {invoice.patient?.gender || ''}</dd>
+                  {/* <dt>Department</dt><dd>: ENT & Head-Neck Surgery</dd> */}
+                </dl>
+              </div>
+              {/* Right Column */}
+              <div className="w-1/3">
+                <dl className="info-grid">
+                  {/* <dt>Inv. Sl.</dt><dd>: 19</dd> */}
+                  <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
+                  {/* <dt>Contact No</dt><dd>: 01717099460</dd> */}
+                  <dt>Patient. Status</dt><dd>: {invoice.patient?.status}</dd>
+                  {/* <dt>Consultant</dt><dd>: DR. M MUINUL HAFIZ, MBBS, DAND, DLO, MS (ENT)</dd> */}
+                  <dt>Next App. Date</dt><dd>: {formattedDate(invoice.patient?.set_next_appoinmnet)}</dd>
+                  <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
+                  <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd>
+                </dl>
+              </div>
+            </div>
+            {/* 
+            <div className="invoice-section mt-2">
+              <dl className="info-grid"> */}
 
-          {/* Main Content: Table and Summary */}
-          <div className="invoice-section mt-2 flex-grow relative">
-            <table className="table-invoice">
-              <thead>
-                <tr>
-                  <th className="mb-1" style={{ textAlign: 'left' }}>Service Name</th>
-                  <th className="mb-1" style={{ textAlign: 'right' }}>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {treatments.map((treatment, i) => (
-                  <tr key={i}>
-                    <td>{treatment.treatment_name}</td>
-                    <td style={{ textAlign: 'right' }}>{treatment.payable_treatment_amount.toFixed(2)}</td>
+            {/* <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
+                <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd> */}
+            {/* </dl>
+            </div> */}
+
+            {/* Main Content: Table and Summary */}
+            <div className="invoice-section mt-2 flex-grow relative">
+              <table className="table-invoice">
+                <thead>
+                  <tr>
+                    <th className="mb-1" style={{ textAlign: 'left' }}>Service Name</th>
+                    <th className="mb-1" style={{ textAlign: 'right' }}>Amount</th>
                   </tr>
-                ))}
-                <tr>
-                  <td>Doctor Fee</td>
-                  <td style={{ textAlign: 'right' }}>{invoice.doctor_fee.toFixed(2)}</td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {treatments.map((treatment, i) => (
+                    <tr key={i}>
+                      <td>{treatment.treatment_name}</td>
+                      <td style={{ textAlign: 'right' }}>{treatment.payable_treatment_amount.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td>Doctor Fee</td>
+                    <td style={{ textAlign: 'right' }}>{invoice.doctor_fee.toFixed(2)}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-            <div className="paid-stamp">PAID</div>
+              <div className="paid-stamp">PAID</div>
 
-            <div className="mt-4 flex justify-between items-end">
+              <div className="mt-4 flex justify-between items-end">
+                <div>
+                  <p><span className="font-bold">In Word:</span> Taka - {numberToWords(invoice.paid_amount)} Only</p>
+                  <p className="mt-2"><span className="font-bold">Prepared By:</span> DRS DERMA</p>
+                </div>
+                <div className="summary-table">
+                  <table style={{ width: "100%" }}>
+                    <tbody>
+                      {/* <tr><td>Sub Total Tk.</td><td style={{ textAlign: 'right' }}>{totalTreatmentCost.toFixed(2)}</td></tr>
+                      <tr><td>+VAT (2.25%) Tk.</td><td style={{ textAlign: 'right' }}>0.00</td></tr>
+                      <tr className="border-t"><td className="font-bold">Net Payable Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{totalCost.toFixed(2)}</td></tr>
+                      <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr>
+                      <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{dueAmount.toFixed(2)}</td></tr> */}
+                      <tr><td>Total Treatment Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost}</td></tr>
+                      <tr><td>Previous Due:</td><td style={{ textAlign: 'right' }}>BDT. {invoice.previous_due}</td></tr>
+                      <tr><td>Total Cost:</td><td style={{ textAlign: 'right' }}>BDT.{" "}
+                        {totatTreatmentCost +
+                          invoice.doctor_fee +
+                          invoice.previous_due}</td></tr>
+                      <tr className="border-t"><td className="font-bold">Paid Amount:</td><td className="font-bold" style={{ textAlign: 'right' }}>BDT. {invoice.paid_amount}</td></tr>
+                      {/* <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr> */}
+                      <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>BDT.{" "}
+                        {totatTreatmentCost +
+                          invoice.doctor_fee +
+                          invoice.previous_due -
+                          invoice.paid_amount}</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="invoice-footer mt-auto pt-4 flex justify-between items-center">
               <div>
-                <p><span className="font-bold">In Word:</span> Taka - {numberToWords(invoice.paid_amount)} Only</p>
-                <p className="mt-2"><span className="font-bold">Prepared By:</span> DRS DERMA</p>
+                <p className="font-bold" style={{ borderTop: '1px solid #000', paddingTop: '2px' }}>Billing Officer</p>
               </div>
-              <div className="summary-table">
-                <table style={{ width: "100%" }}>
-                  <tbody>
-                    {/* <tr><td>Sub Total Tk.</td><td style={{ textAlign: 'right' }}>{totalTreatmentCost.toFixed(2)}</td></tr>
-                    <tr><td>+VAT (2.25%) Tk.</td><td style={{ textAlign: 'right' }}>0.00</td></tr>
-                    <tr className="border-t"><td className="font-bold">Net Payable Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{totalCost.toFixed(2)}</td></tr>
-                    <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr>
-                    <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>{dueAmount.toFixed(2)}</td></tr> */}
-                    <tr><td>Total Treatment Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost}</td></tr>
-                    <tr><td>Previous Due:</td><td style={{ textAlign: 'right' }}>BDT. {invoice.previous_due}</td></tr>
-                    <tr><td>Total Cost:</td><td style={{ textAlign: 'right' }}>BDT.{" "}
-                      {totatTreatmentCost +
-                        invoice.doctor_fee +
-                        invoice.previous_due}</td></tr>
-                    <tr className="border-t"><td className="font-bold">Paid Amount:</td><td className="font-bold" style={{ textAlign: 'right' }}>BDT. {invoice.paid_amount}</td></tr>
-                    {/* <tr><td>Advance Tk.</td><td style={{ textAlign: 'right' }}>{invoice.paid_amount.toFixed(2)}</td></tr> */}
-                    <tr className="border-t"><td className="font-bold">Due Tk.</td><td className="font-bold" style={{ textAlign: 'right' }}>BDT.{" "}
-                      {totatTreatmentCost +
-                        invoice.doctor_fee +
-                        invoice.previous_due -
-                        invoice.paid_amount}</td></tr>
-                  </tbody>
-                </table>
+              <div>
+                <p className="text-xs">Software By: MSSL.</p>
               </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="invoice-footer mt-auto pt-4 flex justify-between items-center">
-            <div>
-              <p className="font-bold" style={{ borderTop: '1px solid #000', paddingTop: '2px' }}>Billing Officer</p>
-            </div>
-            <div>
-              <p className="text-xs">Software By: MSSL.</p>
             </div>
           </div>
         </div>
