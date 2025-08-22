@@ -198,7 +198,7 @@ const ViewInvoice: React.FC = () => {
 
       {/* <div ref={invoiceRef} >sample pdf print</div> */}
 
-      <div>
+      <div style={{ display: 'none' }}>
         <div ref={invoiceRef} className="bg-white">
 
           <style>
