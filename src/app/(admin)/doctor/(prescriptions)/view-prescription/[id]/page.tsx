@@ -147,81 +147,6 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // const handlePrint = async () => {
-  //   if (!prescriptionRef.current) return;
-  //   const element = prescriptionRef.current;
-
-
-  //   const opt = {
-  //     margin: [0, 10, 10, 10], // in mm
-  //     filename: "temp.pdf",
-  //     image: { type: "jpeg", quality: 0.98 },
-  //     html2canvas: {
-  //       scale: 2,
-  //       useCORS: true,
-  //       allowTaint: true,
-  //     },
-  //     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
-  //     pagebreak: { mode: ["avoid-all", "css", "legacy"] as never },
-  //   };
-
-  //   try {
-  //     // Generate the PDF (jsPDF instance)
-  //     const worker = html2pdf().set(opt).from(element);
-
-  //     const pdf = (await worker.toPdf().get("pdf")) as { output: (type: string) => Blob }; // jsPDF instance
-  //     const blob = pdf.output("blob");
-
-  //     const blobUrl = URL.createObjectURL(blob);
-  //     const printWindow = window.open("", "_blank");
-  //     if (!printWindow) {
-  //       alert("Popup blocked. Please allow popups to print the prescription.");
-  //       return;
-  //     }
-
-  //     //a  HTML wrapper that embeds the PDF and triggers print
-  //     printWindow.document.write(`
-  //     <html>
-  //       <head>
-  //         <title>Print Prescription</title>
-  //         <style>
-  //           html,body { margin:0; padding:0; height:100%; }
-  //           iframe { border:none; width:100%; height:100%; }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         <iframe id="pdfFrame" src="${blobUrl}"></iframe>
-  //         <script>
-  //           const iframe = document.getElementById("pdfFrame");
-  //           iframe.onload = function() {
-  //             // Give browser a moment to render, then invoke print on iframe's content
-  //             setTimeout(() => {
-  //               try {
-  //                 iframe.contentWindow.focus();
-  //                 iframe.contentWindow.print();
-  //               } catch (e) {
-  //                 // fallback: print parent window
-  //                 window.print();
-  //               }
-  //             }, 500);
-  //           };
-  //         </script>
-  //       </body>
-  //     </html>
-  //   `);
-  //     printWindow.document.close();
-  //   } catch (err) {
-  //     console.error("Print PDF generation failed:", err);
-  //     // fallback to native print if needed
-  //     if (document.fonts) {
-  //       document.fonts.ready.then(() => window.print());
-  //     } else {
-  //       window.print();
-  //     }
-  //   }
-  // };
-
-
   const handlePrint = async () => {
     if (!prescriptionRef.current) return;
 
@@ -575,7 +500,7 @@ export default function Page() {
             </li>
           </ul>
 
-          {/* D/H (Drug History)          */}
+          {/* D/H (Drug History)     */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
             <h5>D/H (Drug History)</h5>
           </span>
@@ -743,7 +668,7 @@ export default function Page() {
                 <ul>
                   {prescriptionsData?.treatmentItems?.map((t, i) => (
                     <li key={i}>
-                      {t.treatment_name}({t.session_number}) - Next session: {t.next_treatment_session_interval_date}
+                      • {t.treatment_name}({t.session_number}) - Next session: {t.next_treatment_session_interval_date}
                     </li>
                   ))}
                 </ul>
