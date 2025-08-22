@@ -7,6 +7,7 @@ import { useRef } from "react";
 import html2pdf from "html2pdf.js";
 import BarcodeComponent from "@/components/Doctor/BarCodeComponent";
 
+
 interface Treatment {
   treatment_name: string;
   treatment_cost: number;
@@ -27,6 +28,7 @@ interface Invoice {
   previous_session_date: string;
   patient?: {
     patient_name: string;
+    date_of_birth: Date;
   };
 }
 
@@ -40,6 +42,15 @@ const ViewInvoice: React.FC = () => {
     (acc, item) => acc + item.payable_treatment_amount,
     0
   );
+
+  const calculateAge = (dateOfBirth: Date): string => {
+    const now = new Date();
+    const ageInMilliseconds = now.getTime() - dateOfBirth.getTime();
+    const ageInYears = Math.floor(ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25));
+    const ageInMonths = Math.floor((ageInMilliseconds % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30));
+    const ageInDays = Math.floor((ageInMilliseconds % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+    return `${ageInYears}Y ${ageInMonths}M ${ageInDays}D`;
+  }
 
   const formattedDate = (isoDate?: string) => {
     if (!isoDate) return "-";
@@ -98,8 +109,11 @@ const ViewInvoice: React.FC = () => {
         .toPdf()
         .get("pdf")
         .then((pdf) => {
+          // Cast the unknown type to a known type with an output method
+          const pdfObject = pdf as { output: (type: string) => Blob };
+
           // Open the PDF blob in a new tab and trigger print
-          const blob = pdf.output("bloburl");
+          const blob = URL.createObjectURL(pdfObject.output("blob"));
           const iframe = document.createElement("iframe");
           iframe.style.display = "none";
           iframe.src = blob;
@@ -117,7 +131,6 @@ const ViewInvoice: React.FC = () => {
       {/* {console.log(invoice)} */}
       <div className="mb-[25px] md:flex items-center justify-between">
         <h5 className="!mb-0">Invoice Details</h5>
-
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px]">
             <Link href="/dashboard/ecommerce/" className="inline-block relative ltr:pl-[22px]">
@@ -242,10 +255,10 @@ const ViewInvoice: React.FC = () => {
             {/* Left Column */}
             <div className="w-1/3">
               <dl className="info-grid">
-                <dt>Con. No.</dt><dd>: {invoice.invoice_number}</dd>
+                {/* <dt>Con. No.</dt><dd>: {invoice.invoice_number}</dd> */}
                 <dt>Bill ID.</dt><dd>: {invoice.invoice_number}</dd>
                 <dt>Name</dt><dd>: {invoice.patient?.patient_name || 'N/A'}</dd>
-                <dt>Age</dt><dd>: 36Y 3M 16D</dd>
+                <dt>Calculated Age</dt><dd>: {invoice.patient?.date_of_birth ? calculateAge(invoice.patient.date_of_birth) : 'N/A'}</dd>
                 <dt>Address</dt><dd>: KALLYANPUR, DHAKA</dd>
               </dl>
             </div>
@@ -261,7 +274,7 @@ const ViewInvoice: React.FC = () => {
             {/* Right Column */}
             <div className="w-1/3">
               <dl className="info-grid">
-                <dt>App. Sl.</dt><dd>: 19</dd>
+                <dt>Inv. Sl.</dt><dd>: 19</dd>
                 <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
                 <dt>Contact No</dt><dd>: 01717099460</dd>
               </dl>
