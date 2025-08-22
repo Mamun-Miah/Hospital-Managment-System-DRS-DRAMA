@@ -85,19 +85,6 @@ export default function RoleManagementForm() {
 
   const handleSave = async() => {
 
-    const rolesname = allRoleName.map(p=>p.name.toLowerCase())
-
-        if (rolesname.includes(roleName.trim().toLowerCase())) {
-      return Swal.fire({
-        icon: "error",
-        title: "Role already exists!",
-        text: "Can't create duplicate role",
-        showConfirmButton: false,
-        timer: 1500
-      });
-    }
-
-
      const selectedPermissions = permissions.filter((p) => p.checked)
 
     const permissionsId = selectedPermissions.map((p) =>  p.id);
@@ -106,10 +93,26 @@ export default function RoleManagementForm() {
       
               icon: "error",
               title: "Can't Create Super Admin Role",
+              text: "Select another Role Name",
               showConfirmButton: false,
               timer: 1500
             });
     }
+
+    const rolesname = allRoleName.map(p=>p.name.toLowerCase())
+
+        if (rolesname.includes(roleName.trim().toLowerCase())) {
+      return Swal.fire({
+        icon: "error",
+        title: "Role Name already exists!",
+        text: "Can't create duplicate role",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+
+
+    
  
     const addNewRole = await fetch(`/api/role-permission/add-new-role`, {
         method: "POST",
