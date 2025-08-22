@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Swal from 'sweetalert2';
 
 import {
@@ -19,6 +19,7 @@ import {
   CalendarDays,
   Activity,
 } from "lucide-react"
+import { useRouter } from "next/navigation";
 
 interface Permission {
   permission_id: string
@@ -27,8 +28,14 @@ interface Permission {
   icon: React.ReactNode
   checked: boolean
 }
+interface RoleName {
+  id: string;
+  name: string;
+}
 
 export default function RoleManagementForm() {
+  const router = useRouter();
+  const [allRoleName, setAllRoleName] = useState<RoleName[]>([]);
   const [roleName, setRoleName] = useState("");
   const [permissions, setPermissions] = useState<Permission[]>([
     { permission_id: "add-doctor",id:"20", name: "Add/Edit/Delete Doctor", icon: <UserPlus className="h-4 w-4" />, checked: false },
@@ -57,11 +64,53 @@ export default function RoleManagementForm() {
     )
   }
 
+
+ useEffect(() => {
+    const fetchMedines = async () => {
+      try {
+        const response = await fetch("/api/role-permission/get-role-permission/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch Role Name");
+        }
+        const data = await response.json();
+        setAllRoleName(data);
+      } catch (error) {
+        console.error("Error fetching staff:", error);
+      }
+    };
+
+    fetchMedines();
+  }, []);
+
+
   const handleSave = async() => {
-    const selectedPermissions = permissions.filter((p) => p.checked)
+
+    const rolesname = allRoleName.map(p=>p.name.toLowerCase())
+
+        if (rolesname.includes(roleName.trim().toLowerCase())) {
+      return Swal.fire({
+        icon: "error",
+        title: "Role already exists!",
+        text: "Can't create duplicate role",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+
+
+     const selectedPermissions = permissions.filter((p) => p.checked)
 
     const permissionsId = selectedPermissions.map((p) =>  p.id);
-   
+    if(roleName.toLocaleLowerCase() === "super admin"){
+      return Swal.fire({
+      
+              icon: "error",
+              title: "Can't Create Super Admin Role",
+              showConfirmButton: false,
+              timer: 1500
+            });
+    }
+ 
     const addNewRole = await fetch(`/api/role-permission/add-new-role`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,9 +126,11 @@ export default function RoleManagementForm() {
               showConfirmButton: false,
               timer: 1500
             });
+            router.push('/staff-permissions/');
       console.log('new role id',result, permissionsId)
     // alert(`Role "${roleName}" saved with ${permissionsId} permissions!`)
   }
+  
 // console.log(permissions)
   return (
     <div className="space-y-6">
@@ -146,7 +197,7 @@ export default function RoleManagementForm() {
       <div className="flex justify-end">
         <button
           onClick={handleSave}
-          disabled={!roleName.trim()}
+          disabled={!roleName.trim() || !permissions.some(p => p.checked)}
           className="px-8 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
           Save Role

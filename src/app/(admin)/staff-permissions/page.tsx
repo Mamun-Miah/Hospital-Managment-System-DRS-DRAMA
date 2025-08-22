@@ -3,17 +3,15 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
-interface Medicine {
-  medicine_id: string;
+interface RoleName {
+  id: string;
   name: string;
-  // quantity: string;
-  brand_name: string;
 }
 
-const MedicineList: React.FC = () => {
-  const [allMedicine, setAllMedicine] = useState<Medicine[]>([]);
-  const [filteredMedicine, setFilteredMedicine] =
-    useState<Medicine[]>(allMedicine);
+const RoleList: React.FC = () => {
+  const [allRoleName, setAllRoleName] = useState<RoleName[]>([]);
+  const [filteredMedicine, setFilteredRoleName] =
+    useState<RoleName[]>(allRoleName);
 
   // search and pagination
   const [search, setSearch] = useState("");
@@ -24,17 +22,17 @@ const MedicineList: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentMedicine = filteredMedicine.slice(startIndex, endIndex);
+  const currentRoleName = filteredMedicine.slice(startIndex, endIndex);
 
   useEffect(() => {
     const fetchMedines = async () => {
       try {
-        const response = await fetch("/api/medicine/medicinelist");
+        const response = await fetch("/api/role-permission/get-role-permission/");
         if (!response.ok) {
-          throw new Error("Failed to fetch treatments");
+          throw new Error("Failed to fetch Role Name");
         }
         const data = await response.json();
-        setAllMedicine(data.Getmedicine);
+        setAllRoleName(data);
       } catch (error) {
         console.error("Error fetching staff:", error);
       }
@@ -44,14 +42,14 @@ const MedicineList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const result = allMedicine.filter((medicine) =>
-      medicine.name.toLowerCase().includes(search.toLowerCase())
+    const result = allRoleName.filter((role) =>
+      role.name.toLowerCase().includes(search.toLowerCase())
     );
-    setFilteredMedicine(result);
+    setFilteredRoleName(result);
     setCurrentPage(1);
-  }, [search, allMedicine]);
+  }, [search, allRoleName]);
 
-  const handleDelete = async (medicine_id: string) => {
+  const handleDelete = async (role_id: string) => {
      const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success",
@@ -81,7 +79,7 @@ const MedicineList: React.FC = () => {
           
       try {
         const response = await fetch(
-          `/api/medicine/delete-medicine/${medicine_id}`,
+          `/api/role-permission/delete-role/${role_id}`,
           {
             method: "DELETE",
           }
@@ -90,8 +88,8 @@ const MedicineList: React.FC = () => {
           throw new Error("Failed to delete staff");
         }
         const data = await response.json();
-        setAllMedicine((prev) =>
-          prev.filter((medicine) => medicine.medicine_id !== medicine_id)
+        setAllRoleName((prev) =>
+          prev.filter((role) => role.id !== role_id)
         );
         console.log(data.message);
       } catch (error) {
@@ -180,17 +178,17 @@ const MedicineList: React.FC = () => {
               </thead>
 
               <tbody className="text-black dark:text-white">
-                {currentMedicine.length > 0 ? (
-                  currentMedicine.map((medicine) => (
-                    <tr key={medicine.medicine_id}>
+                {currentRoleName.length > 0 ? (
+                  currentRoleName.map((role) => (
+                    <tr key={role.id}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-primary-500">
-                          {medicine.medicine_id}
+                          {role.id}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {medicine.name}
+                          {role.name}
                         </span>
                       </td>
                      
@@ -205,9 +203,9 @@ const MedicineList: React.FC = () => {
                               visibility
                             </i>
                           </button> */}
-
+                      {role.name.toLowerCase() !== "super admin" && (<>
                           <Link
-                            href={`/doctor/medicine/edit-medicine/${medicine.medicine_id}`}
+                            href={`/staff-permissions/edit-role/${role.id}`}
                           >
                             <button
                               type="button"
@@ -221,13 +219,15 @@ const MedicineList: React.FC = () => {
 
                           <button
                             type="button"
-                            onClick={() => handleDelete(medicine.medicine_id)}
+                            onClick={() => handleDelete(role.id)}
                             className="text-danger-500 leading-none custom-tooltip"
                           >
                             <i className="material-symbols-outlined !text-md">
                               delete
                             </i>
                           </button>
+                          </>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -312,4 +312,4 @@ const MedicineList: React.FC = () => {
   );
 };
 
-export default MedicineList;
+export default RoleList;
