@@ -8,9 +8,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
 
-   const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions)
 
-  if (!session?.user.permissions?.includes("invoice")){
+  if (!session?.user.permissions?.includes("invoice")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
   const id = (await params).id;
@@ -22,7 +22,18 @@ export async function GET(
       where: { invoice_id: invoiceId },
       include: {
         patient: {
-          select: { patient_name: true },
+          select: {
+            patient_name: true,
+            date_of_birth: true,
+            address_line1: true,
+            city: true,
+            state_province: true,
+            postal_code: true,
+            gender: true,
+            set_next_appoinmnet: true,
+            status: true,
+
+          },
         },
         prescription: {
           select: {
@@ -59,7 +70,7 @@ export async function GET(
       include: {
         treatment: {
           select: {
-            treatment_id:true,
+            treatment_id: true,
             treatment_name: true,
             total_cost: true, // <-- This gets the cost from Treatmentlist
           },
