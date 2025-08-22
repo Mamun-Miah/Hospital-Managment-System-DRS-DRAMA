@@ -43,29 +43,56 @@ const ViewInvoice: React.FC = () => {
     0
   );
 
-  const calculateAge = (dateOfBirth: Date): string => {
-    const now = new Date();
-    const ageInMilliseconds = now.getTime() - dateOfBirth.getTime();
-    const ageInYears = Math.floor(ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25));
-    const ageInMonths = Math.floor((ageInMilliseconds % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30));
-    const ageInDays = Math.floor((ageInMilliseconds % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-    return `${ageInYears}Y ${ageInMonths}M ${ageInDays}D`;
-  }
+  const calculateAge = (dateOfBirth?: Date): string => {
+    if (!dateOfBirth) return "-";
 
-  const formattedDate = (isoDate?: string) => {
-    if (!isoDate) return "-";
-    const date = new Date(isoDate);
+    const now = new Date();
+    const birthDate = new Date(dateOfBirth);
+
+    const ageInMilliseconds = now.getTime() - birthDate.getTime();
+
+    // Calculate years
+    const ageInYears = Math.floor(ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25));
+
+    // Remaining ms after full years
+    const remainingAfterYears = ageInMilliseconds % (1000 * 60 * 60 * 24 * 365.25);
+
+    // Calculate months
+    const ageInMonths = Math.floor(remainingAfterYears / (1000 * 60 * 60 * 24 * 30.44)); // avg month length
+
+    // Remaining ms after full months
+    const remainingAfterMonths = remainingAfterYears % (1000 * 60 * 60 * 24 * 30.44);
+
+    // Calculate days
+    const ageInDays = Math.floor(remainingAfterMonths / (1000 * 60 * 60 * 24));
+
+    return `${ageInYears}Y ${ageInMonths}M ${ageInDays}D`;
+  };
+
+
+  const formattedDate = (dateInput?: string | Date | null): string => {
+    if (!dateInput) return "-";
+
+    const date = new Date(dateInput);
+    // Check if the date is valid
+    if (isNaN(date.getTime())) return "-";
+
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   };
 
+
   useEffect(() => {
     if (!id) return;
-    fetch(`/api/invoice/view-eye-invoice/${id}`)
+    fetch(`/api/invoice/view-invoice/${id}`) // <-- Use the corrected URL here
       .then((res) => res.json())
       .then((data) => {
-        const { treatments, invoice } = data;
+        console.log("Full API response:", data); // <-- Add this line to debug
+        const { treatments, invoice } = data; // Make sure this destructuring matches your API's JSON structure
         setTreatments(treatments);
         setInvoice(invoice);
+      })
+      .catch((error) => {
+        console.error("Error fetching invoice:", error);
       });
   }, [id]);
 
@@ -258,7 +285,7 @@ const ViewInvoice: React.FC = () => {
                 {/* <dt>Con. No.</dt><dd>: {invoice.invoice_number}</dd> */}
                 <dt>Bill ID.</dt><dd>: {invoice.invoice_number}</dd>
                 <dt>Name</dt><dd>: {invoice.patient?.patient_name || 'N/A'}</dd>
-                <dt>Calculated Age</dt><dd>: {invoice.patient?.date_of_birth ? calculateAge(invoice.patient.date_of_birth) : 'N/A'}</dd>
+                <dt>Age</dt><dd>: {calculateAge(invoice.patient?.date_of_birth)}</dd>
                 <dt>Address</dt><dd>: KALLYANPUR, DHAKA</dd>
               </dl>
             </div>
