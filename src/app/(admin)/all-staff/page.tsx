@@ -27,7 +27,7 @@ const AllStaff: React.FC = () => {
   const currentRoleName = filteredMedicine.slice(startIndex, endIndex);
 
   useEffect(() => {
-    const fetchMedines = async () => {
+    const fetchRole = async () => {
       try {
         const response = await fetch("/api/all-staff/get-all-staff-list/");
         if (!response.ok) {
@@ -40,7 +40,7 @@ const AllStaff: React.FC = () => {
       }
     };
 
-    fetchMedines();
+    fetchRole();
   }, []);
 
   useEffect(() => {

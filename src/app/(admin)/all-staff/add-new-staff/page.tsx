@@ -1,9 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { User, Mail, Lock, UserCheck, Eye, EyeOff } from "lucide-react"
+interface Role {
+  id: number;
+  name: string;
+}
 
 export default function StaffInformationPage() {
+const [allRoleName, setAllRoleName] = useState<Role[]>([]);
+
+
+  useEffect(() => {
+      const fetchRoleName = async () => {
+        try {
+          const response = await fetch("/api/role-permission/get-role-permission/");
+          if (!response.ok) {
+            throw new Error("Failed to fetch Role Name");
+          }
+          const data = await response.json();
+          setAllRoleName(data);
+        console.log(data)
+        } catch (error) {
+          console.error("Error fetching staff:", error);
+        }
+      };
+  
+      fetchRoleName();
+    }, []);
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -95,10 +121,11 @@ export default function StaffInformationPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select role</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="employee">Employee</option>
-              <option value="intern">Intern</option>
+                {allRoleName.map((r) => (
+                  <option key={r.id} value={r.name}>
+                    {r.name}
+                  </option>
+              ))}
             </select>
           </div>
 
