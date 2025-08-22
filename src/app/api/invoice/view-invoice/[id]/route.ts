@@ -29,6 +29,9 @@ export async function GET(
             city: true,
             state_province: true,
             postal_code: true,
+            gender: true,
+            set_next_appoinmnet: true,
+            status: true,
 
           },
         },

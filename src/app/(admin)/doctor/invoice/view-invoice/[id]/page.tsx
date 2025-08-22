@@ -33,6 +33,9 @@ interface Invoice {
     city: string,
     state_province: string,
     postal_code: string,
+    gender: string,
+    set_next_appoinmnet: Date,
+    status: string,
   };
 }
 
@@ -272,12 +275,12 @@ const ViewInvoice: React.FC = () => {
           <div className="invoice-section mt-4">
             <div className="flex justify-between items-center">
               {/* <Barcode value="C12405223947" /> */}
-              <BarcodeComponent value={`C12405223947`} width={2} height={25} />
+              <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
               <div className="text-center mt-2">
                 <span className="font-bold text-lg">HN : {invoice.invoice_number}</span>
               </div>
               {/* <Barcode value="12405730000" /> */}
-              <BarcodeComponent value={`C12405223947`} width={2} height={25} />
+              <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
             </div>
           </div>
 
@@ -296,28 +299,34 @@ const ViewInvoice: React.FC = () => {
             {/* Middle Column */}
             <div className="w-1/3">
               <dl className="info-grid">
-                <dt>App. No.</dt><dd>: 12405730000</dd>
+                {/* <dt>App. No.</dt><dd>: 12405730000</dd> */}
                 <dt>Date</dt><dd>: {formattedDate(invoice.invoice_creation_date)}</dd>
-                <dt>Gender</dt><dd>: Male</dd>
+                <dt>Gender</dt><dd>: {invoice.patient?.gender || ''}</dd>
                 <dt>Department</dt><dd>: ENT & Head-Neck Surgery</dd>
               </dl>
             </div>
             {/* Right Column */}
             <div className="w-1/3">
               <dl className="info-grid">
-                <dt>Inv. Sl.</dt><dd>: 19</dd>
+                {/* <dt>Inv. Sl.</dt><dd>: 19</dd> */}
                 <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
-                <dt>Contact No</dt><dd>: 01717099460</dd>
+                {/* <dt>Contact No</dt><dd>: 01717099460</dd> */}
+                <dt>Patient. Status</dt><dd>: {invoice.patient?.status}</dd>
+                {/* <dt>Consultant</dt><dd>: DR. M MUINUL HAFIZ, MBBS, DAND, DLO, MS (ENT)</dd> */}
+                <dt>Next App. Date</dt><dd>: {formattedDate(invoice.patient?.set_next_appoinmnet)}</dd>
+                <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
+                <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd>
               </dl>
             </div>
           </div>
-
+          {/* 
           <div className="invoice-section mt-2">
-            <dl className="info-grid">
-              <dt>Con. Type</dt><dd>: New Patient</dd>
-              <dt>Consultant</dt><dd>: DR. M MUINUL HAFIZ, MBBS, DAND, DLO, MS (ENT)</dd>
-            </dl>
-          </div>
+            <dl className="info-grid"> */}
+
+          {/* <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
+              <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd> */}
+          {/* </dl>
+          </div> */}
 
           {/* Main Content: Table and Summary */}
           <div className="invoice-section mt-2 flex-grow relative">
@@ -347,7 +356,7 @@ const ViewInvoice: React.FC = () => {
             <div className="mt-4 flex justify-between items-end">
               <div>
                 <p><span className="font-bold">In Word:</span> Taka - One Thousand Five Hundred Only</p>
-                <p className="mt-2"><span className="font-bold">Prepared By:</span> RASHED6207</p>
+                <p className="mt-2"><span className="font-bold">Prepared By:</span> DRS DERMA</p>
               </div>
               <div className="summary-table">
                 <table style={{ width: "100%" }}>
@@ -496,7 +505,7 @@ const ViewInvoice: React.FC = () => {
                       Payment Type: <span className="font-medium">{invoice.payment_type}</span>
                     </div>
                     <div className="text-sm">
-                      Pyament Method: <span className="font-medium">{invoice.payment_method}</span>
+                      Payment Method: <span className="font-medium">{invoice.payment_method}</span>
                     </div>
                   </td>
                   <td className="p-3 pl-6">
