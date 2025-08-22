@@ -29,6 +29,10 @@ interface Invoice {
   patient?: {
     patient_name: string;
     date_of_birth: Date;
+    address_line1: string,
+    city: string,
+    state_province: string,
+    postal_code: string,
   };
 }
 
@@ -286,7 +290,7 @@ const ViewInvoice: React.FC = () => {
                 <dt>Bill ID.</dt><dd>: {invoice.invoice_number}</dd>
                 <dt>Name</dt><dd>: {invoice.patient?.patient_name || 'N/A'}</dd>
                 <dt>Age</dt><dd>: {calculateAge(invoice.patient?.date_of_birth)}</dd>
-                <dt>Address</dt><dd>: KALLYANPUR, DHAKA</dd>
+                <dt>Address</dt><dd>: {invoice.patient?.address_line1 || ''}, {invoice.patient?.city || ''}, {invoice.patient?.state_province || ''}, {invoice.patient?.postal_code || ''}</dd>
               </dl>
             </div>
             {/* Middle Column */}

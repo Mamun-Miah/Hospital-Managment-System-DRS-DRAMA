@@ -22,7 +22,15 @@ export async function GET(
       where: { invoice_id: invoiceId },
       include: {
         patient: {
-          select: { patient_name: true, date_of_birth: true, },
+          select: {
+            patient_name: true,
+            date_of_birth: true,
+            address_line1: true,
+            city: true,
+            state_province: true,
+            postal_code: true,
+
+          },
         },
         prescription: {
           select: {
