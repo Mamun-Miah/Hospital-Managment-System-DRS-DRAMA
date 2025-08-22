@@ -10,7 +10,7 @@ interface RoleName {
   roles:string
 }
 
-const RoleList: React.FC = () => {
+const AllStaff: React.FC = () => {
   const [allRoleName, setAllRoleName] = useState<RoleName[]>([]);
   const [filteredMedicine, setFilteredRoleName] =
     useState<RoleName[]>(allRoleName);
@@ -81,7 +81,7 @@ const RoleList: React.FC = () => {
           
       try {
         const response = await fetch(
-          `/api/role-permission/delete-role/${role_id}`,
+          `/api/all-staff/delete-staff/${role_id}`,
           {
             method: "DELETE",
           }
@@ -225,7 +225,7 @@ const RoleList: React.FC = () => {
                               visibility
                             </i>
                           </button> */}
-                      {role.name.toLowerCase() !== "super admin" && (<>
+                      {role.roles[0].toLowerCase() !== "super admin" && (<>
                           <Link
                             href={`/all-staff/edit-staff/${role.id}`}
                           >
@@ -334,4 +334,4 @@ const RoleList: React.FC = () => {
   );
 };
 
-export default RoleList;
+export default AllStaff;
