@@ -80,6 +80,16 @@ export default function RoleManagementForm() {
     const selectedPermissions = permissions.filter(p => p.checked)
     const permissionsId = selectedPermissions.map(p => p.id)
     // console.log("id",permissionsId)
+    if(roleName.toLocaleLowerCase() === "super admin"){
+          return Swal.fire({
+          
+                  icon: "error",
+                  title: "Can't Create Super Admin Role",
+                  text: "Select another Role Name",
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+        }
 
     const addNewRole = await fetch(`/api/role-permission/edit-role/${id}`, {
       method: "PUT",

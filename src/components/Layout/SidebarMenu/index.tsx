@@ -3314,7 +3314,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                           pathname === "/staff-permissions/" ? "active" : ""
                         }`}
                       >
-                        Staff Permissions
+                        Create Role 
                       </Link>
                     </li>
                     <li className="sidemenu-item mb-[4px] last:mb-0">
@@ -3328,7 +3328,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       </Link>
                     </li>
 
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
+                    {/* <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/settings/change-password/"
                         className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
@@ -3339,7 +3339,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       >
                         Change Password
                       </Link>
-                    </li>
+                    </li> */}
 
                     {/* <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link

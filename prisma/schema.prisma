@@ -50,7 +50,7 @@ model UserRole {
   role   Role @relation(fields: [roleId], references: [id])
   roleId Int
 
-  @@unique([userId, roleId]) // prevent duplicate assignments
+  @@unique([userId, roleId]) 
 }
 
 /// Join table: Role ↔ Permission

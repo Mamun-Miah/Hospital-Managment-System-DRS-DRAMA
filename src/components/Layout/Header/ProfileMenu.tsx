@@ -83,7 +83,7 @@ const ProfileMenu: React.FC = () => {
           </div> */}
 
           <ul>
-            <li>
+            {/* <li>
               <Link
                 href="/my-profile/"
                 className={`block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500 ${
@@ -95,7 +95,7 @@ const ProfileMenu: React.FC = () => {
                 </i>
                 My Profile
               </Link>
-            </li>
+            </li> */}
             {/* <li>
               <Link
                 href="/apps/chat/"
@@ -137,7 +137,7 @@ const ProfileMenu: React.FC = () => {
             </li> */}
           </ul>
 
-          <div className="border-t border-gray-100 dark:border-[#172036] mx-[20px] my-[9px]"></div>
+          {/* <div className="border-t border-gray-100 dark:border-[#172036] mx-[20px] my-[9px]"></div> */}
 
           <ul>
             <li>
