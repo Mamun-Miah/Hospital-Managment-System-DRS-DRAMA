@@ -222,6 +222,31 @@ const ViewInvoice: React.FC = () => {
                 left: 1in;
                 bottom: 2in;
               }
+              .due-stamp {
+                border: 2px solid #000;
+                color: #000;
+                font-size: 1rem;
+                font-weight: bold;
+                display: flex;
+                align-items: top;
+                justify-content: center;
+                width: 70px;
+                height: 40px;
+                opacity: 0.8;
+                position: absolute;
+                left: 1in;
+                bottom: 2.5in;
+              }
+
+                align-items: top;
+                justify-content: center;
+                width: 70px;
+                height: 40px;
+                opacity: 0.8;
+                position: absolute;
+                left: 1in;
+                bottom: 2in;
+              }
               .summary-table {
                 width: 250px;
                 margin-left: auto;
@@ -314,7 +339,11 @@ const ViewInvoice: React.FC = () => {
                 </tbody>
               </table>
 
-              <div className="paid-stamp">PAID</div>
+              {(totatTreatmentCost + invoice.doctor_fee + invoice.previous_due - invoice.paid_amount) === 0 ? (
+                <div className="paid-stamp">PAID</div>
+              ) : (
+                <div className="due-stamp">DUE</div>
+              )}
 
               <div className="mt-4 flex justify-between items-end">
                 <div>
