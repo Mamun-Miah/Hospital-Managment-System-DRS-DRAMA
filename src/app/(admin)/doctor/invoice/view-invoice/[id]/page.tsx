@@ -162,7 +162,7 @@ const ViewInvoice: React.FC = () => {
         </button>
       </div>
 
-      <div>
+      <div style={{ display: "none" }}>
         {/* THIS IS THE UPDATED SECTION FOR THE PDF TEMPLATE */}
         <div ref={invoiceRef} className="bg-white">
           <style>
@@ -260,7 +260,7 @@ const ViewInvoice: React.FC = () => {
                 <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
               </div>
             </div>
-
+            {/* rtes  */}
             {/* Patient and Invoice Info */}
             <div className="invoice-section mt-4 flex justify-between">
               {/* Left Column */}
@@ -279,11 +279,11 @@ const ViewInvoice: React.FC = () => {
                   <dt>Gender</dt><dd>: {invoice.patient?.gender || ''}</dd>
                 </dl>
               </div>
-              {/* Right Column */}
+              {/* Right Column  */}
               <div className="w-1/3">
                 <dl className="info-grid">
                   <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
-                  <dt>Patient. Cell</dt><dd>: {invoice.patient?.mobile_number}</dd>
+                  <dt>Patient Phone No.</dt><dd>: {invoice.patient?.mobile_number}</dd>
                   <dt>Next App. Date</dt><dd>: {formattedDate(invoice.patient?.set_next_appoinmnet)}</dd>
                   <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
                   <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd>
