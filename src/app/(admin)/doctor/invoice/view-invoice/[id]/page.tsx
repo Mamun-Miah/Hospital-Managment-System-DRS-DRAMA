@@ -279,7 +279,7 @@ const ViewInvoice: React.FC = () => {
                   <dt>Gender</dt><dd>: {invoice.patient?.gender || ''}</dd>
                 </dl>
               </div>
-              {/* Right Column */}
+              {/* Right Column  */}
               <div className="w-1/3">
                 <dl className="info-grid">
                   <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
