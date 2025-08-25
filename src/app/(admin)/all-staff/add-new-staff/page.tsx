@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useState } from "react"
 import { User, Mail, Lock, UserCheck, Eye, EyeOff } from "lucide-react"
+import Swal from "sweetalert2"
 interface Role {
   id: number;
   name: string;
@@ -20,7 +22,7 @@ const [allRoleName, setAllRoleName] = useState<Role[]>([]);
           }
           const data = await response.json();
           setAllRoleName(data);
-        console.log(data)
+        // console.log(data)
         } catch (error) {
           console.error("Error fetching staff:", error);
         }
@@ -46,12 +48,46 @@ const [allRoleName, setAllRoleName] = useState<Role[]>([]);
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-    // Handle form submission here
-  }
 
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  try {
+    const res = await fetch("/api/all-staff/create-user/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+
+    const data = await res.json()
+    console.log(data)
+
+    if (res.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Staff added successfully!",
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add Staff",
+        text: data.error || "Something went wrong",
+        showConfirmButton: true
+      })
+    }
+  } catch (error: any) {
+    console.error("Request failed:", error)
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message || "Something went wrong",
+      showConfirmButton: true
+    })
+  }
+}
+// console.log(formData)
   return (
     <div className=" bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
@@ -121,11 +157,14 @@ const [allRoleName, setAllRoleName] = useState<Role[]>([]);
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select role</option>
-                {allRoleName.map((r) => (
-                  <option key={r.id} value={r.name}>
+                {allRoleName
+                .filter((r) => r.name !== "Super Admin") // exclude Super Admin
+                .map((r) => (
+                  <option key={r.id} value={r.id}>
                     {r.name}
                   </option>
               ))}
+
             </select>
           </div>
 
