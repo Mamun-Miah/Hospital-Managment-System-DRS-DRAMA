@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
     // Send actual error message in response
     return NextResponse.json(
-      { error: error.message || "Failed to create user" },
+      { error: error || "Failed to create user" },
       { status: 500 }
     )
   }

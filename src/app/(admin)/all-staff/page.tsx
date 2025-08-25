@@ -25,6 +25,7 @@ const AllStaff: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
 
   const currentRoleName = filteredMedicine.slice(startIndex, endIndex);
+  console.log(currentRoleName)
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -225,7 +226,7 @@ const AllStaff: React.FC = () => {
                               visibility
                             </i>
                           </button> */}
-                      {role.roles[0].toLowerCase() !== "super admin" && (<>
+                      {role.roles[0]?.toLowerCase() !== "super admin" && (<>
                           <Link
                             href={`/all-staff/edit-staff/${role.id}`}
                           >
