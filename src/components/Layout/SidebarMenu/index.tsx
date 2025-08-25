@@ -34,6 +34,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
      const invoice = session?.user.permissions.includes("invoice");
      const nextAppoinment = session?.user.permissions.includes("next-appointment");
      const patientHistory = session?.user.permissions.includes("patient-history");
+
+      const createRole = session?.user.permissions.includes("create-role");
+      const allStaff = session?.user.permissions.includes("all-staff");
    
 
     // const role = session.user?.role;
@@ -3297,6 +3300,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
               >
                 <div className="pt-[4px]">
                   <ul className="sidebar-sub-menu">
+                     {allStaff && (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/all-staff/"
@@ -3307,6 +3311,8 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                         All Staff
                       </Link>
                     </li>
+                     )}
+                     {createRole && (
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/staff-permissions/"
@@ -3317,6 +3323,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                         Create Role 
                       </Link>
                     </li>
+                     )}
                     <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
                         href="/settings/"

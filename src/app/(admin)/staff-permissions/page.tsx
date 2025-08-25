@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { useSession } from 'next-auth/react'
 
 interface RoleName {
   id: string;
@@ -9,6 +10,13 @@ interface RoleName {
 }
 
 const RoleList: React.FC = () => {
+  const { data: session } = useSession()
+
+  const addNewRole = session?.user.permissions.includes("add-new-role");
+  const deleteRole = session?.user.permissions.includes("delete-role");
+  const editRole = session?.user.permissions.includes("edit-role");
+
+
   const [allRoleName, setAllRoleName] = useState<RoleName[]>([]);
   const [filteredMedicine, setFilteredRoleName] =
     useState<RoleName[]>(allRoleName);
@@ -147,6 +155,7 @@ const RoleList: React.FC = () => {
               />
             </form>
           </div>
+           {addNewRole && (
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/staff-permissions/add-new-role"
@@ -160,6 +169,7 @@ const RoleList: React.FC = () => {
               </span>
             </Link>
           </div>
+           )}
         </div>
 
         <div className="trezo-card-content">
@@ -207,7 +217,8 @@ const RoleList: React.FC = () => {
                               visibility
                             </i>
                           </button> */}
-                      {role.name.toLowerCase() !== "super admin" && (<>
+                          {role.name.toLowerCase() !== "super admin" && (<>
+                      {editRole && (<>
                           <Link
                             href={`/staff-permissions/edit-role/${role.id}`}
                           >
@@ -220,7 +231,9 @@ const RoleList: React.FC = () => {
                               </i>
                             </button>
                           </Link>
+                           </>  )}
 
+                           {deleteRole && (<>
                           <button
                             type="button"
                             onClick={() => handleDelete(role.id)}
@@ -231,7 +244,8 @@ const RoleList: React.FC = () => {
                             </i>
                           </button>
                           </>
-                          )}
+                           )}
+                         </>)}
                         </div>
                       </td>
                     </tr>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { useSession } from 'next-auth/react'
 
 interface RoleName {
   id: string;
@@ -11,6 +12,13 @@ interface RoleName {
 }
 
 const AllStaff: React.FC = () => {
+
+   const { data: session } = useSession()
+  
+    const addNewStaff = session?.user.permissions.includes("add-new-staff");
+    const deleteStaff = session?.user.permissions.includes("delete-staff");
+    const editStaff = session?.user.permissions.includes("edit-staff");
+
   const [allRoleName, setAllRoleName] = useState<RoleName[]>([]);
   const [filteredMedicine, setFilteredRoleName] =
     useState<RoleName[]>(allRoleName);
@@ -150,6 +158,7 @@ const AllStaff: React.FC = () => {
               />
             </form>
           </div>
+          {addNewStaff && (
           <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/all-staff/add-new-staff/"
@@ -163,6 +172,7 @@ const AllStaff: React.FC = () => {
               </span>
             </Link>
           </div>
+              )}
         </div>
 
         <div className="trezo-card-content">
@@ -227,6 +237,7 @@ const AllStaff: React.FC = () => {
                             </i>
                           </button> */}
                       {role.roles[0]?.toLowerCase() !== "super admin" && (<>
+                      {editStaff && ( <>
                           <Link
                             href={`/all-staff/edit-staff/${role.id}`}
                           >
@@ -239,7 +250,8 @@ const AllStaff: React.FC = () => {
                               </i>
                             </button>
                           </Link>
-
+                        </>)}
+                         {deleteStaff && ( <>
                           <button
                             type="button"
                             onClick={() => handleDelete(role.id)}
@@ -249,6 +261,7 @@ const AllStaff: React.FC = () => {
                               delete
                             </i>
                           </button>
+                          </>)}
                           </>
                           )}
                         </div>
