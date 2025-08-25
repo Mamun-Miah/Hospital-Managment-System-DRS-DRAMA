@@ -38,8 +38,9 @@ export const authOptions: NextAuthOptions = {
         const permissions = user.roles.flatMap(r =>
           r.role.permissions.map(p => p.permission.name)
         )
-console.log(roles)
-console.log(permissions)
+// console.log(roles)
+// console.log(user)
+// console.log(permissions)
         return {
           id: user.id,
           email: user.email,
