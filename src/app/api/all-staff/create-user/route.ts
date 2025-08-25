@@ -8,7 +8,7 @@ import { authOptions } from "@/lib/auth"
 export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
 
-  if (!session?.user.roles?.includes("Super Admin")){
+   if (!session?.user.permissions?.includes("add-new-staff") || !session?.user.permissions?.includes("all-staff")){
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
   

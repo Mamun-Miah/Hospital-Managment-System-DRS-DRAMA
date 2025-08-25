@@ -6,10 +6,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 export async function PATCH(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions)
 
-  if (!session?.user.roles?.includes("Super Admin")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+   if (!session?.user.permissions?.includes("edit-staff") || !session?.user.permissions?.includes("all-staff")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
   try {

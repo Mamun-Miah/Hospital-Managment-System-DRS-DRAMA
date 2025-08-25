@@ -1,7 +1,14 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 export async function GET() {
+   const session = await getServerSession(authOptions)
+
+   if (!session?.user.permissions?.includes("all-staff")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
   try {
     const users = await prisma.user.findMany({
       select: {

@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
         )
 // console.log(roles)
 // console.log(user)
-// console.log(permissions)
+console.log(permissions)
         return {
           id: user.id,
           email: user.email,
