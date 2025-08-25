@@ -5,12 +5,15 @@ import { useEffect, useState } from "react"
 import { User, Mail, Lock, UserCheck,Eye, EyeOff } from "lucide-react"
 import Swal from "sweetalert2"
 import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 interface Role {
   id: number;
   name: string;
 }
 
 export default function StaffInformationPage() {
+  const { id } = useParams();
+  
     const router = useRouter();
 const [allRoleName, setAllRoleName] = useState<Role[]>([]);
 
@@ -40,6 +43,26 @@ const [allRoleName, setAllRoleName] = useState<Role[]>([]);
     password: "",
     role: "",
   })
+
+
+   useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(`/api/all-staff/view-user/${id}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+          const data = await response.json();
+          setFormData(data);
+        // console.log(data)
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+  
+      fetchUserData();
+    }, [id]);
+
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -91,7 +114,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     })
   }
 }
-// console.log(formData)
+console.log('Formdata',formData)
   return (
     <div className=" bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
@@ -152,7 +175,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               type={showPassword ? "password" : "text"}
               required
               placeholder="Enter New Password"
-              value={formData.password}
+              value={formData?.password || ""}
               onChange={(e) => handleInputChange("password", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
             />
@@ -180,7 +203,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 {allRoleName
                 .filter((r) => r.name !== "Super Admin") // exclude Super Admin
                 .map((r) => (
-                  <option key={r.id} value={r.id}>
+                  <option key={r.id} value={String(r.id)}>
                     {r.name}
                   </option>
               ))}

@@ -19,7 +19,8 @@ export async function GET(
           select: {
             role: {
               select: {
-                name: true, // Get role name
+                name: true,
+                id:true // Get role name
               },
             },
           },
@@ -30,13 +31,13 @@ export async function GET(
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
+const flatenRole = user.roles.map((r) => r.role.id).join(", ");
     // Flatten roles for easier frontend usage
     const formattedUser = {
       id: user.id,
       name: user.name,
       email: user.email,
-      roles: user.roles.map((r) => r.role.name),
+      role: flatenRole,
     };
 
     return NextResponse.json(formattedUser);
