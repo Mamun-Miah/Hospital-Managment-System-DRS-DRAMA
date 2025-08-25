@@ -70,7 +70,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     <div className=" bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-lg bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-          Account Settings
+          Change Users Settings
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
