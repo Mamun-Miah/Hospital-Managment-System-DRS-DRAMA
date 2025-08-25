@@ -11,6 +11,7 @@ export async function POST(req: Request) {
   if (!session?.user.roles?.includes("Super Admin")){
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
+  
   try {
     const { name, email, password, role } = await req.json()
     // console.log(name,email,password,role)

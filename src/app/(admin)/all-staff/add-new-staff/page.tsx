@@ -4,12 +4,14 @@
 import { useEffect, useState } from "react"
 import { User, Mail, Lock, UserCheck, Eye, EyeOff } from "lucide-react"
 import Swal from "sweetalert2"
+import { useRouter } from "next/navigation";
 interface Role {
   id: number;
   name: string;
 }
 
 export default function StaffInformationPage() {
+    const router = useRouter();
 const [allRoleName, setAllRoleName] = useState<Role[]>([]);
 
 
@@ -69,6 +71,8 @@ const handleSubmit = async (e: React.FormEvent) => {
         showConfirmButton: false,
         timer: 1500
       })
+
+      router.push('/all-staff/');
     } else {
       Swal.fire({
         icon: "error",
@@ -105,6 +109,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <input
               type="text"
               placeholder="Name"
+              required
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -119,6 +124,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <input
               type="email"
               placeholder="Email"
+              required
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -132,6 +138,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             </label>
             <input
               type={showPassword ? "text" : "password"}
+              required
               placeholder="Password"
               value={formData.password}
               onChange={(e) => handleInputChange("password", e.target.value)}
@@ -153,6 +160,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             </label>
             <select
               value={formData.role}
+              required
               onChange={(e) => handleInputChange("role", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >

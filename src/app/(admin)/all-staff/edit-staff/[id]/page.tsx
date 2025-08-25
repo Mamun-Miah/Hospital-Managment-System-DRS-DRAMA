@@ -1,9 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState } from "react"
-import { User, Mail, Lock, UserCheck, Eye, EyeOff } from "lucide-react"
+import { useEffect, useState } from "react"
+import { User, Mail, Lock, UserCheck,Eye, EyeOff } from "lucide-react"
+import Swal from "sweetalert2"
+import { useRouter } from "next/navigation";
+interface Role {
+  id: number;
+  name: string;
+}
 
 export default function StaffInformationPage() {
+    const router = useRouter();
+const [allRoleName, setAllRoleName] = useState<Role[]>([]);
+
+
+  useEffect(() => {
+      const fetchRoleName = async () => {
+        try {
+          const response = await fetch("/api/role-permission/get-role-permission/");
+          if (!response.ok) {
+            throw new Error("Failed to fetch Role Name");
+          }
+          const data = await response.json();
+          setAllRoleName(data);
+        // console.log(data)
+        } catch (error) {
+          console.error("Error fetching staff:", error);
+        }
+      };
+  
+      fetchRoleName();
+    }, []);
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,12 +50,48 @@ export default function StaffInformationPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-    // Handle form submission here
-  }
 
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  try {
+    const res = await fetch("/api/all-staff/create-user/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+
+    const data = await res.json()
+    console.log(data)
+
+    if (res.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Staff added successfully!",
+        showConfirmButton: false,
+        timer: 1500
+      })
+
+      router.push('/all-staff/');
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add Staff",
+        text: data.error || "Something went wrong",
+        showConfirmButton: true
+      })
+    }
+  } catch (error: any) {
+    console.error("Request failed:", error)
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.message || "Something went wrong",
+      showConfirmButton: true
+    })
+  }
+}
+// console.log(formData)
   return (
     <div className=" bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
@@ -43,6 +109,7 @@ export default function StaffInformationPage() {
             <input
               type="text"
               placeholder="Name"
+              required
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -57,6 +124,7 @@ export default function StaffInformationPage() {
             <input
               type="email"
               placeholder="Email"
+              required
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -65,12 +133,25 @@ export default function StaffInformationPage() {
 
           {/* Password */}
           <div className="relative">
-            <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-1">
-              <Lock className="w-4 h-4" /> Password
+            {/* <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-1">
+              <Lock className="w-4 h-4" /> New Password
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="Enter New Password"
+              value={formData.password}
+              onChange={(e) => handleInputChange("password", e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+            /> */}
+
+             <label className="text-sm mt-3 font-medium text-gray-700 flex items-center gap-2 mb-1">
+              <Lock className="w-4 h-4" />Set New Password
             </label>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              required
+              placeholder="Enter New Password"
               value={formData.password}
               onChange={(e) => handleInputChange("password", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
@@ -91,14 +172,19 @@ export default function StaffInformationPage() {
             </label>
             <select
               value={formData.role}
+              required
               onChange={(e) => handleInputChange("role", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select role</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="employee">Employee</option>
-              <option value="intern">Intern</option>
+                {allRoleName
+                .filter((r) => r.name !== "Super Admin") // exclude Super Admin
+                .map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
+              ))}
+
             </select>
           </div>
 
