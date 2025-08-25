@@ -78,8 +78,8 @@ const [allRoleName, setAllRoleName] = useState<Role[]>([]);
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
   try {
-    const res = await fetch("/api/all-staff/create-user/", {
-      method: "POST",
+    const res = await fetch(`/api/all-staff/edit-user/${id}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     })
@@ -173,7 +173,7 @@ console.log('Formdata',formData)
             </label>
             <input
               type={showPassword ? "password" : "text"}
-              required
+              
               placeholder="Enter New Password"
               value={formData?.password || ""}
               onChange={(e) => handleInputChange("password", e.target.value)}
