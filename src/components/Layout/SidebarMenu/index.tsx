@@ -3324,7 +3324,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                           pathname === "/settings/" ? "active" : ""
                         }`}
                       >
-                        Account Settings
+                        Change User Info
                       </Link>
                     </li>
 

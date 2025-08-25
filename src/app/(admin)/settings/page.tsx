@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
 import { User, Mail, Lock } from "lucide-react"
+import Swal from "sweetalert2";
+// import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+
 
 export default function StaffInformationPage() {
+  // const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "",
   })
 
@@ -20,11 +27,44 @@ export default function StaffInformationPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-    // Handle form submission here
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  // Check if passwords match
+  if (formData.password !== formData.confirmPassword) {
+    Swal.fire({
+      icon: "error",
+      title: "Password mismatch",
+      text: "Password and confirm password must be the same",
+    });
+    return;
   }
+
+  try {
+    const res = await fetch("/api/settings/change-password", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Password changed successfully!",
+        text: "You will be signed out to re-login.",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => signOut({ callbackUrl: "/authentication/sign-in" }));
+    } else {
+      Swal.fire({ icon: "error", title: "Failed", text: data.error || "Something went wrong" });
+    }
+  } catch (error: any) {
+    Swal.fire({ icon: "error", title: "Error", text: error.message || "Something went wrong" });
+  }
+};
+
 
   return (
     <div className=" bg-gray-50 flex items-center justify-center p-6">
@@ -90,8 +130,8 @@ export default function StaffInformationPage() {
             <input
              type="text"
               placeholder="Password"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
+              value={formData.confirmPassword}
+              onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
             />
             {/* <button
