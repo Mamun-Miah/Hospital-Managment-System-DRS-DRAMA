@@ -260,7 +260,7 @@ const ViewInvoice: React.FC = () => {
                 <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
               </div>
             </div>
-
+            {/* rtes  */}
             {/* Patient and Invoice Info */}
             <div className="invoice-section mt-4 flex justify-between">
               {/* Left Column */}
