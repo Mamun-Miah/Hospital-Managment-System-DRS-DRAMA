@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+
+   if (!session?.user.permissions?.includes("create-role") || !session?.user.permissions?.includes("add-new-role")){
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  }
   try {
     const data = await req.json();
     const { name, permissionId } = data;
