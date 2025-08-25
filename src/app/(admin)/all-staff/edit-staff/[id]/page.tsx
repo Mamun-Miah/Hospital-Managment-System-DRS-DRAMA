@@ -149,7 +149,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <Lock className="w-4 h-4" />Set New Password
             </label>
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? "password" : "text"}
               required
               placeholder="Enter New Password"
               value={formData.password}
