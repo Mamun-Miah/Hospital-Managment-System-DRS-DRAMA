@@ -37,6 +37,7 @@ interface Invoice {
     gender: string,
     set_next_appoinmnet: Date,
     status: string,
+    mobile_number: string,
   };
 }
 
@@ -314,7 +315,8 @@ const ViewInvoice: React.FC = () => {
                   {/* <dt>Inv. Sl.</dt><dd>: 19</dd> */}
                   <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
                   {/* <dt>Contact No</dt><dd>: 01717099460</dd> */}
-                  <dt>Patient. Status</dt><dd>: {invoice.patient?.status}</dd>
+                  {/* <dt>Patient. Status</dt><dd>: {invoice.patient?.status}</dd> */}
+                  <dt>Patient. Cell</dt><dd>: {invoice.patient?.mobile_number}</dd>
                   {/* <dt>Consultant</dt><dd>: DR. M MUINUL HAFIZ, MBBS, DAND, DLO, MS (ENT)</dd> */}
                   <dt>Next App. Date</dt><dd>: {formattedDate(invoice.patient?.set_next_appoinmnet)}</dd>
                   <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
