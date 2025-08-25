@@ -197,9 +197,10 @@ const ViewInvoice: React.FC = () => {
               .table-invoice { width: 100%; border-collapse: collapse; margin-top: 1rem; }
               
               .table-invoice th {
-                padding: 8px;
+                padding: 8px 4px 16px 4px;
                 border-top: 1px solid #000; 
                 border-bottom: 1px solid #000;
+                
               }
 
               .table-invoice td { 
