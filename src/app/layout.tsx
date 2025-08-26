@@ -17,8 +17,8 @@ const inter = Inter({
 });
   
 export const metadata: Metadata = {
-  title: "DRS DRMAMA - Admin Dashboard",
-  description: "DRS DRMAMA Admin Dashboard",
+  title: "DRS DERMA - Admin Dashboard",
+  description: "DRS DERMA Admin Dashboard",
 };
 
 export default function RootLayout({
