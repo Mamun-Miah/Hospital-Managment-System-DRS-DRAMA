@@ -1,3 +1,4 @@
+'use client';
 // import BedOccupancyRate from "@/components/Dashboard/Hospital/BedOccupancyRate";
 // import CriticalPatients from "@/components/Dashboard/Hospital/CriticalPatients";
 // import EmergencyRoomVisits from "@/components/Dashboard/Hospital/EmergencyRoomVisits";
@@ -9,8 +10,28 @@ import OverallVisitors from "@/components/Dashboard/Hospital/OverallVisitors";
 // import PatientsLast7Days from "@/components/Dashboard/Hospital/PatientsLast7Days";
 // import ScheduleAppointment from "@/components/Dashboard/Hospital/ScheduleAppointment";
 import Welcome from "@/components/Dashboard/Hospital/Welcome";
+import {useDashboardStore} from "../../stores/useDashboardStore";
+import { useEffect } from 'react';
 
 export default function Page() {
+
+
+  const {
+    totalCost,
+    totalDue,
+    todaysAppointments,
+    nextAppointment,
+    totalNextAppointments,
+    completedAppointments,
+    loading,
+    fetchDashboardData,
+  } = useDashboardStore()
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [fetchDashboardData])
+
+  if (loading) return <p>Loading...</p>
   return (
     <>
       <div className="lg:grid lg:grid-cols-5 gap-[25px]">
@@ -19,26 +40,26 @@ export default function Page() {
 
           <div className="sm:grid sm:grid-cols-3 gap-[25px]">
             <div>
-              <OverallVisitors name = "Total Cost"/>
+              <OverallVisitors name = "Total Cost" value={totalCost}/>
             </div>
             <div>
               {/* <PatientsLast7Days /> */}
-               <OverallVisitors name = "Total DUE"/>
+               <OverallVisitors name = "Total DUE" value={totalDue}/>
             </div>
              <div>
               {/* <PatientsLast7Days /> */}
-               <OverallVisitors name = "Today's Appoinments" />
+               <OverallVisitors name = "Today's Appoinments" value={todaysAppointments}/>
             </div>
             <div>
-              <OverallVisitors name = "Next Appoinment"/>
+              <OverallVisitors name = "Next Appoinment" value={nextAppointment}/>
             </div>
             <div>
               {/* <PatientsLast7Days /> */}
-               <OverallVisitors name = "Completed Appoinment  "/>
+               <OverallVisitors name = "Completed Appoinment  " value={completedAppointments}/>
             </div>
              <div>
               {/* <PatientsLast7Days /> */}
-               <OverallVisitors name = "Total Cost"/>
+               <OverallVisitors name = "Total Next Appoinment" value={totalNextAppointments}/>
             </div>
           </div>
         </div>
