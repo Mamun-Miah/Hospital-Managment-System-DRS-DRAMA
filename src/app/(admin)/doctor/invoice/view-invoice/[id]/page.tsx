@@ -218,9 +218,7 @@ const ViewInvoice: React.FC = () => {
                 width: 70px;
                 height: 40px;
                 opacity: 0.8;
-                position: absolute;
-                left: 1in;
-                bottom: 2in;
+                
               }
               .due-stamp {
                 border: 2px solid #000;
@@ -233,9 +231,7 @@ const ViewInvoice: React.FC = () => {
                 width: 70px;
                 height: 40px;
                 opacity: 0.8;
-                position: absolute;
-                left: 1in;
-                bottom: 2.5in;
+             
               }
 
                 align-items: top;
@@ -339,14 +335,16 @@ const ViewInvoice: React.FC = () => {
                 </tbody>
               </table>
 
-              {(totatTreatmentCost + invoice.doctor_fee + invoice.previous_due - invoice.paid_amount) === 0 ? (
-                <div className="paid-stamp">PAID</div>
-              ) : (
-                <div className="due-stamp">DUE</div>
-              )}
+
 
               <div className="mt-4 flex justify-between items-end">
                 <div>
+                  {/* paid or due stamp  */}
+                  {(totatTreatmentCost + invoice.doctor_fee + invoice.previous_due - invoice.paid_amount) === 0 ? (
+                    <div className="paid-stamp">PAID</div>
+                  ) : (
+                    <div className="due-stamp">DUE</div>
+                  )}
                   <p><span className="font-bold">In Word:</span> Taka - {numberToWords(invoice.paid_amount)} Only</p>
                   <p className="mt-2"><span className="font-bold">Prepared By:</span> DRS DERMA</p>
                 </div>
