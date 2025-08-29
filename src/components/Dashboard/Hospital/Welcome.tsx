@@ -2,21 +2,25 @@
 
 import React from "react";
 import Image from "next/image";
+import { useSession } from 'next-auth/react'
 
 const Welcome: React.FC = () => {
+   const { data: session } = useSession();
+    const user = session?.user;
+    // const roles = session?.user;
   return (
     <>
-      <div className="trezo-card bg-primary-600 mb-[25px] p-[20px] md:p-[25px] rounded-md relative z-[1]">
+      <div className="trezo-card bg-[#9c50d2] mb-[25px] p-[20px] md:p-[25px] rounded-md relative z-[1]">
         <div className="trezo-card-content">
-          <div className="sm:grid sm:grid-cols-5 gap-[25px]">
-            <div className="sm:col-span-3">
-              <h3 className="!text-[20px] !mb-[2px] !text-white">
-                Hi, <span className="text-orange-100">Dr. Olivia!</span>
-              </h3>
+          <div className="sm:grid sm:grid-cols-5 justify-center items-center flex gap-[25px]">
+            <div className="sm:col-span-3 ">
+              <p className="!text-[20px] !mb-[2px] !text-white">
+               <span className="text-orange-100 text-3xl">  Hi, {user?.name}</span>
+              </p>
+              
+              <p className="text-orange-100 text-2xl font-medium"> Welcome to DRS DERMA.</p>
 
-              <p className="text-white">Your schedule today</p>
-
-              <div className="info flex items-center mt-[20px] sm:mt-[60px] md:mt-[76px]">
+              {/* <div className="info flex items-center mt-[20px] sm:mt-[60px] md:mt-[76px]">
                 <div className="flex items-center ltr:mr-[30px] rtl:ml-[30px] ltr:last:mr-0] rtl:last:ml-0">
                   <div className="bg-orange-100 text-orange-500 flex items-center justify-center rounded-md w-[42px] h-[42px] ltr:mr-[12px] rtl:ml-[12px]">
                     <i className="material-symbols-outlined">airplay</i>
@@ -40,7 +44,7 @@ const Welcome: React.FC = () => {
                     <span className="block text-gray-200">Surgeries</span>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="sm:col-span-2">

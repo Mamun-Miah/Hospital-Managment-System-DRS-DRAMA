@@ -1,50 +1,66 @@
-import BedOccupancyRate from "@/components/Dashboard/Hospital/BedOccupancyRate";
-import CriticalPatients from "@/components/Dashboard/Hospital/CriticalPatients";
-import EmergencyRoomVisits from "@/components/Dashboard/Hospital/EmergencyRoomVisits";
-import HospitalEarnings from "@/components/Dashboard/Hospital/HospitalEarnings";
+// import BedOccupancyRate from "@/components/Dashboard/Hospital/BedOccupancyRate";
+// import CriticalPatients from "@/components/Dashboard/Hospital/CriticalPatients";
+// import EmergencyRoomVisits from "@/components/Dashboard/Hospital/EmergencyRoomVisits";
+// import HospitalEarnings from "@/components/Dashboard/Hospital/HospitalEarnings";
 import OverallVisitors from "@/components/Dashboard/Hospital/OverallVisitors";
-import PatientAdmissionsDischarges from "@/components/Dashboard/Hospital/PatientAdmissionsDischarges";
-import PatientAppointments from "@/components/Dashboard/Hospital/PatientAppointments";
-import PatientByAge from "@/components/Dashboard/Hospital/PatientByAge";
-import PatientsLast7Days from "@/components/Dashboard/Hospital/PatientsLast7Days";
-import ScheduleAppointment from "@/components/Dashboard/Hospital/ScheduleAppointment";
+// import PatientAdmissionsDischarges from "@/components/Dashboard/Hospital/PatientAdmissionsDischarges";
+// import PatientAppointments from "@/components/Dashboard/Hospital/PatientAppointments";
+// import PatientByAge from "@/components/Dashboard/Hospital/PatientByAge";
+// import PatientsLast7Days from "@/components/Dashboard/Hospital/PatientsLast7Days";
+// import ScheduleAppointment from "@/components/Dashboard/Hospital/ScheduleAppointment";
 import Welcome from "@/components/Dashboard/Hospital/Welcome";
 
 export default function Page() {
   return (
     <>
       <div className="lg:grid lg:grid-cols-5 gap-[25px]">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-12">
           <Welcome />
 
-          <div className="sm:grid sm:grid-cols-2 gap-[25px]">
+          <div className="sm:grid sm:grid-cols-3 gap-[25px]">
             <div>
-              <OverallVisitors />
+              <OverallVisitors name = "Total Cost"/>
             </div>
             <div>
-              <PatientsLast7Days />
+              {/* <PatientsLast7Days /> */}
+               <OverallVisitors name = "Total DUE"/>
+            </div>
+             <div>
+              {/* <PatientsLast7Days /> */}
+               <OverallVisitors name = "Today's Appoinments" />
+            </div>
+            <div>
+              <OverallVisitors name = "Next Appoinment"/>
+            </div>
+            <div>
+              {/* <PatientsLast7Days /> */}
+               <OverallVisitors name = "Completed Appoinment  "/>
+            </div>
+             <div>
+              {/* <PatientsLast7Days /> */}
+               <OverallVisitors name = "Total Cost"/>
             </div>
           </div>
         </div>
 
         <div className="lg:col-span-3">
-          <PatientAdmissionsDischarges />
+          {/* <PatientAdmissionsDischarges /> */}
         </div>
       </div>
 
       <div className="lg:grid lg:grid-cols-5 gap-[25px]">
         <div className="lg:col-span-2">
-          <EmergencyRoomVisits />
+          {/* <EmergencyRoomVisits /> */}
         </div>
 
         <div className="lg:col-span-3">
           <div className="lg:grid lg:grid-cols-3 gap-[25px]">
             <div className="lg:col-span-1">
-              <CriticalPatients />
+              {/* <CriticalPatients /> */}
             </div>
 
             <div className="lg:col-span-2">
-              <BedOccupancyRate />
+              {/* <BedOccupancyRate /> */}
             </div>
           </div>
         </div>
@@ -52,21 +68,21 @@ export default function Page() {
 
       <div className="lg:grid lg:grid-cols-3 gap-[25px]">
         <div className="lg:col-span-2">
-          <PatientAppointments />
+          {/* <PatientAppointments /> */}
         </div>
 
         <div className="lg:col-span-1">
-          <ScheduleAppointment />
+          {/* <ScheduleAppointment /> */}
         </div>
       </div>
 
       <div className="lg:grid lg:grid-cols-3 gap-[25px]">
         <div className="lg:col-span-1">
-          <PatientByAge />
+          {/* <PatientByAge /> */}
         </div>
 
         <div className="lg:col-span-2">
-          <HospitalEarnings />
+          {/* <HospitalEarnings /> */}
         </div>
       </div>
     </>
