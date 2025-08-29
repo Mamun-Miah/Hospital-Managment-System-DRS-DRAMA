@@ -76,9 +76,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
             </span> */}
 
             <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
+                  
+
+               <Link href="/dashboard/">      
               <button
-                className={`accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
-                  openIndex === 0 ? "open" : ""
+                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                  pathname === "/dashboard/" ? "active" : ""
                 }`}
                 type="button"
                 onClick={() => toggleAccordion(0)}
@@ -89,6 +92,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 <span className="title leading-none">Dashboard</span>
                 
               </button>
+              </Link> 
 
               <div
                 className={`accordion-collapse ${
@@ -190,16 +194,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                       </Link>
                     </li> */}
 
-                    <li className="sidemenu-item mb-[4px] last:mb-0">
-                      <Link
-                        href="/dashboard/hospital/"
-                        className={`sidemenu-link rounded-md flex items-center relative transition-all font-medium text-gray-500 dark:text-gray-400 py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 hover:bg-primary-50 w-full text-left dark:hover:bg-[#15203c] ${
-                          pathname === "/dashboard/hospital/" ? "active" : ""
-                        }`}
-                      >
-                        Hospital
-                      </Link>
-                    </li>
+                   
 
                     {/* <li className="sidemenu-item mb-[4px] last:mb-0">
                       <Link
@@ -1442,9 +1437,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
               </div>
             </div> */}
 
-            <span className="block relative font-medium uppercase text-gray-400 mb-[8px] text-xs [&:not(:first-child)]:mt-[22px]">
+            {/* <span className="block relative font-medium uppercase text-gray-400 mb-[8px] text-xs [&:not(:first-child)]:mt-[22px]">
               HMS
-            </span>
+            </span> */}
 
             {/* patient */}
              <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">

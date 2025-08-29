@@ -23,11 +23,11 @@ export default function Home() {
   useEffect(() => {
     if (status === 'loading') return;
     if (session) {
-      router.push('/dashboard/hospital/');
+      router.push('/dashboard/');
       
     } else {
       setRedirecting(true);
-      router.push('/dashboard/hospital/'); // show homepage to guests
+      router.push('/dashboard/'); // show homepage to guests
     }
   }, [status, session, router]);
 
