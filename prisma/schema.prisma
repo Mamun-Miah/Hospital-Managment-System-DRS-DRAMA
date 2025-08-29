@@ -50,7 +50,7 @@ model UserRole {
   role   Role @relation(fields: [roleId], references: [id])
   roleId Int
 
-  @@unique([userId, roleId]) 
+  @@unique([userId, roleId])
 }
 
 /// Join table: Role ↔ Permission
@@ -65,20 +65,20 @@ model RolePermission {
 }
 
 model Patient {
-  patient_id                Int                         @id @default(autoincrement())
-  patient_name              String                      @db.VarChar(100)
-  mobile_number             String                      @unique @db.VarChar(15)
-  email                     String?                     @db.VarChar(100)
-  date_of_birth             DateTime?                   @db.Date
-  gender                    Gender?
-  address_line1             String?                     @db.VarChar(255)
-  city                      String?                     @db.VarChar(100)
-  state_province            String?                     @db.VarChar(100)
-  set_next_appoinmnet       DateTime?                   @db.Date
-  postal_code               String?                     @db.VarChar(20)
-  age                       String?                     @db.VarChar(20)
-  blood_group               String?                     @db.VarChar(20)
-  weight                    String?                     @db.VarChar(20)
+  patient_id          Int       @id @default(autoincrement())
+  patient_name        String    @db.VarChar(100)
+  mobile_number       String    @unique @db.VarChar(15)
+  email               String?   @db.VarChar(100)
+  date_of_birth       DateTime? @db.Date
+  gender              Gender?
+  address_line1       String?   @db.VarChar(255)
+  city                String?   @db.VarChar(100)
+  state_province      String?   @db.VarChar(100)
+  set_next_appoinmnet DateTime? @db.Date
+  postal_code         String?   @db.VarChar(20)
+  age                 String?   @db.VarChar(20)
+  blood_group         String?   @db.VarChar(20)
+  weight              Decimal?  @db.Decimal(5, 2)
   emergency_contact_phone   String?                     @db.VarChar(15)
   status                    PatientStatus
   image_url                 String?                     @db.VarChar(255)
