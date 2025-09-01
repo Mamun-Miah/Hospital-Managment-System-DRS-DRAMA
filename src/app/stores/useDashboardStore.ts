@@ -1,8 +1,8 @@
 import { create } from "zustand"
 
 export interface DashboardState {
-  totalCost: number
-  totalDue: number
+  totalCost: string
+  totalDue: string
   todaysAppointments: number
   totalNextAppointments:number
   nextAppointment: number
@@ -12,8 +12,8 @@ export interface DashboardState {
 }
 
 export const useDashboardStore = create<DashboardState>((set) => ({
-  totalCost: 0,
-  totalDue: 0,
+  totalCost: "",
+  totalDue: "",
   todaysAppointments: 0,
   nextAppointment: 0,
   totalNextAppointments:0,
