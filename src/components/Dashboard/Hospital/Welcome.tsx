@@ -10,7 +10,8 @@ const Welcome: React.FC = () => {
   // const roles = session?.user;
   return (
     <>
-      <div className="trezo-card bg-[url('/images/dashboard-bg.png')] bg-cover bg-no-repeat bg-center mb-[25px] p-[20px] md:p-[25px] rounded-md relative z-[1] h-[250px]">
+      <div  className="trezo-card  bg-cover bg-no-repeat bg-center mb-[25px] bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-[20px] md:p-[25px] rounded-md relative z-[1] h-[250px]">
+        
         <div className="trezo-card-content">
           <div className="sm:grid sm:grid-cols-5 justify-center items-center flex gap-[25px]">
             <div className="sm:col-span-3 ">
@@ -25,6 +26,7 @@ const Welcome: React.FC = () => {
                 {" "}
                 Welcome to DRS DERMA.
               </p>
+              <p className="text-blue-200 text-lg">Ready to help your patients today!</p>
 
               {/* <div className="info flex items-center mt-[20px] sm:mt-[60px] md:mt-[76px]">
                 <div className="flex items-center ltr:mr-[30px] rtl:ml-[30px] ltr:last:mr-0] rtl:last:ml-0">

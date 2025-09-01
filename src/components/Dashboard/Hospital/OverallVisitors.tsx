@@ -1,181 +1,36 @@
-"use client";
+"use client"
 
-import React, { useEffect } from "react";
-// import { ApexOptions } from "apexcharts";
-// import dynamic from "next/dynamic";
-
-// Dynamically import react-apexcharts with Next.js dynamic import
-// const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import type React from "react"
 
 interface OverallVisitorsProps {
-  name: string;
-  value: string | number;
-  icon: string;
-  iconBg: string;
-  bgColor: string;
+  name: string
+  value: string | number
+  icon: string
+  iconBg: string
+  bgColor: string
 }
 
-const OverallVisitors: React.FC<OverallVisitorsProps> = ({
-  name,
-  value,
-  icon,
-  iconBg,
-  bgColor,
-}) => {
-  // Chart
-  // const [isChartLoaded, setChartLoaded] = useState(false);
-
-  useEffect(() => {
-    // setChartLoaded(true);
-  }, []);
-
-  // const series = [
-  //   {
-  //     name: "Visitors",
-  //     data: [30, 70, 50, 75, 40, 80, 50, 100],
-  //   },
-  // ];
-
-  // const options: ApexOptions = {
-  //   chart: {
-  //     zoom: {
-  //       enabled: false,
-  //     },
-  //     toolbar: {
-  //       show: false,
-  //     },
-  //   },
-  //   dataLabels: {
-  //     enabled: false,
-  //   },
-  //   stroke: {
-  //     curve: "straight",
-  //     width: 2,
-  //   },
-  //   colors: ["#9747FF"],
-  //   fill: {
-  //     type: "gradient",
-  //     gradient: {
-  //       stops: [0, 90, 100],
-  //       shadeIntensity: 1,
-  //       opacityFrom: 0.5,
-  //       opacityTo: 0.9,
-  //     },
-  //   },
-  //   xaxis: {
-  //     categories: [
-  //       "01 Jan",
-  //       "02 Jan",
-  //       "03 Jan",
-  //       "04 Jan",
-  //       "05 Jan",
-  //       "06 Jan",
-  //       "07 Jan",
-  //       "08 Jan",
-  //     ],
-  //     axisTicks: {
-  //       show: false,
-  //       color: "#ECEEF2",
-  //     },
-  //     axisBorder: {
-  //       show: false,
-  //       color: "#ECEEF2",
-  //     },
-  //     labels: {
-  //       show: false,
-  //       style: {
-  //         colors: "#8695AA",
-  //         fontSize: "12px",
-  //       },
-  //     },
-  //   },
-  //   yaxis: {
-  //     tickAmount: 5,
-  //     show: false,
-  //     max: 100,
-  //     min: 0,
-  //     labels: {
-  //       show: true,
-  //       style: {
-  //         colors: "#64748B",
-  //         fontSize: "12px",
-  //       },
-  //     },
-  //     axisBorder: {
-  //       show: true,
-  //       color: "#ECEEF2",
-  //     },
-  //     axisTicks: {
-  //       show: true,
-  //       color: "#ECEEF2",
-  //     },
-  //   },
-  //   grid: {
-  //     show: false,
-  //     borderColor: "#ECEEF2",
-  //   },
-  //   legend: {
-  //     show: true,
-  //     position: "top",
-  //     fontSize: "12px",
-  //     horizontalAlign: "center",
-  //     itemMargin: {
-  //       horizontal: 8,
-  //       vertical: 0,
-  //     },
-  //     labels: {
-  //       colors: "#64748B",
-  //     },
-  //     markers: {
-  //       size: 6,
-  //       offsetX: -2,
-  //       offsetY: -0.5,
-  //       shape: "circle",
-  //     },
-  //   },
-  // };
-
+const OverallVisitors: React.FC<OverallVisitorsProps> = ({ name, value, icon, iconBg, bgColor }) => {
   return (
-    <>
+    <div
+      className="rounded-xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200"
+      style={{ backgroundColor: bgColor }}
+    >
       <div
-        style={{ backgroundColor: bgColor }}
-        className="trezo-card  mb-[25px] p-[20px] md:p-[25px] rounded-lg relative text-center shadow-2xl"
+        className="w-16 h-16 mx-auto flex items-center justify-center rounded-full mb-4"
+        style={{ backgroundColor: iconBg }}
       >
-        <div
-          style={{ backgroundColor: iconBg }}
-          className="w-20 h-20 bg-amber-300 mx-auto flex items-center justify-center rounded-full"
-        >
-          <span className="material-symbols-outlined text-white !text-3xl">
-            {icon}
-          </span>
-        </div>
-
-        <div className="trezo-card-content">
-          <span className="block text-lg mt-3">{name}</span>
-
-          <h3 className="!text-2xl !mt-[11px] font-bold">
-            {value.toLocaleString()}
-            {/* <span className="relative font-medium text-xs inline-block text-success-700 bg-success-100 dark:bg-[#15203c] border border-success-300 dark:border-[#15203c] py-[1.5px] ltr:pl-[22px] rtl:pr-[22px] ltr:pr-[10px] rtl:pl-[10px] rounded-full ltr:ml-[10px] rtl:mr-[10px]">
-              <i className="ri-arrow-up-fill absolute ltr:left-[6px] rtl:right-[6px] text-base top-1/2 -translate-y-1/2 mt-px"></i>
-              7%
-            </span> */}
-          </h3>
-
-          {/* <div className="absolute -bottom-[42px] md:-bottom-[37px] ltr:-left-[12px] rtl:-right-[12px] ltr:-right-[10px] rtl:-left-[10px]">
-            {isChartLoaded && (
-              <Chart
-                options={options}
-                series={series}
-                type="area"
-                height={160}
-                width={"100%"}
-              />
-            )}
-          </div> */}
-        </div>
+        <span className="material-symbols-outlined text-white text-2xl">{icon}</span>
       </div>
-    </>
-  );
-};
 
-export default OverallVisitors;
+      <div className="space-y-2">
+        <p className="text-lg font-medium text-gray-600 leading-relaxed">{name}</p>
+        <h3 className="text-2xl font-bold text-gray-900">
+          {typeof value === "number" ? value.toLocaleString() : value}
+        </h3>
+      </div>
+    </div>
+  )
+}
+
+export default OverallVisitors

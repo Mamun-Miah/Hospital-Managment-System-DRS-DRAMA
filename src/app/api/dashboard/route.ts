@@ -52,9 +52,11 @@ export async function GET() {
     const totalNextAppointments = await prisma.patient.count({
       where: {
         set_next_appoinmnet: {
-          gt: new Date(), // after "now"
+           gte: startOfTomorrow,
         },
       },
+        
+      
     })
 
     // 6. Completed appointments
