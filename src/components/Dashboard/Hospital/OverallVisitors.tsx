@@ -7,7 +7,7 @@ interface OverallVisitorsProps {
   value: string | number
   icon: string
   iconBg: string
-  bgColor: string
+  bgColor: string 
 }
 
 const OverallVisitors: React.FC<OverallVisitorsProps> = ({ name, value, icon, iconBg, bgColor }) => {
