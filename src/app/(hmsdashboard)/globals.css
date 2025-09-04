@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import "material-symbols/outlined.css";
 @custom-variant dark (&:where([class=dark], [class=dark] *));
 
 @theme {
@@ -762,7 +762,7 @@ button {
   #topSellingProductsSlides {
     .swiper-button-next,
     .swiper-button-prev {
-      @apply ltr:-left-[15px] rtl:-right-[15px] top-1/2 -translate-y-1/2 w-[30px] h-[30px] inline-block rounded-full border-0 text-center leading-[30px] text-md transition-all text-white bg-primary-500 hover:bg-primary-500 hover:bg-primary-400 m-0 rtl:-scale-x-100;
+      @apply ltr:-left-[15px] rtl:-right-[15px] top-1/2 -translate-y-1/2 w-[30px] h-[30px] inline-block rounded-full border-0 text-center leading-[30px] text-md transition-all text-white bg-primary-500 hover:bg-primary-500 m-0 rtl:-scale-x-100;
 
       &::after {
         @apply hidden;
