@@ -19,7 +19,11 @@ export default function Page() {
 
           <div className="sm:grid sm:grid-cols-2 gap-[25px]">
             <div>
-              <OverallVisitors />
+              <OverallVisitors  name="Total Patients"
+                                value={250}
+                                icon=""      
+                                iconBg="bg-blue-500"
+                                bgColor="bg-blue-100" />
             </div>
             <div>
               <PatientsLast7Days />

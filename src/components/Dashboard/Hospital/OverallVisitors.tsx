@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-interface OverallVisitorsProps {
+export interface OverallVisitorsProps {
   name: string
   value: string | number
   icon: string
