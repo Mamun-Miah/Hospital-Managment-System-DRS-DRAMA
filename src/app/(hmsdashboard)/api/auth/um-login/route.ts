@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const { username, password } = await req.json();
+    console.log(username, password);
 
     if (!username || !password) {
       return NextResponse.json({ error: "Username and password required" }, { status: 400 });
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
     });
 
     const data = await wpRes.json();
+    console.log(data);
 
     if (!wpRes.ok) {
       return NextResponse.json({ error: data.message || "Login failed" }, { status: 401 });
@@ -36,7 +38,7 @@ export async function POST(req: Request) {
       data: { username, email: data.user_email, token: data.token, expiresAt },
     });
 
-    // Return token + user info
+    // Return token + user info (no cookies)
     return NextResponse.json({
       token: data.token,
       user: {

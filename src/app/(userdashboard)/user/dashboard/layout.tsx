@@ -1,15 +1,63 @@
-// app/user/dashboard/layout.tsx
-import { ReactNode } from "react";
+// "use client";
+// import { useEffect, useState } from "react";
+// import { useRouter } from "next/navigation";
 
-import DashboardLayoutClient from "./DashboardLayoutClient";
+// export default function DashboardLayoutClient({ children }: { children: React.ReactNode }) {
+//   const router = useRouter();
+//   const [loading, setLoading] = useState(true);
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
+//   useEffect(() => {
+//     const checkSession = async () => {
+//       // Get email from localStorage
+//       const email = localStorage.getItem("wp_user_email");
+//       console.log('get email from storage',email)
 
+//       if (!email) {
+//         router.replace("http://localhost/mysite/login/");
+//         return;
+//       }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  
+//       try {
+//         const res = await fetch("/api/auth/check-session", {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({ email }),
+//         });
 
-  return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
+//         const data = await res.json();
+
+//         if (!data.valid) {
+//           router.replace("http://localhost/mysite/login/");
+//         } else {
+//           setLoading(false); // session valid → render children
+//         }
+//       } catch (err) {
+//         console.error(err);
+//         router.replace("http://localhost/mysite/login/");
+//       }
+//     };
+
+//     checkSession();
+//   }, [router]);
+
+//   if (loading) return <p>Loading...</p>;
+
+//   return <>{children}</>;
+// }
+"use client";
+import { useEffect } from "react";
+
+export default function TestLocalStorage() {
+  useEffect(() => {
+    const email = localStorage.getItem("wp_user_email");
+    console.log("Email from localStorage:", email);
+
+    if (!email) {
+      console.log("No email found in localStorage.");
+    } else {
+      console.log("Email exists:", email);
+    }
+  }, []);
+
+  return <p>Check console for localStorage email.</p>;
 }

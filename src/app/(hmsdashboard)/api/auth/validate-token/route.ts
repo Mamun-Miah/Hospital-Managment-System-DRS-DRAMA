@@ -1,21 +1,45 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers"; // <- use this
+import prisma from "@/lib/prisma";
 
-export async function POST(req: Request) {
-  const { token } = await req.json();
-  if (!token) return NextResponse.json({ valid: false }, { status: 401 });
-
+export async function POST() {
   try {
-    const res = await fetch(`${process.env.WP_BASE_URL}/wp-json/jwt-auth/v1/token/validate`, {
+    const cookieStore = await cookies(); // get cookies from request
+    const email = cookieStore.get("user_email")?.value;
+
+    console.log(email)
+
+    if (!email) {
+      return NextResponse.json({ valid: false, error: "No email cookie found" }, { status: 401 });
+    }
+
+    // Get the latest token for this email from the database
+    const userToken = await prisma.userToken.findFirst({
+      where: { email },
+      orderBy: { createdAt: "desc" },
+    });
+
+
+    console.log(userToken)
+    if (!userToken) {
+      return NextResponse.json({ valid: false, error: "Token not found" }, { status: 401 });
+    }
+
+    const token = userToken.token;
+    console.log('token2',token)
+
+    // Verify token with WordPress
+    const res = await fetch(`${process.env.WP_BASE_URL}/jwt-auth/v1/token/validate`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
-
+console.log(res)
     if (!res.ok) return NextResponse.json({ valid: false }, { status: 401 });
 
-    return NextResponse.json({ valid: true });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return NextResponse.json({ valid: true, token });
   } catch (err) {
-    return NextResponse.json({ valid: false }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ valid: false, error: "Server error" }, { status: 500 });
   }
 }
