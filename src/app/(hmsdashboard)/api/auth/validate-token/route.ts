@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     // Remove the ":200" part if present
     const [base64Email] = encodedEmail.split(":");
     const email = Buffer.from(base64Email, "base64").toString("utf-8");
-    console.log("Decoded email:", email);
+    // console.log("Decoded email:", email);
 
     // Find user token by email
     const userToken = await prisma.userToken.findFirst({
@@ -44,6 +44,7 @@ export async function GET(req: Request) {
       data: { status: 200 },
       valid: true,
       email,
+      username: userToken.username,
     });
   } catch (error) {
     console.error("check-session error:", error);

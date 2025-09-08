@@ -17,13 +17,21 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+function capitalizeFirstLetter(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+   const [username, setUsername] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   // Close when clicking outside
   useEffect(() => {
+     const storedUsername = localStorage.getItem("wp_user_username");
+       if (storedUsername) setUsername(capitalizeFirstLetter(storedUsername));
     const handleClickOutside = (event: MouseEvent) => {
       if (
         sidebarOpen &&
@@ -125,7 +133,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   }`}
                 >
                   <Link
-                    href="/user/dashboard/e-commerce"
+                    href="http://localhost/mysite/my-account/"
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">
@@ -141,7 +149,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   }`}
                 >
                   <Link
-                    href="/user/dashboard/LMS"
+                    href="http://localhost/mysite/dashboard/"
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">
@@ -167,7 +175,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </li> */}
                 <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
                   <Link
-                    href="/user/dashboard/settings"
+                    href="http://localhost/mysite/account/"
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">
@@ -234,16 +242,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
                 <div className="flex items-center gap-3">
                   <button>
-                    <span className="material-symbols-outlined">forward</span>
+                    <span className="material-symbols-outlined">emoji_people</span>
                   </button>
-                  <h4 className="font-semibold">Hey Developer</h4>
+                  <h5 className="font-semibold mt-2">Welcome {username}</h5>
                 </div>
               </div>
 
               <div>
                 {/* <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200"> */}
                 <Link
-                  href="/user/dashboard/settings"
+                  href="http://localhost/mysite/account/"
                   className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
                 >
                   <span className="material-symbols-outlined">account_box</span>

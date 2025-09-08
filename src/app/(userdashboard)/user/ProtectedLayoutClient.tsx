@@ -15,7 +15,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
     const checkSession = async () => {
       try {
         const params = new URLSearchParams(window.location.search);
-        const urlParam = params.get("url"); // e.g., "bWFtdW5AZ21haWwuY29t:200"
+        const urlParam = params.get("url"); 
         let email = "";
 
         if (urlParam) {
@@ -34,12 +34,15 @@ export default function ProtectedLayoutClient({ children }: Props) {
 
         const res = await fetch(`/api/auth/validate-token?url=${btoa(email)}:200`);
         const data = await res.json();
+        // console.log('username',data)
 
         if (!data.valid) {
           router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
           return;
         }
-
+        if (data.username) {
+          localStorage.setItem("wp_user_username", data.username);
+        }
         setLoading(false);
       } catch (err) {
         console.error("Session validation error:", err);
