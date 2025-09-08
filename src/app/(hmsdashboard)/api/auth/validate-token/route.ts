@@ -1,45 +1,47 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers"; // <- use this
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma"; // adjust based on your project
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
-    const cookieStore = await cookies(); // get cookies from request
-    const email = cookieStore.get("user_email")?.value;
-
-    console.log(email)
+    const { email } = await req.json();
 
     if (!email) {
-      return NextResponse.json({ valid: false, error: "No email cookie found" }, { status: 401 });
+      return NextResponse.json(
+        { valid: false, message: "Email required" },
+        { status: 400 }
+      );
     }
 
-    // Get the latest token for this email from the database
     const userToken = await prisma.userToken.findFirst({
       where: { email },
-      orderBy: { createdAt: "desc" },
     });
 
-
-    console.log(userToken)
     if (!userToken) {
-      return NextResponse.json({ valid: false, error: "Token not found" }, { status: 401 });
+      return NextResponse.json(
+        { valid: false, message: "Token not found" },
+        { status: 401 }
+      );
     }
 
-    const token = userToken.token;
-    console.log('token2',token)
+    // 🔹 Expiry validation
+    if (userToken.expiresAt && userToken.expiresAt < new Date()) {
+      return NextResponse.json(
+        { valid: false, message: "Token expired" },
+        { status: 401 }
+      );
+    }
 
-    // Verify token with WordPress
-    const res = await fetch(`${process.env.WP_BASE_URL}/jwt-auth/v1/token/validate`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
+    //  Token is valid
+    return NextResponse.json({
+      code: "jwt_auth_valid_token",
+      data: { status: 200 },
+      valid: true,
     });
-console.log(res)
-    if (!res.ok) return NextResponse.json({ valid: false }, { status: 401 });
-
-    return NextResponse.json({ valid: true, token });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ valid: false, error: "Server error" }, { status: 500 });
+  } catch (error) {
+    console.error("check-session error:", error);
+    return NextResponse.json(
+      { valid: false, message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

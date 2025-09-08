@@ -328,9 +328,9 @@ model InvoiceTreatment {
 model UserToken {
   id        Int      @id @default(autoincrement())
   username  String
-  token     String
+  token     String   @db.Text
   expiresAt DateTime
- email     String
+  email     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
