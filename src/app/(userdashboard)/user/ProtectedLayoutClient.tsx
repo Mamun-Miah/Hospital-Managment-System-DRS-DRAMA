@@ -1,0 +1,56 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+interface Props {
+  children: React.ReactNode;
+}
+
+export default function ProtectedLayoutClient({ children }: Props) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlParam = params.get("url"); // e.g., "bWFtdW5AZ21haWwuY29t:200"
+        let email = "";
+
+        if (urlParam) {
+          const [base64Email] = urlParam.split(":");
+          email = atob(base64Email);
+          localStorage.setItem("wp_user_email", email);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+          email = localStorage.getItem("wp_user_email") || "";
+        }
+
+        if (!email) {
+          router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
+          return;
+        }
+
+        const res = await fetch(`/api/auth/validate-token?url=${btoa(email)}:200`);
+        const data = await res.json();
+
+        if (!data.valid) {
+          router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
+          return;
+        }
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Session validation error:", err);
+        router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
+      }
+    };
+
+    checkSession();
+  }, [router]);
+
+  if (loading) return <p>Loading...</p>;
+
+  return <>{children}</>;
+}
