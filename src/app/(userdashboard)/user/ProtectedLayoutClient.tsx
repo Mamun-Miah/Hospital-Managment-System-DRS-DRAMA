@@ -12,6 +12,8 @@ export default function ProtectedLayoutClient({ children }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
+    
     const checkSession = async () => {
       try {
         const params = new URLSearchParams(window.location.search);
@@ -21,6 +23,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
         if (urlParam) {
           const [base64Email] = urlParam.split(":");
           email = atob(base64Email);
+          localStorage.clear();
           localStorage.setItem("wp_user_email", email);
           window.history.replaceState({}, document.title, window.location.pathname);
         } else {

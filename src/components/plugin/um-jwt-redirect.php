@@ -113,6 +113,29 @@ add_action('template_redirect', function() {
 });
 
 
+// Add this in functions.php or a small plugin
+function mysite_hide_header_footer_script() {
+    ?>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const currentUrl = window.location.pathname;
+
+        // Match `/mysite/account/`
+        if (currentUrl === "/mysite/account/" || currentUrl === "/mysite/my-account/" || currentUrl === "/mysite/my-account/orders/" || currentUrl === "/mysite/my-account/downloads/"  ||
+            currentUrl === "/mysite/my-account/edit-address/" || currentUrl === "/mysite/my-account/payment-methods/" || currentUrl === "/mysite/my-account/edit-account/" || currentUrl === "/mysite/my-account/lost-password/"
+        ) {
+            const header = document.querySelector("header");
+            const footer = document.querySelector("footer");
+
+            if (header) header.style.display = "none";
+            if (footer) footer.style.display = "none";
+        }
+    });
+    </script>
+    <?php
+}
+add_action("wp_footer", "mysite_hide_header_footer_script");
+
 
 // add_action('init', function() {
 //     if (is_user_logged_in() && !isset($_COOKIE['user_email'])) {
