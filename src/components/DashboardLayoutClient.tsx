@@ -135,15 +135,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     pathname.includes("e-commerce") && "bg-gray-200"
                   }`}
                 >
-                  <Link
-                    href="http://localhost/mysite/my-account/"
+                  <a
+                    href="/user/dashboard/e-commerce"
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">
                       add_shopping_cart
                     </span>
                     <span>E-Commerce</span>
-                  </Link>
+                  </a>
                 </li>
                 <li
                   onClick={() => setSidebarOpen(false)}
