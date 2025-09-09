@@ -1,10 +1,11 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const loginForm = document.querySelector(".um-form form"); // select UM login form
+  // Select ONLY the UM login form
+  const loginForm = document.querySelector(".um-login form"); 
   if (!loginForm) return;
 
   loginForm.addEventListener("submit", async function (e) {
-    e.preventDefault(); // prevent default UM login
+    e.preventDefault(); // prevent only UM login form submission
 
     const usernameInput = loginForm.querySelector('input[name^="username"]');
     const passwordInput = loginForm.querySelector('input[name^="user_password"]');
@@ -26,11 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("JWT Response:", data);
 
       if (data.token && data.user?.email) {
-        // Store token in localStorage
-        localStorage.setItem("wp_jwt", data.token);
-
-        // Store user email in localStorage
-        localStorage.setItem("wp_user_email", data.user.email);
+        // Completely clear localStorage
+        localStorage.clear();
 
         // Redirect to protected dashboard
         window.location.href = "http://127.0.0.1:3000/user/dashboard";
@@ -41,9 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(err);
       alert("Error sending credentials to Next.js API");
     }
-
-    // Optional: prevent default UM login if you only want Next.js auth
-    // loginForm.submit(); // don't call this
   });
 });
 </script>
