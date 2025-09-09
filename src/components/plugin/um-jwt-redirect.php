@@ -53,21 +53,37 @@ function mysite_hide_header_footer_script() {
     document.addEventListener("DOMContentLoaded", function () {
         const currentUrl = window.location.pathname;
 
-        // Match `/mysite/account/`
-        if (currentUrl === "/mysite/account/" || currentUrl === "/mysite/my-account/" || currentUrl === "/mysite/my-account/orders/" || currentUrl === "/mysite/my-account/downloads/"  ||
-            currentUrl === "/mysite/my-account/edit-address/" || currentUrl === "/mysite/my-account/payment-methods/" || currentUrl === "/mysite/my-account/edit-account/" || currentUrl === "/mysite/my-account/lost-password/"
+        // Match `/mysite/account/` and UM account subpages
+        if (
+            currentUrl === "/mysite/account/" ||
+            currentUrl === "/mysite/my-account/" ||
+            currentUrl === "/mysite/my-account/orders/" ||
+            currentUrl === "/mysite/my-account/downloads/" ||
+            currentUrl === "/mysite/my-account/edit-address/" ||
+            currentUrl === "/mysite/my-account/payment-methods/" ||
+            currentUrl === "/mysite/my-account/edit-account/" ||
+            currentUrl === "/mysite/my-account/lost-password/"
         ) {
             const header = document.querySelector("header");
             const footer = document.querySelector("footer");
+            const accounts = document.getElementsByClassName("um-account-meta-img");
 
             if (header) header.style.display = "none";
             if (footer) footer.style.display = "none";
+
+            // Loop through all elements with this class
+            if (accounts.length > 0) {
+                Array.from(accounts).forEach(el => {
+                    el.style.display = "none";
+                });
+            }
         }
     });
     </script>
     <?php
 }
 add_action("wp_footer", "mysite_hide_header_footer_script");
+
 
 
 

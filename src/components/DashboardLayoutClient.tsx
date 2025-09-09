@@ -174,7 +174,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   </Link>
                 </li> */}
                 <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
-                  <a
+                  <Link
                     href="/user/dashboard/my-account"
                     className="flex items-center gap-2"
                   >
@@ -182,7 +182,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                       account_box
                     </span>
                     <span>My Account</span>
-                  </a>
+                  </Link>
                 </li>
                 <li className="p-3 hover:bg-gray-200 rounded">
                   <button
@@ -251,7 +251,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <div>
                 {/* <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200"> */}
                 <Link
-                  href="http://localhost/mysite/account/"
+                  href="/user/dashboard/my-account"
                   className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
                 >
                   <span className="material-symbols-outlined">account_box</span>
