@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     });
 
     const data = await wpRes.json();
-    // console.log(data);
+    console.log(data);
 
     if (!wpRes.ok) {
       return NextResponse.json({ error: data.message || "Login failed" }, { status: 401 });
