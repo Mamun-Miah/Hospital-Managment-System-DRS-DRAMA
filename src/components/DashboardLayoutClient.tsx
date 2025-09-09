@@ -174,15 +174,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   </Link>
                 </li> */}
                 <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
-                  <Link
-                    href="http://localhost/mysite/account/"
+                  <a
+                    href="/user/dashboard/my-account"
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">
                       account_box
                     </span>
                     <span>My Account</span>
-                  </Link>
+                  </a>
                 </li>
                 <li className="p-3 hover:bg-gray-200 rounded">
                   <button
