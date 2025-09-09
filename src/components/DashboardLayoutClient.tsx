@@ -19,7 +19,10 @@ const inter = Inter({
 
 function capitalizeFirstLetter(str: string) {
   if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  return str
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
@@ -174,7 +177,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   </Link>
                 </li> */}
                 <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
-                  <Link
+                  <a
                     href="/user/dashboard/my-account"
                     className="flex items-center gap-2"
                   >
@@ -182,7 +185,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                       account_box
                     </span>
                     <span>My Account</span>
-                  </Link>
+                  </a>
                 </li>
                 <li className="p-3 hover:bg-gray-200 rounded">
                   <button
@@ -250,13 +253,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
               <div>
                 {/* <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200"> */}
-                <Link
+                <a
                   href="/user/dashboard/my-account"
                   className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
                 >
                   <span className="material-symbols-outlined">account_box</span>
                   <span>My Account</span>
-                </Link>
+                </a>
                 {/* </li> */}
               </div>
             </header>

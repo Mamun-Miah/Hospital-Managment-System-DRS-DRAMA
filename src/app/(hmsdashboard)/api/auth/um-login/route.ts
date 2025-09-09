@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     
   try {
     const { username, password } = await req.json();
-    // console.log(username, password);
+    console.log(username, password);
 
     if (!username || !password) {
       return NextResponse.json({ error: "Username and password required" }, { status: 400 });
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     // Create new token
     await prisma.userToken.create({
-      data: { username, email: data.user_email, token: data.token, expiresAt },
+      data: { username:data.user_display_name, email: data.user_email, token: data.token, expiresAt },
     });
 
     // Return token + user info (no cookies)
