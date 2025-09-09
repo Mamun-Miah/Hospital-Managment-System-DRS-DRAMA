@@ -66,13 +66,14 @@ function mysite_hide_header_footer_script() {
         ) {
             const header = document.querySelector("header");
             const footer = document.querySelector("footer");
-            const accounts = document.getElementsByClassName("um-account-meta-img");
+            const accounts = document.getElementsByClassName("um-account-meta-img-b");
+            
 
             if (header) header.style.display = "none";
             if (footer) footer.style.display = "none";
 
             // Loop through all elements with this class
-            if (accounts.length > 0) {
+            if (accounts.length  > 0) {
                 Array.from(accounts).forEach(el => {
                     el.style.display = "none";
                 });
@@ -92,4 +93,94 @@ add_action('send_headers', function () {
     header("Content-Security-Policy: frame-ancestors 'self' http://localhost:3000");
 });
 
+///login user with phone and email
+// Allow login with phone or email in Ultimate Member
+add_action('um_submit_form_errors_hook_login', 'um_login_with_phone_or_email', 10, 1);
+function um_login_with_phone_or_email( $args ) {
+    $username = sanitize_text_field( $args['username'] ?? '' );
+    $password = $args['user_password'] ?? '';
 
+    if ( empty($username) || empty($password) ) {
+        return;
+    }
+
+    $user = null;
+
+    // 1. Try login by username
+    $user = get_user_by('login', $username);
+
+    // 2. Try login by email
+    if (!$user && is_email($username)) {
+        $user = get_user_by('email', $username);
+    }
+
+    // 3. Try login by phone (UM field: phone_number_drs_derma)
+    if (!$user) {
+        global $wpdb;
+        $user_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT user_id FROM $wpdb->usermeta WHERE meta_key = %s AND meta_value = %s LIMIT 1",
+            'phone_number_drs_derma',
+            $username
+        ));
+        if ($user_id) {
+            $user = get_user_by('id', $user_id);
+        }
+    }
+
+    // Validate password
+    if ( $user && wp_check_password($password, $user->user_pass, $user->ID) ) {
+        //  Successful login
+        wp_set_current_user( $user->ID );
+        wp_set_auth_cookie( $user->ID, true );
+        do_action( 'um_after_user_login', $user->ID );
+        wp_redirect( "http://localhost/mysite/user/" ); // redirect after login
+        exit;
+    } else {
+        UM()->form()->add_error( 'username', __('Invalid login details', 'ultimate-member') );
+    }
+}
+
+
+//pass phone number in jwt
+
+/**
+ * Allow JWT Authentication login with phone number (Ultimate Member field)
+ */
+add_filter('authenticate', 'jwt_allow_phone_login', 10, 3);
+
+function jwt_allow_phone_login($user, $username, $password) {
+    if (!empty($user) || empty($username) || empty($password)) {
+        return $user; // Skip if already authenticated or invalid
+    }
+
+    // Search by UM phone field instead of username/email
+    global $wpdb;
+    $user_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT user_id 
+         FROM $wpdb->usermeta 
+         WHERE meta_key = %s AND meta_value = %s 
+         LIMIT 1",
+        'phone_number_drs_derma',   // <-- your UM field key
+        $username
+    ));
+
+    if ($user_id) {
+        $wp_user = get_user_by('id', $user_id);
+        if ($wp_user && wp_check_password($password, $wp_user->user_pass, $wp_user->ID)) {
+            return $wp_user; 
+        }
+    }
+
+    return $user; // Default behavior (normal username/email)
+}
+//phone number in jwt token
+add_filter('jwt_auth_token_before_dispatch', function($data, $user) {
+    // Get phone number from UM custom field
+    $phone = get_user_meta($user->ID, 'phone_number_drs_derma', true);
+
+    if ($phone) {
+        $data['phone_number'] = $phone;
+    }
+
+    return $data;
+}, 10, 2);
