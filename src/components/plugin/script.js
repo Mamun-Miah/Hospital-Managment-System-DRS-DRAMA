@@ -26,13 +26,13 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("JWT Response:", data);
 
       if (data.token && data.user?.email) {
-        // ✅ Store token in localStorage
+        // Store token in localStorage
         localStorage.setItem("wp_jwt", data.token);
 
-        // ✅ Store user email in localStorage
+        // Store user email in localStorage
         localStorage.setItem("wp_user_email", data.user.email);
 
-        // ✅ Redirect to protected dashboard
+        // Redirect to protected dashboard
         window.location.href = "http://127.0.0.1:3000/user/dashboard";
       } else {
         alert("Login failed: " + (data.error || "No token returned"));
