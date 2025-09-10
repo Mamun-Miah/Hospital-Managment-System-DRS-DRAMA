@@ -542,7 +542,7 @@ console.log('all patieetn',allPatients)
   {isOpen && selectedPatient && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
     <div
-      className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl relative overflow-y-auto"
+      className="bg-white h-[90vh] p-6 rounded-lg shadow-lg w-full max-w-xl relative overflow-y-auto"
       style={{ maxHeight: "90vh" }} // limit modal height
     >
       <button
