@@ -57,7 +57,31 @@ const ViewPatientDetails: React.FC = () => {
   // const handleRemoveImage = (index: number) => {
   //   setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   // };
+const handleAgeCalculation = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
 
+    const birthDate = new Date(value);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    setFormData((prev) => {
+      // if (!prev) return prev; // or provide a default object
+      return {
+        ...(prev as Patient),
+        [name]: value,
+        age: age.toString(),
+      };
+    });
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -176,7 +200,7 @@ console.log(formData)
                   name="date_of_birth"
                   type="date"
                   value={formData?.date_of_birth?.slice(0, 10) || ""}
-                  onChange={handleChange}
+                  onChange={handleAgeCalculation}
                   className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                 />
               </div>
