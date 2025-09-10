@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const AddMedicineComponent: React.FC = () => {
   const router = useRouter();
@@ -114,8 +115,8 @@ const AddMedicineComponent: React.FC = () => {
 
         <div className="trezo-card mt-[25px]">
           <div className="trezo-card-content">
-            <button
-              type="button"
+            <Link
+              href="/doctor/medicine/"
               className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
               onClick={() =>
                 setFormData({
@@ -125,7 +126,7 @@ const AddMedicineComponent: React.FC = () => {
               }
             >
               Cancel
-            </button>
+            </Link>
             <button
               type="submit"
               className="font-medium inline-block transition-all rounded-md md:text-md py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-primary-500 text-white hover:bg-primary-400"
