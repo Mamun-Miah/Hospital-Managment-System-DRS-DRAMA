@@ -143,7 +143,7 @@ const InvoiceList: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Search here..."
+                  placeholder="Patient name, ID, Mobile Number, Date or Doctor name"
                   className="bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black pt-[11px] pb-[12px] ltr:pl-[38px] rtl:pr-[38px] ltr:pr-[13px] ltr:md:pr-[16px] rtl:pl-[13px] rtl:md:pl-[16px] placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}

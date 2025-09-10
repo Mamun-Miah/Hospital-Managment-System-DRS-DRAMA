@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { User, Mail, Lock } from "lucide-react"
+import { User, Lock } from "lucide-react"
 import Swal from "sweetalert2";
 // import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -52,7 +52,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     if (res.ok) {
       Swal.fire({
         icon: "success",
-        title: "Password changed successfully!",
+        title: "Changed successfully!",
         text: "You will be signed out to re-login.",
         showConfirmButton: false,
         timer: 2000,
@@ -90,7 +90,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           {/* Email */}
-          <div>
+          {/* <div>
             <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-1">
               <Mail className="w-4 h-4" /> Email
             </label>
@@ -101,7 +101,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               onChange={(e) => handleInputChange("email", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
+          </div> */}
 
           {/* Password */}
           <div className="relative">

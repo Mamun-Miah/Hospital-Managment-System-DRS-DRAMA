@@ -265,7 +265,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </header>
 
             {/* Content */}
-            <main className="p-6 overflow-auto flex-1 px-10">{children}</main>
+            <main className=" bg-white overflow-auto flex-1 ">{children}</main>
           </div>
         </div>
      
