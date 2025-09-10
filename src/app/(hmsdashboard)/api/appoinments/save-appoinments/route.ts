@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const {
       patient_id,
       doctor_name,
-      doctor_fee,
+      // doctor_fee,
       doctorDiscountType,
       doctorDiscountAmount,
       payableDoctorFee,
@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
         previous_due: previousDue,
         total_treatment_cost: 0,
         paid_amount: 0,
-        doctor_fee: parseInt(doctor_fee || "0"),
+        doctor_fee: parseInt(payableDoctorFee || "0"),
         due_amount: newDueAmount, // carry forward the due
         invoice_creation_date: new Date(),
         next_session_date: next_appoinment ? new Date(next_appoinment) : null,

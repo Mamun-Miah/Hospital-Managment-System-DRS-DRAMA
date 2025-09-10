@@ -14,13 +14,15 @@ export async function POST(req: NextRequest) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  const filename = `${randomUUID()}-${file.name}`;
-  const filePath = path.join(process.cwd(), "public/uploads", filename);
+  // sanitize file name (remove spaces + special chars)
+  const originalName = file.name.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9.\-_]/g, "");
+  const filename = `${randomUUID()}-${originalName}`;
 
+  const filePath = path.join(process.cwd(), "images", filename);
   await writeFile(filePath, buffer);
 
- const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
- const imageUrl = `${baseUrl}/uploads/${filename}`;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const imageUrl = `${baseUrl}/api/images/${filename}`;
 
   return NextResponse.json({ imageUrl });
 }
