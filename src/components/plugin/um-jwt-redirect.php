@@ -63,7 +63,30 @@ function mysite_hide_header_footer_script() {
             currentUrl === "/mysite/my-account/payment-methods/" ||
             currentUrl === "/mysite/my-account/edit-account/" ||
             currentUrl === "/mysite/my-account/lost-password/" ||
-            currentUrl === "/mysite/dashboard/"
+            currentUrl === "/mysite/dashboard/" ||
+            currentUrl === "/mysite/dashboard/my-profile/" ||
+            currentUrl === "/mysite/dashboard/enrolled-courses/" ||
+            currentUrl === "/mysite/dashboard/wishlist/" ||
+            currentUrl === "/mysite/dashboard/reviews/" ||
+            currentUrl === "/mysite/dashboard/my-quiz-attempts/" ||
+            currentUrl === "/mysite/dashboard/purchase_history/" ||
+            currentUrl === "/mysite/dashboard/question-answer/" ||
+            currentUrl === "/mysite/dashboard/my-courses/" ||
+            currentUrl === "/mysite/dashboard/announcements/" ||
+            currentUrl === "/mysite/dashboard/withdraw/" ||
+            currentUrl === "/mysite/dashboard/instructor-profile/" ||
+            currentUrl === "/mysite/dashboard/quiz-attempts/" ||
+            currentUrl === "/mysite/dashboard/settings/" ||
+            currentUrl === "/mysite/dashboard/enrolled-courses/active-courses/" ||
+            currentUrl === "/mysite/dashboard/enrolled-courses/completed-courses/" ||
+            currentUrl === "/mysite/dashboard/my-courses/pending-courses/" ||
+            currentUrl === "/mysite/dashboard/my-courses/draft-courses/" ||
+            currentUrl === "/mysite/dashboard/my-courses/schedule-courses/" ||
+            currentUrl === "/mysite/dashboard/settings/reset-password/" ||
+            currentUrl === "/mysite/dashboard/settings/withdraw-settings/" ||
+            currentUrl === "/mysite/dashboard/settings/social-profile/"
+
+
         ) {
             const header = document.querySelector("header");
             const footer = document.querySelector("footer");

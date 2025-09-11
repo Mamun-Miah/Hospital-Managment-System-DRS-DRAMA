@@ -151,7 +151,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     pathname.includes("billing-records") && "bg-gray-200"
                   }`}
                 >
-                  <Link
+                  <a
                     href="/user/dashboard/lms"
                     className="flex items-center gap-2"
                   >
@@ -159,7 +159,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                       book_ribbon
                     </span>
                     <span>LMS</span>
-                  </Link>
+                  </a>
                 </li>
                 {/* <li
                   onClick={() => setSidebarOpen(false)}
