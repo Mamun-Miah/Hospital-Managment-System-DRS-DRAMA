@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const dashboardLink = ul.querySelector("a[href='http://localhost:3000/user/dashboard/']");
     if (dashboardLink) {
       window.location.href = "http://localhost:3000/user/dashboard/";
-      return; // stop execution to prevent double redirect
+      return; // stop execution
     }
 
     // Replace existing items with Dashboard link
@@ -74,19 +74,27 @@ document.addEventListener("DOMContentLoaded", function() {
     li.appendChild(a);
     ul.appendChild(li);
 
-    // Optional: redirect after adding
+    // Redirect after adding
     window.location.href = "http://localhost:3000/user/dashboard/";
     return;
   }
 
-  // 2️ Redirect if Register page shows "You are already registered"
+  //  Redirect if Register page shows "You are already registered"
   const main = document.querySelector(".site-main.post-12.page.type-page.status-publish.hentry");
   if (main && main.textContent.includes("You are already registered")) {
     window.location.href = "http://localhost:3000/user/dashboard/";
     return;
   }
+
+  //  Redirect if account update success message exists
+  const successNotice = document.querySelector("p.um-notice.success");
+  if (successNotice && successNotice.textContent.includes("Your account was updated successfully")) {
+    window.location.href = "http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/";
+    return;
+  }
 });
 </script>
+
 
 
 
