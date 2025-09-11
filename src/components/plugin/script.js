@@ -42,3 +42,51 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Select the WooCommerce Browse Products button
+  const browseBtn = document.querySelector(".woocommerce-Button.wc-forward.button[href='http://localhost/mysite/']");
+  
+  if (browseBtn) {
+    browseBtn.setAttribute("target", "_blank");
+    browseBtn.setAttribute("rel", "noopener noreferrer"); // security best practice
+  }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  //  Redirect if UM misc menu has Dashboard
+  const ul = document.querySelector(".um-misc-ul");
+  if (ul) {
+    const dashboardLink = ul.querySelector("a[href='http://localhost:3000/user/dashboard/']");
+    if (dashboardLink) {
+      window.location.href = "http://localhost:3000/user/dashboard/";
+      return; // stop execution to prevent double redirect
+    }
+
+    // Replace existing items with Dashboard link
+    ul.innerHTML = '';
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = "http://localhost:3000/user/dashboard/";
+    a.textContent = "Dashboard";
+    li.appendChild(a);
+    ul.appendChild(li);
+
+    // Optional: redirect after adding
+    window.location.href = "http://localhost:3000/user/dashboard/";
+    return;
+  }
+
+  // 2️ Redirect if Register page shows "You are already registered"
+  const main = document.querySelector(".site-main.post-12.page.type-page.status-publish.hentry");
+  if (main && main.textContent.includes("You are already registered")) {
+    window.location.href = "http://localhost:3000/user/dashboard/";
+    return;
+  }
+});
+</script>
+
+
+
