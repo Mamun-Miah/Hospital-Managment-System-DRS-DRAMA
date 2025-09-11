@@ -148,7 +148,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <li
                   onClick={() => setSidebarOpen(false)}
                   className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("billing-records") && "bg-gray-200"
+                    pathname.includes("lms") && "bg-gray-200"
                   }`}
                 >
                   <a
@@ -161,22 +161,22 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     <span>LMS</span>
                   </a>
                 </li>
-                {/* <li
+                <li
                   onClick={() => setSidebarOpen(false)}
                   className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("settings") && "bg-gray-200"
+                    pathname.includes("my-account") && "bg-gray-200"
                   }`}
                 >
 
-                  <Link
-                    href="/user/dashboard/settings"
+                  <a
+                    href="/user/dashboard/my-account"
                     className="flex items-center gap-2"
                   >
-                    <span className="material-symbols-outlined">settings</span>
-                    <span>Settings</span>
-                  </Link>
-                </li> */}
-                <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
+                    <span className="material-symbols-outlined">account_box</span>
+                    <span>My Account</span>
+                  </a>
+                </li>
+                {/* <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
                   <a
                     href="/user/dashboard/my-account"
                     className="flex items-center gap-2"
@@ -186,7 +186,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     </span>
                     <span>My Account</span>
                   </a>
-                </li>
+                </li> */}
                 <li className="p-3 hover:bg-gray-200 rounded">
                   <button
                     onClick={async () => {
