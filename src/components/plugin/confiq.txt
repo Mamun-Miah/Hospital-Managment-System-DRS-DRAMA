@@ -10,15 +10,11 @@ php_value max_execution_time 300
 php_value max_input_time 300
 
 
-.tutor-dashboard-menu-logout {
+
+.woocommerce-MyAccount-navigation-link--customer-logout, .woocommerce-MyAccount-navigation-link--downloads, .tutor-dashboard-menu-logout, .woocommerce-MyAccount-navigation-link--edit-account{
 	display:none;
 }
-.woocommerce-MyAccount-navigation-link--customer-logout {
-	display:none;
-}
-.woocommerce-MyAccount-navigation-link--edit-account {
-	display:none;
-}
+
 
 /* Apply styles only on My Account page */
 body.woocommerce-account.woocommerce-page .site-main {
@@ -127,4 +123,5 @@ body.woocommerce-account.woocommerce-page .woocommerce-MyAccount-content a:hover
     margin-bottom: 20px;
   }
 }
+
 
