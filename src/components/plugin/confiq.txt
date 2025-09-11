@@ -8,3 +8,14 @@ php_value post_max_size 512M
 php_value memory_limit 1024M
 php_value max_execution_time 300
 php_value max_input_time 300
+
+
+.tutor-dashboard-menu-logout {
+	display:none;
+}
+.woocommerce-MyAccount-navigation-link--customer-logout {
+	display:none;
+}
+.woocommerce-MyAccount-navigation-link--edit-account {
+	display:none;
+}

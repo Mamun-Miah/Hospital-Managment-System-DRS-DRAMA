@@ -152,7 +152,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   }`}
                 >
                   <Link
-                    href="http://localhost/mysite/dashboard/"
+                    href="/user/dashboard/lms"
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">

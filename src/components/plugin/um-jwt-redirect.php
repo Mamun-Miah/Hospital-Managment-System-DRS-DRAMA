@@ -62,7 +62,8 @@ function mysite_hide_header_footer_script() {
             currentUrl === "/mysite/my-account/edit-address/" ||
             currentUrl === "/mysite/my-account/payment-methods/" ||
             currentUrl === "/mysite/my-account/edit-account/" ||
-            currentUrl === "/mysite/my-account/lost-password/"
+            currentUrl === "/mysite/my-account/lost-password/" ||
+            currentUrl === "/mysite/dashboard/"
         ) {
             const header = document.querySelector("header");
             const footer = document.querySelector("footer");
