@@ -109,6 +109,15 @@ function mysite_hide_header_footer_script() {
 }
 add_action("wp_footer", "mysite_hide_header_footer_script");
 
+add_filter( 'gettext', 'custom_remove_logout_text', 20, 3 );
+function custom_remove_logout_text( $translated_text, $text, $domain ) {
+    if ( 'woocommerce' === $domain && 
+         strpos( $translated_text, 'not' ) !== false && 
+         strpos( $translated_text, 'Log out' ) !== false ) {
+        return ''; // remove that part
+    }
+    return $translated_text;
+}
 
 
 
