@@ -1,3 +1,15 @@
+define('JWT_AUTH_SECRET_KEY', 'd955^}1MKCN7I=%Nf^8!rLP,#$&E^,FHBd%?EaapezjojOJtW3k%RwBFzks7m#dT');
+define('JWT_AUTH_CORS_ENABLE', true);
+
+# Increase PHP upload limits
+php_value upload_max_filesize 128M
+php_value post_max_size 128M
+php_value memory_limit 256M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+
+
 
 .woocommerce-MyAccount-navigation-link--customer-logout, .woocommerce-MyAccount-navigation-link--downloads, .tutor-dashboard-menu-logout, .woocommerce-MyAccount-navigation-link--edit-account, .tutor-dashboard-menu-withdraw{
 	display:none;
