@@ -567,6 +567,7 @@ export default function Page() {
 
       {/* prescription pdf starts here  */}
       <div className="pdf-only" style={{ display: "none" }}>
+      
         <div
           id="prescription-pdf"
           ref={(el) => {
@@ -594,9 +595,13 @@ export default function Page() {
               </div>
 
               {/* Hospital Logo */}
-              <div className="mt-4 md:mt-0">
-                <Image src="/images/logo.png" alt="logo" width={120} height={40} />
+              <div className="mt-4 mr-2 md:mt-0">
+                <div><Image src="/images/logo.png" alt="logo" width={120} height={40} /></div>
+                
+                  <div className="text-sm">Trusted Center for Skin,<br/> Hair & Sexual Health </div>
+
               </div>
+              
             </div>
 
             {/* Patient + Visit Info */}
@@ -624,7 +629,7 @@ export default function Page() {
 
             {/* Prescription Body */}
             <div className="flex flex-col md:flex-row relative">
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-6 bg-white px-2 font-bold ml-2">Rx</div>
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-6 bg-white px-2 font-bold ml-6">Rx</div>
 
               {/* Left Column */}
               <div className="flex-1 pr-4 border-r border-gray-300">
