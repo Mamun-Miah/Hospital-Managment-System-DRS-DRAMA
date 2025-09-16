@@ -209,7 +209,7 @@ export default function Page() {
     const dateKey = getDateKey(p.prescribed_at);
     const doctor = p.prescribed_doctor_name;
     const doctorImage = p.doctor_image_url || "/uploads/default.avif";
-    const image = p.image || "null";
+    const image = p.image || "";
 
     let treatmentsHTML = "";
     let medicineHTML = "";
