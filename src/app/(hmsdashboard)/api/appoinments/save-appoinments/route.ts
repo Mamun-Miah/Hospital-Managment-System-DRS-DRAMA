@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   }
   try {
     const data = await req.json();
-
+    console.log(data)
     const {
       patient_id,
       doctor_name,
@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       drug_history_dh,
       chief_complaint_cc,
       treatments,
+      image,
     } = data;
 
     // Find doctor
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
         next_visit_date: next_appoinment ? new Date(next_appoinment) : null,
         is_prescribed: "Yes",
         advise: advise,
+        image: image || "",
         chief_complaint_cc: chief_complaint_cc,
         on_examination_oe: on_examination_oe,
         relevant_findings_rf: relevant_findings_rf,

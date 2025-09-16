@@ -40,6 +40,7 @@ interface FormData {
   on_examination_oe: string;
   next_appoinment: string;
   treatment_session_interval: string;
+  image?: string;
 }
 
 interface Dosage {
@@ -173,6 +174,7 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
     relevant_findings_rf: "",
     on_examination_oe: "",
     treatment_session_interval: "",
+    image: "",
   });
   //Set Doctor Data
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -294,9 +296,35 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
     e.preventDefault();
     setError("");
     setLoading(true);
-
+ let imageUrl = "";
     try {
-      const prescribedData = { ...formData, medicines: [...medicines], treatments: [...treatments] };
+      if (selectedImages.length > 0) {
+              const formDataImg = new FormData();
+              formDataImg.append("image", selectedImages[0]);
+
+              const uploadRes = await fetch("/api/uploadimage", {
+                method: "POST",
+                body: formDataImg,
+              });
+
+              const uploadData = await uploadRes.json();
+
+              if (uploadRes.ok) {
+                imageUrl = uploadData.imageUrl;
+                
+              } else {
+                throw new Error("Image upload failed");
+              }
+            }
+           
+
+      
+            const prescribedData = { 
+        ...formData, 
+        image: imageUrl, 
+        medicines: [...medicines], 
+        treatments: [...treatments] 
+      };
       console.log("Sending:", prescribedData);
 
       const res = await fetch("/api/appoinments/save-appoinments", {
