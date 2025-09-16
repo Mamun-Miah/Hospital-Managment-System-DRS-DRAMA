@@ -1003,7 +1003,7 @@ const handleChangeTreatment = async (
               name="chief_complaint_cc"
               value={formData.chief_complaint_cc}
               onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              className="h-[70px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               placeholder="Write Chief Complaint"
             ></textarea>
           </div>
@@ -1015,7 +1015,7 @@ const handleChangeTreatment = async (
               name="drug_history_dh"
               value={formData.drug_history_dh}
               onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              className="h-[70px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               placeholder="Write Drug History"
             ></textarea>
           </div>
@@ -1027,7 +1027,7 @@ const handleChangeTreatment = async (
               name="relevant_findings_rf"
               value={formData.relevant_findings_rf}
               onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              className="h-[70px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               placeholder="Write Relevant Findings"
             ></textarea>
           </div>
@@ -1038,7 +1038,7 @@ const handleChangeTreatment = async (
               name="on_examination_oe"
               value={formData.on_examination_oe}
               onChange={handleChange}
-              className="h-[140px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
+              className="h-[70px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] p-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
               placeholder="Write On Examination"
             ></textarea>
           </div>
