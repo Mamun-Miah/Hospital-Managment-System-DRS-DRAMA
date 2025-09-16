@@ -58,6 +58,7 @@ interface Prescription {
     doctor_fee?: number;
     advise: string;
     next_visit_date: string;
+    image?: string;
     medicine_items: PrescriptionItem[];
     treatment_items: TreatmentItem[];
 }
@@ -77,6 +78,7 @@ interface GroupedEvent {
         description: string;
         author: string;
         color: string;
+        image?: string;
         participants: string[];
         prescription_id?: number;
         doctor_id?: number;
@@ -194,6 +196,7 @@ export default function PatientHistoryTimeline({ patientId }: { patientId: strin
                 const res = await fetch(`/api/view-patient-history/${patientId}`);
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const result = await res.json();
+                console.log(result)
                 if (result) {
                     setData({
                         patient: result.patient,
@@ -271,6 +274,8 @@ export default function PatientHistoryTimeline({ patientId }: { patientId: strin
         const dateKey = getDateKey(p.prescribed_at);
         const doctor = p.prescribed_doctor_name;
         const doctorImage = p.doctor_image_url || "/uploads/default.avif";
+        const image = p.image || "";
+
 
         let treatmentsHTML = "";
         let medicineHTML = "";
@@ -323,7 +328,7 @@ export default function PatientHistoryTimeline({ patientId }: { patientId: strin
             description: descriptionHTML,
             author: doctor,
             color: getRandomColor(),
-            participants: [doctorImage],
+            participants: [doctorImage, image],
             prescription_id: p.prescription_id,
             doctor_id: p.doctor_id,
         });
@@ -428,12 +433,13 @@ export default function PatientHistoryTimeline({ patientId }: { patientId: strin
                                         {group.events.length > 0 && (
                                             <div className="mb-[25px]">
                                                 {group.events.map((event, idx) => {
+                                                    console.log(event)
                                                     const parsed = JSON.parse(event.description);
                                                     const isFirstDateAccordion = index === 0;
                                                     const showTitle = event.title.startsWith("Prescribed by");
                                                     return (
                                                         <div key={idx} className="mb-[16px]">
-                                                            {showTitle && (
+                                                            {showTitle && (<>
                                                                 <span className="block text-black dark:text-white font-semibold text-lg">
                                                                     <>
                                                                         <a href={`/doctor/view-prescription/${encodeURIComponent(event.prescription_id || '')}`} className="text-blue-600 underline">
@@ -448,7 +454,12 @@ export default function PatientHistoryTimeline({ patientId }: { patientId: strin
                                                                         </a>
                                                                     </>
                                                                 </span>
+                                                                
+                                                               {event.participants && event.participants[1] && <a  href={event.participants[1]} target="_blank" rel="noopener noreferrer"><button className="font-medium inline-block transition-all rounded-sm text-sm py-[4px] mb-5 px-[7px] bg-[#a1917e] text-white hover:bg-green-700">View Image</button></a>}
+                                                                 
+                                                                 </>
                                                             )}
+                                                            
                                                             {parsed.onboard_message && (
                                                                 <AccordionSection title="Patient Onboarded" html={parsed.onboard_message} defaultOpen={isFirstDateAccordion} />
                                                             )}

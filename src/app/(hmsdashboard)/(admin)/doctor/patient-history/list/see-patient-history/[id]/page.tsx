@@ -57,6 +57,7 @@ interface Prescription {
   doctor_image_url?: string;
   doctor_fee?: number;
   advise: string;
+  image?: string;
   next_visit_date: string;
   medicine_items: PrescriptionItem[];
   treatment_items: TreatmentItem[];
@@ -208,6 +209,7 @@ export default function Page() {
     const dateKey = getDateKey(p.prescribed_at);
     const doctor = p.prescribed_doctor_name;
     const doctorImage = p.doctor_image_url || "/uploads/default.avif";
+    const image = p.image || "null";
 
     let treatmentsHTML = "";
     let medicineHTML = "";
@@ -261,7 +263,7 @@ export default function Page() {
       description: descriptionHTML,
       author: doctor,
       color: getRandomColor(),
-      participants: [doctorImage],
+      participants: [doctorImage, image],
       prescription_id: p.prescription_id,
       doctor_id: p.doctor_id,
     });
@@ -454,7 +456,7 @@ export default function Page() {
                           const showTitle = event.title.startsWith("Prescribed by");
                           return (
                             <div key={idx} className="mb-[16px]">
-                              {showTitle && (
+                              {showTitle && (<>
                                 <span className="block text-black dark:text-white font-semibold text-lg">
                                   <>
                                     <a href={`/doctor/view-prescription/${encodeURIComponent(event.prescription_id || '')}`} className="text-blue-600 underline">
@@ -469,6 +471,8 @@ export default function Page() {
                                     </a>
                                   </>
                                 </span>
+                                {event.participants && event.participants[1] && <a  href={event.participants[1]} target="_blank" rel="noopener noreferrer"><button className="font-medium inline-block transition-all rounded-sm text-sm py-[4px] mb-5 px-[7px] bg-[#a1917e] text-white hover:bg-green-700">View Image</button></a>}
+                                </>
                               )}
                               {/* Patient Onboarded section: only show accordion, not title */}
                               {parsed.onboard_message && (

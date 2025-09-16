@@ -79,6 +79,7 @@ export async function GET(
       total_cost: prescription.total_cost || 0,
       prescribed_doctor_name: prescription.doctor?.doctor_name || "Unknown",
       is_drs_derma: prescription.is_drs_derma || "",
+      image: prescription.image || "",
       doctor_image_url: prescription.doctor?.doctor_image || "/uploads/default.avif",
       doctor_fee: prescription.doctor?.doctor_fee ? Number(prescription.doctor.doctor_fee) : 0,
       doctor_id: prescription.doctor?.doctor_id ? Number(prescription.doctor.doctor_id) : 0,
