@@ -1533,7 +1533,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
             {prescriptionList && (
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link
-              href="/doctor/prescription-list/"
+              href="/doctor/advice/"
                 className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
                   pathname === "/doctor/prescription-list/" ? "active" : ""
                 }`}
