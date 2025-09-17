@@ -1,25 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
 
 interface Treatment {
-  treatment_id: string;
-  treatment_name: string;
-  total_cost: number;
-  duration_months: number;
-   treatment_session_interval:"",
+  id: number;
+  advice: string;
+  createdAt: string;
 }
 
 const AdviceList: React.FC = () => {
-  const { data: session } = useSession()
-    const addTreatment = session?.user.permissions.includes("add-treatment")
+  const { data: session } = useSession();
+  const addTreatment = session?.user.permissions.includes("add-treatment");
 
-  const [allTreatment, setAllTreatment] = useState<Treatment[]>([]);
+  const [allAdvice, setallAdvice] = useState<Treatment[]>([]);
 
-  // console.log("allTreatment", allTreatment);
+  // console.log("allAdvice", allAdvice);
   const [filteredTreatment, setFilteredTreatment] =
-    useState<Treatment[]>(allTreatment);
+    useState<Treatment[]>(allAdvice);
 
   // search and pagination
   const [search, setSearch] = useState("");
@@ -35,14 +34,15 @@ const AdviceList: React.FC = () => {
   useEffect(() => {
     const fetchTreatments = async () => {
       try {
-        const response = await fetch("/api/treatment/treatment-list");
+        const response = await fetch("/api/advise/advise-list");
         if (!response.ok) {
-          throw new Error("Failed to fetch treatments");
+          throw new Error("Failed to fetch advise");
         }
         const data = await response.json();
-        setAllTreatment(data.treatments);
+        console.log(data);
+        setallAdvice(data.advises);
       } catch (error) {
-        console.error("Error fetching treatments:", error);
+        console.error("Error fetching advise:", error);
       }
     };
 
@@ -50,13 +50,14 @@ const AdviceList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const result = allTreatment.filter((treatment) =>
-      treatment.treatment_name.toLowerCase().includes(search.toLowerCase())
+    const result = allAdvice.filter(
+      (treatment) =>
+        treatment?.advice.toLowerCase().includes(search.toLowerCase()) ||
+        treatment?.id.toString().includes(search.toLowerCase())
     );
-    console.log(result);
     setFilteredTreatment(result);
     setCurrentPage(1);
-  }, [search, allTreatment]);
+  }, [search, allAdvice]);
 
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -65,35 +66,46 @@ const AdviceList: React.FC = () => {
     }
   };
 
-  
-
-  const handleDelete = async (treatmentId: string) => {
-    if (confirm("Are you sure you want to delete this treatment?")) {
-      try {
-        const response = await fetch(
-          `/api/treatment/delete-treatment/${treatmentId}`,
-          {
+  const handleDelete = async (id: number) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this advise!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/api/advise/delete-advise/${id}`, {
             method: "DELETE",
+          });
+          if (!response.ok) {
+            throw new Error("Failed to delete Adise");
           }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to delete treatment");
+          // const data = await response.json();
+          setallAdvice((prev) =>
+            prev.filter((treatment) => treatment.id !== id)
+          );
+          Swal.fire({
+            title: "Deleted!",
+            text: "Advise has been deleted.",
+            icon: "success",
+            timer: 300,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error("Error deleting Advise:", error);
         }
-        const data = await response.json();
-        setAllTreatment((prev) =>
-          prev.filter((treatment) => treatment.treatment_id !== treatmentId)
-        );
-        console.log(data.message);
-      } catch (error) {
-        console.error("Error deleting treatment:", error);
       }
-    }
+    });
   };
-
+console.log(allAdvice)
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
-        <h5 className="!mb-0">Advice List</h5>
+        <h5 className="!mb-0">Advise List</h5>
 
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
@@ -113,7 +125,7 @@ const AdviceList: React.FC = () => {
           </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Advice List
+            Advise List
           </li>
         </ol>
       </div>
@@ -133,20 +145,20 @@ const AdviceList: React.FC = () => {
               />
             </form>
           </div>
-          {addTreatment &&(
-          <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
-            <Link
-              href="/doctor/add-treatment"
-              className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
-            >
-              <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
-                <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
-                  add
-                </i>
-                Add New Advice
-              </span>
-            </Link>
-          </div>
+          {addTreatment && (
+            <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
+              <Link
+                href="/doctor/advise/create-advise"
+                className="inline-block transition-all rounded-md font-medium px-[13px] py-[6px] text-primary-500 border border-primary-500 hover:bg-primary-500 hover:text-white"
+              >
+                <span className="inline-block relative ltr:pl-[22px] rtl:pr-[22px]">
+                  <i className="material-symbols-outlined !text-[22px] absolute ltr:-left-[4px] rtl:-right-[4px] top-1/2 -translate-y-1/2">
+                    add
+                  </i>
+                  Add New Advise
+                </span>
+              </Link>
+            </div>
           )}
         </div>
 
@@ -159,17 +171,8 @@ const AdviceList: React.FC = () => {
                     ID
                   </th>
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Advice
+                    Advise
                   </th>
-                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Total Cost
-                  </th>
-                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Advice -Interval
-                  </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Advice Duration
-                  </th> */}
 
                   <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Actions
@@ -180,69 +183,44 @@ const AdviceList: React.FC = () => {
               <tbody className="text-black dark:text-white">
                 {currentTreatment.length > 0 ? (
                   currentTreatment.map((treatment) => (
-                    <tr key={treatment.treatment_id}>
+                    <tr key={treatment.id}>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-primary-500">
-                          {treatment.treatment_id}
+                          {treatment.id}
                         </span>
                       </td>
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.treatment_name}
+                          {treatment.advice}
                         </span>
                       </td>
-                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.total_cost}
-                        </span>
-                      </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.treatment_session_interval}
-                        </span>
-                      </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                        <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {treatment.duration_months}{" "}
-                          {treatment.duration_months > 1 ? "Months" : "Month"}
-                        </span>
-                      </td> */}
 
                       <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                       {addTreatment && (
-                        <div className="flex items-center gap-[9px]">
-                          {/* <button
-                            type="button"
-                            className="text-primary-500 leading-none custom-tooltip"
-                          >
-                            <i className="material-symbols-outlined !text-md">
-                              visibility
-                            </i>
-                          </button> */}
+                        {addTreatment && (
+                          <div className="flex items-center gap-[9px]">
+                            <Link
+                              href={`/doctor/advise/edit-advise/${treatment.id}`}
+                            >
+                              <button
+                                type="button"
+                                className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
+                              >
+                                <i className="material-symbols-outlined !text-md">
+                                  edit
+                                </i>
+                              </button>
+                            </Link>
 
-                          <Link
-                            href={`/doctor/add-treatment/edit-treatment/${treatment.treatment_id}`}
-                          >
                             <button
                               type="button"
-                              className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
+                              onClick={() => handleDelete(treatment.id)}
+                              className="text-danger-500 leading-none custom-tooltip"
                             >
                               <i className="material-symbols-outlined !text-md">
-                                edit
+                                delete
                               </i>
                             </button>
-                          </Link>
-
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(treatment.treatment_id)}
-                            className="text-danger-500 leading-none custom-tooltip"
-                          >
-                            <i className="material-symbols-outlined !text-md">
-                              delete
-                            </i>
-                          </button>
-                        </div>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -253,7 +231,7 @@ const AdviceList: React.FC = () => {
                       colSpan={7}
                       className="text-center py-4 text-gray-500 dark:text-gray-400"
                     >
-                      No Treatment matching your search criteria
+                      No Advise matching your search criteria
                     </td>
                   </tr>
                 )}
