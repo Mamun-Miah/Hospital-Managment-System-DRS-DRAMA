@@ -262,6 +262,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </a>
                 {/* </li> */}
               </div>
+               <div>
+                
+                <a
+                  href="/user/dashboard/my-account"
+                  className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
+                >
+                  <span className="material-symbols-outlined">account_box</span>
+                  <span>Book Now</span>
+                </a>
+               
+              </div>
             </header>
 
             {/* Content */}

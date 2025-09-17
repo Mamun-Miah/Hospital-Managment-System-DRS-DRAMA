@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { useParams } from "next/navigation";
 // import { NextResponse } from "next/server";
 import { useEffect, useState } from "react";
 import Select, { StylesConfig, GroupBase } from "react-select";
-import Swal from 'sweetalert2';
-import PatientHistoryTimeline from '@/components/Doctor/PatientHistoryTimeline';
-import { useSession } from 'next-auth/react'
-
+import Swal from "sweetalert2";
+import PatientHistoryTimeline from "@/components/Doctor/PatientHistoryTimeline";
+import { useSession } from "next-auth/react";
 
 interface FormData {
   patient_id: string;
@@ -22,8 +21,8 @@ interface FormData {
   treatmentCost: string;
   treatmentDuration: number;
   payableDoctorFee: number;
-  doctorDiscountType: string,
-  doctorDiscountAmount: number,
+  doctorDiscountType: string;
+  doctorDiscountAmount: number;
   medicine_name: string;
   advise: string;
   mobile_number: number;
@@ -32,7 +31,7 @@ interface FormData {
   city: string;
   weight: string;
   blood_group: string;
-  totalPayableAmount: string,
+  totalPayableAmount: string;
   is_drs_derma: string;
   chief_complaint_cc: string;
   drug_history_dh: string;
@@ -65,14 +64,12 @@ interface Medicine {
 interface Doctor {
   doctor_name: string;
   doctor_fee: number | string;
-
 }
 
 type OptionType = {
   value: string;
   label: string;
 };
-
 
 interface Treatment {
   treatment_name: string;
@@ -87,6 +84,10 @@ interface Treatment {
   session_number: number;
 }
 
+interface Advise {
+  id: number;
+  advice: string;
+}
 // Searchable dropdown styles
 const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
   control: (base: any, state: any) => ({
@@ -123,8 +124,8 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
     backgroundColor: state.isFocused
       ? "#ede9fe"
       : state.isSelected
-        ? "#7c3aed"
-        : "white",
+      ? "#7c3aed"
+      : "white",
     color: state.isSelected ? "white" : "black",
     cursor: "pointer",
     padding: 10,
@@ -133,17 +134,19 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
 
 //Export Component
 const AddAppointment: React.FC = () => {
-const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const { data: session } = useSession()
-      // const listDoctor = session?.user.permissions.includes("add-doctor");
-      const patientHistory = session?.user.permissions.includes("patient-history");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const { data: session } = useSession();
+  // const listDoctor = session?.user.permissions.includes("add-doctor");
+  const patientHistory = session?.user.permissions.includes("patient-history");
   //Get Id from Params
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
   const [totalPayableAmount, setTotalPayableAmount] = useState(0);
 
-  const [clearedFields, setClearedFields] = useState<{ [key: string]: boolean }>({});
+  const [clearedFields, setClearedFields] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   //Set Form Data
   const [formData, setFormData] = useState<FormData>({
@@ -179,17 +182,13 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
   //Set Doctor Data
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
-
-
-  //Set Treatments List 
+  //Set Treatments List
   const [treatmentList, setTreatmentList] = useState<
-    { treatment_name: string;[key: string]: any }[]
+    { treatment_name: string; [key: string]: any }[]
   >([]);
-  const [treatments, setTreatments] = useState<Treatment[]>([
-    
-  ]);
+  const [treatments, setTreatments] = useState<Treatment[]>([]);
 
-  //Set Medicine List 
+  //Set Medicine List
   const [options, setOptions] = useState<OptionType[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([
     // {
@@ -203,18 +202,20 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
     // },
   ]);
 
-  //Set Error 
+  // set all advices
+  const [advises, setAdvises] = useState<Advise[]>([]);
+  //Set Error
   const [error, setError] = useState("");
   //modal states
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
-  // setNewMedicineInput, brandName state for adding new medicine 
+
+  // setNewMedicineInput, brandName state for adding new medicine
   // const [newMedicineInput, setNewMedicineInput] = useState("");
-  // const [newMedicineBrandInput, setNewMedicineBrandInput] = useState(""); 
+  // const [newMedicineBrandInput, setNewMedicineBrandInput] = useState("");
 
   //Set Loading State
   const [loading, setLoading] = useState(false);
-
 
   async function getPrescribedData(id: string) {
     setLoading(true);
@@ -225,16 +226,14 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
       }
       const result = await res.json();
       const data = result.data;
-      console.log('Data', data)
+      console.log("Data", data);
       //get medicines value
       const medicines = data.medicines;
 
-      const formattedOptions: OptionType[] = medicines.map(
-        (medicine: any) => ({
-          value: medicine.name.toLowerCase().replace(/\s+/g, "_"),
-          label: medicine.name,
-        })
-      );
+      const formattedOptions: OptionType[] = medicines.map((medicine: any) => ({
+        value: medicine.name.toLowerCase().replace(/\s+/g, "_"),
+        label: medicine.name,
+      }));
 
       setOptions(formattedOptions);
 
@@ -249,9 +248,7 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
           doctor_name: data.doctors.doctor_name,
           doctor_fee: parseInt(data.doctors.doctor_fee),
           treatment_name:
-            data.treatments.length > 0
-              ? data.treatments.treatment_name
-              : "",
+            data.treatments.length > 0 ? data.treatments.treatment_name : "",
           mobile_number: data.patient.mobile_number,
           treatmentAmount2: data.treatments.total_cost,
           treatmentCost: "",
@@ -261,8 +258,7 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
           totalPayableAmount: "",
           doctorDiscountType: "",
           doctorDiscountAmount: 0,
-          medicine_name:
-            data.medicines.length > 0 ? data.medicines.name : "",
+          medicine_name: data.medicines.length > 0 ? data.medicines.name : "",
           advise: "",
           gender: data.patient.gender,
           age: data.patient.age,
@@ -275,7 +271,8 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
           blood_group: data.patient.blood_group,
           is_drs_derma: "",
           next_appoinment: "",
-          treatment_session_interval: data.treatments[0].treatment_session_interval,
+          treatment_session_interval:
+            data.treatments[0].treatment_session_interval,
         });
 
         setLoading(false);
@@ -286,44 +283,39 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
   }
   //fetch Appointments Data from Api & set Medicine to the SetOptions & Set Doctor List & TreatmentList
   useEffect(() => {
-
     getPrescribedData(id);
   }, [id]);
-
 
   //Submit Prescription Data to the API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
- let imageUrl = "";
+    let imageUrl = "";
     try {
       if (selectedImages.length > 0) {
-              const formDataImg = new FormData();
-              formDataImg.append("image", selectedImages[0]);
+        const formDataImg = new FormData();
+        formDataImg.append("image", selectedImages[0]);
 
-              const uploadRes = await fetch("/api/uploadimage", {
-                method: "POST",
-                body: formDataImg,
-              });
+        const uploadRes = await fetch("/api/uploadimage", {
+          method: "POST",
+          body: formDataImg,
+        });
 
-              const uploadData = await uploadRes.json();
+        const uploadData = await uploadRes.json();
 
-              if (uploadRes.ok) {
-                imageUrl = uploadData.imageUrl;
-                
-              } else {
-                throw new Error("Image upload failed");
-              }
-            }
-           
+        if (uploadRes.ok) {
+          imageUrl = uploadData.imageUrl;
+        } else {
+          throw new Error("Image upload failed");
+        }
+      }
 
-      
-            const prescribedData = { 
-        ...formData, 
-        image: imageUrl, 
-        medicines: [...medicines], 
-        treatments: [...treatments] 
+      const prescribedData = {
+        ...formData,
+        image: imageUrl,
+        medicines: [...medicines],
+        treatments: [...treatments],
       };
       console.log("Sending:", prescribedData);
 
@@ -347,11 +339,10 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
         icon: "success",
         title: "Prescribed successfully!",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
       // alert("Prescription saved successfully!");
-      router.push('/doctor/appointment/');
-
+      router.push("/doctor/appointment/");
     } catch (err: any) {
       console.error("Submission error:", err);
       setError(err.message || "Failed to submit");
@@ -360,25 +351,18 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
     }
   };
 
-
-
   //Handle Submit Data
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-
-
-
     const { name, value } = e.target;
-
 
     if (name === "nextdate") {
       setFormData((prev) => ({
         ...prev,
         next_appoinment: value,
-
       }));
 
       return;
@@ -395,8 +379,6 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
       return;
     }
-
-
 
     // Handle doctor discount type or amount change
     if (name === "doctorDiscountType" || name === "doctorDiscountAmount") {
@@ -425,8 +407,6 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
       return;
     }
 
-
-
     if (name === "doctor_name") {
       const selectedDoctor = doctors.find((doc) => doc.doctor_name === value);
 
@@ -440,8 +420,6 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
       return;
     }
 
-
-
     // Handle all other inputs
     setFormData((prev) => ({
       ...prev,
@@ -450,156 +428,152 @@ const [selectedImages, setSelectedImages] = useState<File[]>([]);
   };
 
   const handleAddTreatments = () => {
-
     setTreatments([
       ...treatments,
       {
         treatment_name: "Select Treatment",
         duration: 1,
         discountType: "",
-         treatment_id:"",
+        treatment_id: "",
         discountAmount: "",
         treatmentAmount2: "",
         treatment_session_interval: "",
         treatmentCost: "",
         nextTreatmentSessionInterval: "",
-        session_number:0,
+        session_number: 0,
       },
     ]);
   };
 
-const handleChangeTreatment = async (
-  name: string,
-  index: number,
-  value: string | number
-) => {
-  const previousTreatments: typeof treatments = [...treatments];
+  const handleChangeTreatment = async (
+    name: string,
+    index: number,
+    value: string | number
+  ) => {
+    const previousTreatments: typeof treatments = [...treatments];
 
-  // Basic update first
-  setTreatments((prev) => {
-    const updated = [...prev];
-    updated[index] = { ...updated[index], [name]: value };
-    return updated;
-  });
+    // Basic update first
+    setTreatments((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [name]: value };
+      return updated;
+    });
 
-  // 1️ Treatment selection logic
-  if (name === "treatment_name") {
-    const selected = treatmentList.find(
-      (item) => item.treatment_name === value
-    );
-
-    if (!selected) return; // No treatment found
-
-    // Duplicate check
-    const isDuplicate = treatments.some(
-      (t, i) => t.treatment_id === selected.treatment_id && i !== index
-    );
-    if (isDuplicate) {
-      setTreatments((prev) => {
-        const updated = [...prev];
-        updated[index] = { ...previousTreatments[index] };
-        return updated;
-      });
-
-      Swal.fire({
-        icon: "error",
-        title: "This treatment is already selected!",
-        showConfirmButton: false,
-        timer: 1500
-      });
-      return;
-    }
-
-    // Calculate next treatment session interval date
-    let nextTreatmentSessionInterval = "";
-    if (selected.treatment_session_interval) {
-      const today = new Date();
-      today.setDate(today.getDate() + Number(selected.treatment_session_interval));
-      const day = String(today.getDate()).padStart(2, "0");
-      const month = String(today.getMonth() + 1).padStart(2, "0");
-      const year = today.getFullYear();
-      nextTreatmentSessionInterval = `${day}-${month}-${year}`;
-    }
-
-    // Fetch session_number
-    try {
-      const res = await fetch(
-        `/api/prescription/get-treatment-session/${formData.patient_id}`
+    // 1️ Treatment selection logic
+    if (name === "treatment_name") {
+      const selected = treatmentList.find(
+        (item) => item.treatment_name === value
       );
-      const data = await res.json();
 
-      let sessionNumber = 1;
-      if (res.ok && data.treatments) {
-        const existing = data.treatments.find(
-          (t: any) => t.treatment_name === value
-        );
-        if (existing) {
-          sessionNumber = existing.session_number + 1;
-        }
+      if (!selected) return; // No treatment found
+
+      // Duplicate check
+      const isDuplicate = treatments.some(
+        (t, i) => t.treatment_id === selected.treatment_id && i !== index
+      );
+      if (isDuplicate) {
+        setTreatments((prev) => {
+          const updated = [...prev];
+          updated[index] = { ...previousTreatments[index] };
+          return updated;
+        });
+
+        Swal.fire({
+          icon: "error",
+          title: "This treatment is already selected!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return;
       }
 
+      // Calculate next treatment session interval date
+      let nextTreatmentSessionInterval = "";
+      if (selected.treatment_session_interval) {
+        const today = new Date();
+        today.setDate(
+          today.getDate() + Number(selected.treatment_session_interval)
+        );
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const year = today.getFullYear();
+        nextTreatmentSessionInterval = `${day}-${month}-${year}`;
+      }
+
+      // Fetch session_number
+      try {
+        const res = await fetch(
+          `/api/prescription/get-treatment-session/${formData.patient_id}`
+        );
+        const data = await res.json();
+
+        let sessionNumber = 1;
+        if (res.ok && data.treatments) {
+          const existing = data.treatments.find(
+            (t: any) => t.treatment_name === value
+          );
+          if (existing) {
+            sessionNumber = existing.session_number + 1;
+          }
+        }
+
+        setTreatments((prev) => {
+          const updated = [...prev];
+          updated[index] = {
+            ...updated[index],
+            treatment_name: value.toString(),
+            treatment_id: selected.treatment_id,
+            treatmentCost: selected.total_cost,
+            treatment_session_interval:
+              selected.treatment_session_interval || "0",
+            treatmentAmount2: selected.total_cost,
+            duration: Number(selected.duration_months) || 0,
+            nextTreatmentSessionInterval,
+            session_number: sessionNumber,
+          };
+          return updated;
+        });
+      } catch (error) {
+        console.error("Failed to fetch session number:", error);
+      }
+    }
+
+    // 2️Discount calculation logic (from old code)
+    if (name === "discountType" || name === "discountAmount") {
       setTreatments((prev) => {
         const updated = [...prev];
+        const current = updated[index];
+
+        // Always pull base price from treatmentAmount2
+        const treatmentAmount2 = Number(current.treatmentAmount2) || 0;
+
+        const discountType =
+          name === "discountType" ? value : current.discountType;
+
+        const discountAmount = Number(
+          name === "discountAmount" ? value : current.discountAmount
+        );
+
+        let finalAmount = treatmentAmount2;
+
+        if (discountType === "Percentage") {
+          finalAmount =
+            treatmentAmount2 - (treatmentAmount2 * discountAmount) / 100;
+        } else if (discountType === "Flat Rate") {
+          finalAmount = treatmentAmount2 - discountAmount;
+        }
+
         updated[index] = {
-          ...updated[index],
-          treatment_name: value.toString(),
-          treatment_id: selected.treatment_id,
-          treatmentCost: selected.total_cost,
-          treatment_session_interval: selected.treatment_session_interval || "0",
-          treatmentAmount2: selected.total_cost,
-          duration: Number(selected.duration_months) || 0,
-          nextTreatmentSessionInterval,
-          session_number: sessionNumber,
+          ...current,
+          [name]: value,
+          treatmentCost:
+            finalAmount < 0 ? "" : Math.round(finalAmount).toString(),
         };
+
         return updated;
       });
-    } catch (error) {
-      console.error("Failed to fetch session number:", error);
     }
-  }
-
-  // 2️Discount calculation logic (from old code)
-  if (name === "discountType" || name === "discountAmount") {
-  setTreatments((prev) => {
-    const updated = [...prev];
-    const current = updated[index];
-
-    // Always pull base price from treatmentAmount2
-    const treatmentAmount2 = Number(current.treatmentAmount2) || 0;
-
-    const discountType =
-      name === "discountType"
-        ? value
-        : current.discountType;
-
-    const discountAmount = Number(
-      name === "discountAmount"
-        ? value
-        : current.discountAmount
-    );
-
-    let finalAmount = treatmentAmount2;
-
-    if (discountType === "Percentage") {
-      finalAmount = treatmentAmount2 - (treatmentAmount2 * discountAmount) / 100;
-    } else if (discountType === "Flat Rate") {
-      finalAmount = treatmentAmount2 - discountAmount;
-    }
-
-    updated[index] = {
-      ...current,
-      [name]: value,
-      treatmentCost: finalAmount < 0 ? "" : Math.round(finalAmount).toString(),
-    };
-
-    return updated;
-  });
-}
-};
-
-
-
-
+  };
 
   // modal view handler
   const handleViewClick = async (id: string) => {
@@ -623,8 +597,6 @@ const handleChangeTreatment = async (
     setTreatments((prev) => prev.filter((_, i) => index !== i));
   };
 
-
-
   const handleAddMedicine = () => {
     setMedicines([
       ...medicines,
@@ -643,13 +615,13 @@ const handleChangeTreatment = async (
     ]);
   };
 
-
   const handleAddNewMedicine = async (index: number) => {
     const medicineToUpdate = medicines[index];
     const newMedicineName = medicineToUpdate.newMedicineName;
     const newMedicineBrandName = medicineToUpdate.newMedicineBrandName;
 
-    if (!newMedicineName?.trim()) { // Check the value from the medicine object
+    if (!newMedicineName?.trim()) {
+      // Check the value from the medicine object
       setError("Medicine name cannot be empty.");
       return;
     }
@@ -675,12 +647,12 @@ const handleChangeTreatment = async (
         throw new Error(result.error || "Failed to add new medicine.");
       }
 
-      setOptions(prev => [
+      setOptions((prev) => [
         ...prev,
         {
           value: newMedicineName.trim().toLowerCase().replace(/\s+/g, "_"),
-          label: newMedicineName.trim()
-        }
+          label: newMedicineName.trim(),
+        },
       ]);
 
       // alert(`"${newMedicineName.trim()}" added successfully to the medicine list!`);
@@ -688,17 +660,16 @@ const handleChangeTreatment = async (
         icon: "success",
         title: `"${newMedicineName.trim()}" Medicine added successfully!`,
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
 
       // Clear the input fields for this specific medicine
-      setMedicines(prevMedicines => {
+      setMedicines((prevMedicines) => {
         const updatedMedicines = [...prevMedicines];
         updatedMedicines[index].newMedicineName = "";
         updatedMedicines[index].newMedicineBrandName = "";
         return updatedMedicines;
       });
-
     } catch (err: any) {
       console.error("Error adding new medicine:", err);
       setError(err.message || "Failed to add new medicine.");
@@ -732,23 +703,24 @@ const handleChangeTreatment = async (
     setMedicines(updated);
   };
 
-  const handleNewMedicineInputChange = (index: number, field: keyof Medicine, value: string) => {
+  const handleNewMedicineInputChange = (
+    index: number,
+    field: keyof Medicine,
+    value: string
+  ) => {
     setMedicines((prevMedicines) => {
       const updatedMedicines = [...prevMedicines];
       updatedMedicines[index] = {
         ...updatedMedicines[index],
-        [field]: value
+        [field]: value,
       };
       return updatedMedicines;
     });
   };
 
-
   const handleRemoveMedicine = (index: number) => {
     setMedicines((prev) => prev.filter((_, i) => i !== index));
   };
-
-
 
   const handleMouseEnter = (fieldName: string) => {
     if (!clearedFields[fieldName]) {
@@ -759,22 +731,19 @@ const handleChangeTreatment = async (
 
   const date = new Date();
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   const finalDate = `${day}/${month}/${year}`;
-
-
 
   useEffect(() => {
     const treatmentTotal = treatments.reduce((sum, t) => {
       const cost = Number(t.treatmentCost) || 0;
       return sum + cost;
     }, 0);
+
     const doctorFee = Number(formData.payableDoctorFee) || 0;
     const totalPayable = doctorFee + treatmentTotal;
     setTotalPayableAmount(totalPayable);
-
-
 
     setFormData((prev) => ({
       ...prev,
@@ -782,20 +751,37 @@ const handleChangeTreatment = async (
     }));
   }, [formData.payableDoctorFee, treatments]);
 
- const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // load all advises
+  useEffect(() => {
+    fetch("/api/advise/advise-list")
+      .then((res) => res.json())
+      .then((data) => setAdvises(data.advises));
+  }, []);
+
+  console.log("advises", advises);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const filesArray = Array.from(event.target.files);
       setSelectedImages(filesArray);
     }
   };
 
-   const handleRemoveImage = (index: number) => {
+  const handleRemoveImage = (index: number) => {
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
-  console.log(formData)
-  console.log(treatments)
+  console.log(formData);
+  console.log(treatments);
 
+  // handle select advise
+  const handleSelectAdvise = (event: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      advise: prev.advise
+        ? prev.advise + ". " + event.target.value
+        : event.target.value,
+    }));
+  };
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -812,20 +798,20 @@ const handleChangeTreatment = async (
                     height={26}
                   />
 
-                  <h3 className=''>Create Prescription</h3>
+                  <h3 className="">Create Prescription</h3>
                 </div>
                 {patientHistory && (
-                <div className='flex justify-center items-center'>
-                  <button
-                    type="button"
-                    // onClick={() => handleAddNewMedicine(index)} 
-                    onClick={() => handleViewClick(formData.patient_id)}
-                    disabled={loading}
-                    className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-[#8F03E4] text-white hover:bg-green-700"
-                  >
-                    View Patient History
-                  </button>
-                </div>
+                  <div className="flex justify-center items-center">
+                    <button
+                      type="button"
+                      // onClick={() => handleAddNewMedicine(index)}
+                      onClick={() => handleViewClick(formData.patient_id)}
+                      disabled={loading}
+                      className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-[#8F03E4] text-white hover:bg-green-700"
+                    >
+                      View Patient History
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -836,14 +822,17 @@ const handleChangeTreatment = async (
               <div className="sm:flex justify-between mt-[20px]">
                 <ul className="mb-[7px] sm:mb-0">
                   <li className="mb-[7px] text-md last:mb-0">
-                    ID: <span className="text-black text-md dark:text-white"> {formData.patient_id}</span>
+                    ID:{" "}
+                    <span className="text-black text-md dark:text-white">
+                      {" "}
+                      {formData.patient_id}
+                    </span>
                   </li>
                   <li className="mb-[7px] last:mb-0 flex items-center gap-3">
                     <span>Name: </span>
                     <span className="text-black dark:text-white">
                       {formData.patient_name}
                     </span>
-
                   </li>
 
                   <li className="mb-[7px] last:mb-0">
@@ -862,18 +851,31 @@ const handleChangeTreatment = async (
                 <ul className="mb-[7px] sm:mb-0">
                   <li className="mb-[7px] last:mb-0">
                     Gender :{" "}
-                    <span className="text-black dark:text-white"> {formData.gender}</span>
+                    <span className="text-black dark:text-white">
+                      {" "}
+                      {formData.gender}
+                    </span>
                   </li>
                   <li className="mb-[7px] last:mb-0">
-                    Age: <span className="text-black dark:text-white"> {formData.age}</span>
+                    Age:{" "}
+                    <span className="text-black dark:text-white">
+                      {" "}
+                      {formData.age}
+                    </span>
                   </li>
                   <li className="mb-[7px] last:mb-0">
                     Blood Group:{" "}
-                    <span className="text-black dark:text-white"> {formData.blood_group}</span>
+                    <span className="text-black dark:text-white">
+                      {" "}
+                      {formData.blood_group}
+                    </span>
                   </li>
                   <li className="mb-[7px] last:mb-0">
                     Weight (KG):
-                    <span className="text-black dark:text-white">  {formData.weight}</span>
+                    <span className="text-black dark:text-white">
+                      {" "}
+                      {formData.weight}
+                    </span>
                   </li>
                 </ul>
                 <div>
@@ -887,15 +889,12 @@ const handleChangeTreatment = async (
                       type="date"
                       name="nextdate"
                       onChange={handleChange}
-
                     />
                   </span>
                 </div>
               </div>
 
-              <span className="block font-semibold text-black dark:text-white text-[20px] mt-[20px] mb-8 md:mt-[30px] lg:mt-[40px] xl:mt-[50px]">
-
-              </span>
+              <span className="block font-semibold text-black dark:text-white text-[20px] mt-[20px] mb-8 md:mt-[30px] lg:mt-[40px] xl:mt-[50px]"></span>
             </div>
 
             {/* Select Doctor */}
@@ -927,9 +926,9 @@ const handleChangeTreatment = async (
                     // value={patient.patient_id}
                     onChange={handleChange}
                     className="form-checkbox mt-2 h-4 w-4 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
-                  /> Show DRS DERMA in Prescription
+                  />{" "}
+                  Show DRS DERMA in Prescription
                 </div>
-
               </div>
 
               <div>
@@ -973,12 +972,12 @@ const handleChangeTreatment = async (
                   onClick={() => handleMouseEnter("doctorDiscountAmount")}
                   onChange={handleChange}
                   placeholder="Discount Amount"
-                  className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${!formData.doctorDiscountType
-                    ? "bg-gray-100 dark:bg-gray-800"
-                    : "bg-white dark:bg-[#0c1427]"
-                    } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
+                  className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
+                    !formData.doctorDiscountType
+                      ? "bg-gray-100 dark:bg-gray-800"
+                      : "bg-white dark:bg-[#0c1427]"
+                  } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
                 />
-
               </div>
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -988,7 +987,11 @@ const handleChangeTreatment = async (
                   name="payableDoctorFee"
                   disabled
                   type="number"
-                  value={formData.payableDoctorFee ? formData.payableDoctorFee : formData.doctor_fee}
+                  value={
+                    formData.payableDoctorFee
+                      ? formData.payableDoctorFee
+                      : formData.doctor_fee
+                  }
                   onClick={() => handleMouseEnter("payableDoctorFee")}
                   onChange={handleChange}
                   placeholder=""
@@ -997,8 +1000,10 @@ const handleChangeTreatment = async (
               </div>
             </div>
           </div>
-<div className="my-6 mt-20 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">C/C (Chief Complaint)</label>
+          <div className="my-6 mt-20 last:mb-0">
+            <label className="mb-[12px] text-black font-medium block">
+              C/C (Chief Complaint)
+            </label>
             <textarea
               name="chief_complaint_cc"
               value={formData.chief_complaint_cc}
@@ -1008,9 +1013,10 @@ const handleChangeTreatment = async (
             ></textarea>
           </div>
 
-
           <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">D/H (Drug History)</label>
+            <label className="mb-[12px] text-black font-medium block">
+              D/H (Drug History)
+            </label>
             <textarea
               name="drug_history_dh"
               value={formData.drug_history_dh}
@@ -1020,9 +1026,10 @@ const handleChangeTreatment = async (
             ></textarea>
           </div>
 
-
           <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">R/F (Relevant Findings)</label>
+            <label className="mb-[12px] text-black font-medium block">
+              R/F (Relevant Findings)
+            </label>
             <textarea
               name="relevant_findings_rf"
               value={formData.relevant_findings_rf}
@@ -1033,7 +1040,9 @@ const handleChangeTreatment = async (
           </div>
 
           <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">O/E (On Examination)</label>
+            <label className="mb-[12px] text-black font-medium block">
+              O/E (On Examination)
+            </label>
             <textarea
               name="on_examination_oe"
               value={formData.on_examination_oe}
@@ -1049,7 +1058,7 @@ const handleChangeTreatment = async (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-[20px] md:gap-[25px]">
                 <div>
                   <label className="mb-[10px] text-black dark:text-white text-[15px] font-bold block">
-                     {`Current Session--> ${treatments[i].session_number}`}
+                    {`Current Session--> ${treatments[i].session_number}`}
                   </label>
                   <select
                     name="treatment_name"
@@ -1057,7 +1066,6 @@ const handleChangeTreatment = async (
                     onChange={(e) =>
                       handleChangeTreatment("treatment_name", i, e.target.value)
                     }
-
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   >
                     <option value="">Select Treatment Name</option>
@@ -1081,7 +1089,11 @@ const handleChangeTreatment = async (
                     type="number"
                     value={treatments[i].treatmentAmount2}
                     onChange={(e) =>
-                      handleChangeTreatment("treatmentAmount", i, e.target.value)
+                      handleChangeTreatment(
+                        "treatmentAmount",
+                        i,
+                        e.target.value
+                      )
                     }
                     disabled
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
@@ -1101,7 +1113,6 @@ const handleChangeTreatment = async (
                 />
               </div> */}
                 <div>
-                  
                   <label className="mb-[10px] text-black dark:text-white font-medium block">
                     Next Treatment Session Date
                   </label>
@@ -1112,7 +1123,6 @@ const handleChangeTreatment = async (
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-gray-100 dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   />
                 </div>
-
 
                 {/* <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -1157,12 +1167,12 @@ const handleChangeTreatment = async (
                     }
                     onClick={() => handleMouseEnter("discountAmount")}
                     placeholder="Discount Amount"
-                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${!treatments[i].discountType
-                      ? "bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-                      : "bg-white dark:bg-[#0c1427]"
-                      } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
+                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] ${
+                      !treatments[i].discountType
+                        ? "bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
+                        : "bg-white dark:bg-[#0c1427]"
+                    } px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
                   />
-
                 </div>
                 <div>
                   <label className="mb-[10px] text-black dark:text-white font-medium block">
@@ -1170,62 +1180,54 @@ const handleChangeTreatment = async (
                   </label>
                   <input
                     name="treatmentCost"
-                    onChange={e =>
-                      handleChangeTreatment(
-                        "treatmentCost",
-                        i,
-                        e.target.value
-                      )
+                    onChange={(e) =>
+                      handleChangeTreatment("treatmentCost", i, e.target.value)
                     }
                     type="number"
-                    placeholder='Payable Treatment Cost'
+                    placeholder="Payable Treatment Cost"
                     value={
-                      treatments[i].treatmentCost ? treatments[i].treatmentCost : treatments[i].treatmentAmount2
+                      treatments[i].treatmentCost
+                        ? treatments[i].treatmentCost
+                        : treatments[i].treatmentAmount2
                     }
-
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036]  dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   />
                 </div>
 
                 <div>
-                    <button
-                      onClick={() => handleRemoveTreatment(i)}
-                      type="button"
-                      className="font-medium  inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
-                    >Remove Treatment
-                      {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
+                  <button
+                    onClick={() => handleRemoveTreatment(i)}
+                    type="button"
+                    className="font-medium  inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-danger-500 text-white hover:bg-primary-400"
+                  >
+                    Remove Treatment
+                    {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
                     <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                       remove
                     </i>
                     
                   </span> */}
-                    </button>
-                  </div>
+                  </button>
+                </div>
               </div>
             </div>
-
           ))}
-                 
 
-            <div className="">
-              <button
-                onClick={handleAddTreatments}
-                type="button"
-                className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
-              >
-                Add Treatments
-                {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
+          <div className="">
+            <button
+              onClick={handleAddTreatments}
+              type="button"
+              className="font-medium inline-block transition-all rounded-md text-sm py-[8px] px-[14px] bg-primary-500 text-white hover:bg-primary-400"
+            >
+              Add Treatments
+              {/* <span className="inline-block relative ltr:pl-[19px] rtl:pr-[19px]">
               <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                 add
               </i>
               
             </span> */}
-              </button>
-            </div>
-                  
-
-
-             
+            </button>
+          </div>
 
           <h4 className="mt-16">Medicines </h4>
           {medicines.map((medicine, index) => (
@@ -1250,7 +1252,13 @@ const handleChangeTreatment = async (
                         id={`newMedicineNameInput-${index}`} // Add unique ID for each field
                         type="text"
                         value={medicine.newMedicineName}
-                        onChange={(e) => handleNewMedicineInputChange(index, "newMedicineName", e.target.value)}
+                        onChange={(e) =>
+                          handleNewMedicineInputChange(
+                            index,
+                            "newMedicineName",
+                            e.target.value
+                          )
+                        }
                         placeholder="Medicine Name"
                         className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                       />
@@ -1260,7 +1268,13 @@ const handleChangeTreatment = async (
                         id={`newMedicineBrandInput-${index}`}
                         type="text"
                         value={medicine.newMedicineBrandName}
-                        onChange={(e) => handleNewMedicineInputChange(index, "newMedicineBrandName", e.target.value)}
+                        onChange={(e) =>
+                          handleNewMedicineInputChange(
+                            index,
+                            "newMedicineBrandName",
+                            e.target.value
+                          )
+                        }
                         placeholder="Brand Name"
                         className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                       />
@@ -1298,7 +1312,7 @@ const handleChangeTreatment = async (
                       type="number"
                       value={dosage?.amount}
                       className="border-0 outline-none justify-self-end max-w-[50px] show-spinner"
-                      placeholder='0'
+                      placeholder="0"
                       onChange={(e) =>
                         handleDosageChange(
                           index,
@@ -1318,13 +1332,9 @@ const handleChangeTreatment = async (
                     type="number"
                     value={medicine.duration}
                     onChange={(e) =>
-                      handleMedicineChange(
-                        index,
-                        "duration",
-                        e.target.value
-                      )
+                      handleMedicineChange(index, "duration", e.target.value)
                     }
-                    placeholder='0'
+                    placeholder="0"
                     onClick={() => handleMouseEnter("duration")}
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
                   />
@@ -1363,17 +1373,22 @@ const handleChangeTreatment = async (
           </div>
           {/* rx */}
 
-
-          
-
           <div className="my-8 last:mb-0">
-            <label className="mb-[12px] text-black font-medium block">Advise</label>
-            <select className='mb-4' name="" id="">
-              <option value="0">Select Advice</option>
-              <option value="1">Hello</option>
-              <option value="1">Hello</option>
-              <option value="1">Hello</option>
-              <option value="1">Hello</option>
+            <label className="mb-[12px] text-black font-medium block">
+              Advise
+            </label>
+            <select
+              onChange={handleSelectAdvise}
+              className="mb-4 py-3 border-1"
+              name=""
+              id=""
+            >
+              <option value="">Select Advise</option>
+              {advises.map((item) => (
+                <option key={item.id} value={item.advice}>
+                  {item.advice}
+                </option>
+              ))}
             </select>
             <textarea
               name="advise"
@@ -1384,66 +1399,67 @@ const handleChangeTreatment = async (
             ></textarea>
           </div>
           {error && <p className="text-red-500 mt-4">{error}</p>}
-{/* image upload */}
-           <div className="sm:col-span-2 mt-[20px]">
-                <label className="mb-[1px] text-black dark:text-white font-medium block">
-                  Add Image
-                </label>
-                <div id="fileUploader">
-                  <div className="relative flex items-center justify-center overflow-hidden rounded-md py-[88px] px-[20px] border border-gray-200 dark:border-[#172036]">
-                    <div className="flex items-center justify-center">
-                      <div className="w-[35px] h-[35px] border border-gray-100 dark:border-[#15203c] flex items-center justify-center rounded-md text-primary-500 text-lg ltr:mr-[12px] rtl:ml-[12px]">
-                        <i className="ri-upload-2-line"></i>
-                      </div>
-                      <p className="leading-[1.5]">
-                        <strong className="text-black dark:text-white">
-                          Click to upload
-                        </strong>
-                        <br /> your file here
-                      </p>
-                    </div>
-
-                    <input
-                      type="file"
-                      id="fileInput"
-                      multiple
-                      accept="image/*"
-                      className="absolute top-0 left-0 right-0 bottom-0 rounded-md z-[1] opacity-0 cursor-pointer"
-                      onChange={handleFileChange}
-                    />
+          {/* image upload */}
+          <div className="sm:col-span-2 mt-[20px]">
+            <label className="mb-[1px] text-black dark:text-white font-medium block">
+              Add Image
+            </label>
+            <div id="fileUploader">
+              <div className="relative flex items-center justify-center overflow-hidden rounded-md py-[88px] px-[20px] border border-gray-200 dark:border-[#172036]">
+                <div className="flex items-center justify-center">
+                  <div className="w-[35px] h-[35px] border border-gray-100 dark:border-[#15203c] flex items-center justify-center rounded-md text-primary-500 text-lg ltr:mr-[12px] rtl:ml-[12px]">
+                    <i className="ri-upload-2-line"></i>
                   </div>
-
-                 
-                  <div className="mt-[10px] flex flex-wrap gap-2">
-                    {selectedImages.map((image, index) => (
-                      <div key={index} className="relative w-[50px] h-[50px]">
-                        <Image
-                          src={URL.createObjectURL(image)}
-                          alt="product-preview"
-                          width={50}
-                          height={50}
-                          className="rounded-md"
-                        />
-                        <button
-                          type="button"
-                          className="absolute top-[-5px] right-[-5px] bg-orange-500 text-white w-[20px] h-[20px] flex items-center justify-center rounded-full text-xs rtl:right-auto rtl:left-[-5px]"
-                          onClick={() => handleRemoveImage(index)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                  <p className="leading-[1.5]">
+                    <strong className="text-black dark:text-white">
+                      Click to upload
+                    </strong>
+                    <br /> your file here
+                  </p>
                 </div>
+
+                <input
+                  type="file"
+                  id="fileInput"
+                  multiple
+                  accept="image/*"
+                  className="absolute top-0 left-0 right-0 bottom-0 rounded-md z-[1] opacity-0 cursor-pointer"
+                  onChange={handleFileChange}
+                />
               </div>
-{/* image upload end */}
+
+              <div className="mt-[10px] flex flex-wrap gap-2">
+                {selectedImages.map((image, index) => (
+                  <div key={index} className="relative w-[50px] h-[50px]">
+                    <Image
+                      src={URL.createObjectURL(image)}
+                      alt="product-preview"
+                      width={50}
+                      height={50}
+                      className="rounded-md"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-[-5px] right-[-5px] bg-orange-500 text-white w-[20px] h-[20px] flex items-center justify-center rounded-full text-xs rtl:right-auto rtl:left-[-5px]"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* image upload end */}
           <div className="trezo-card mt-[25px]">
             <div className="trezo-card-content">
-              <p className="font-bold">Total Payable Amount: BDT {totalPayableAmount}</p>
+              <p className="font-bold">
+                Total Payable Amount: BDT {totalPayableAmount}
+              </p>
               <button
                 type="button"
                 className="font-medium inline-block transition-all rounded-md md:text-md ltr:mr-[15px] rtl:ml-[15px] py-[10px] md:py-[12px] px-[20px] md:px-[22px] bg-danger-500 text-white hover:bg-danger-400"
-                onClick={() => router.push('/doctor/appointment/')}
+                onClick={() => router.push("/doctor/appointment/")}
               >
                 Cancel
               </button>
@@ -1479,7 +1495,6 @@ const handleChangeTreatment = async (
           </div>
         </div>
       )}
-
     </>
   );
 };
