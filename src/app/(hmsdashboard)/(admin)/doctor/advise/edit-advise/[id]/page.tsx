@@ -2,50 +2,63 @@
 import Link from "next/link";
 // import { NextResponse } from "next/server";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
+import { useParams } from "next/navigation";
 export default function EditAdvise() {
   const router = useRouter();
   const [advise, setAdvise] = useState("");
   const [loading, setLoading] = useState(false);
+  const { id } = useParams();
 
   const hanldleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!advise) {
       return;
     }
+
     setLoading(true);
-    console.log(advise);
     try {
-      const addAdvice = await fetch(`/api/advise/create-advise`, {
-        method: "POST",
+      const updateAdvise = await fetch(`/api/advise/edit-advise/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ advise: advise }),
       });
-      const result = await addAdvice.json();
-      if (!addAdvice.ok) throw new Error(result.error || "Update failed");
+      const result = await updateAdvise.json();
+      if (!updateAdvise.ok) throw new Error(result.error || "Update failed");
       console.log(result);
 
       Swal.fire({
         icon: "success",
-        title: "Advise created successfully!",
+        title: "Advise updated successfully!",
         showConfirmButton: false,
         timer: 1500,
       });
       router.push("/doctor/advise/");
       setAdvise("");
     } catch (err) {
-      console.error(err);
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "Error while updating!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetch(`/api/advise/view-advice/${id}`)
+      .then((res) => res.json())
+      .then((data) => setAdvise(data.advice));
+  }, [id]);
+
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
-        <h5 className="!mb-0">Add Advice</h5>
+        <h5 className="!mb-0">Edit Advise</h5>
 
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
@@ -65,7 +78,7 @@ export default function EditAdvise() {
           </li>
 
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px] ltr:first:ml-0 rtl:first:mr-0 ltr:last:mr-0 rtl:last:ml-0">
-            Add Advice
+            Edit Advise
           </li>
         </ol>
       </div>
@@ -74,23 +87,9 @@ export default function EditAdvise() {
         <div className="w-[480px] mx-auto trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
           <div className="trezo-card-content">
             <div className="flex flex-col gap-3">
-              {/* <div>
-                <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Advice ID <span className="text-danger-800">*</span>
-                </label>
-                <input
-                  name="advice_id"
-                  type="text"
-                  placeholder="ID"
-                  value={formData.advice_id}
-                  onChange={handleChange}
-                  required
-                  className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
-                />
-              </div> */}
               <div>
                 <label className="mb-[10px] text-black dark:text-white font-medium block">
-                  Advice <span className="text-danger-800">*</span>
+                  Advise <span className="text-danger-800">*</span>
                 </label>
                 <textarea
                   name="advise"
@@ -122,7 +121,7 @@ export default function EditAdvise() {
                   <i className="material-symbols-outlined ltr:left-0 rtl:right-0 absolute top-1/2 -translate-y-1/2">
                     add
                   </i>
-                  {loading ? "Submitting..." : "Create Advice"}
+                  {loading ? "Submitting..." : "Update Advice"}
                 </span>
               </button>
             </div>
