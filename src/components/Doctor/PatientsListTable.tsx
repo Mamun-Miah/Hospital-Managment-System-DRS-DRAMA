@@ -43,6 +43,34 @@ interface Patient {
 }
 
 const PatientsListTable: React.FC = () => {
+  
+const getPageNumbers = (currentPage: number, totalPages: number) => {
+  const delta = 2; // show 2 pages before & after current
+  const range = [];
+
+  for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) {
+    range.push(i);
+  }
+
+  if (range[0] > 2) {
+    range.unshift("...");
+  }
+  if (range[0] !== 1) {
+    range.unshift(1);
+  }
+
+ if (typeof range[range.length - 1] === "number" && range[range.length - 1] !== totalPages) {
+  range.push(totalPages);
+}
+
+  if (range[range.length - 1] !== totalPages) {
+    range.push(totalPages);
+  }
+
+  return range;
+};
+
+  
   const { data: session } = useSession()
    const addPatient = session?.user.permissions.includes("add-patient");
    const deletePatient = session?.user.permissions.includes("delete-patient");
@@ -58,7 +86,7 @@ const PatientsListTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-
+const [loading, setLoading] = useState(true);
  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "deactivate">("all");
 
 
@@ -66,11 +94,14 @@ const PatientsListTable: React.FC = () => {
 
 
   useEffect(() => {
+    setLoading(true);
     const fetchPatients = async () => {
+
       try {
         const res = await fetch("/api/patient/patientlist");
         const data = await res.json();
-
+        // console.log(data1)
+        // const data = data1.data;
         if (Array.isArray(data)) {
           const dataWithCheck = data.map((patient: Patient) => ({ ...patient, checked: false }));
           setAllPatients(dataWithCheck);
@@ -79,6 +110,8 @@ const PatientsListTable: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching patients:", error);
+      }finally {
+        setLoading(false); // stop loading
       }
     };
 
@@ -206,7 +239,39 @@ console.log('all patieetn',allPatients)
   }
 };
 
+if (loading) {
+    return <div className="spinner-container">
+      <div className="spinner"></div>
 
+      <style jsx>{`
+        .spinner-container {
+          display: flex;
+          justify-content: start;
+          align-items: top;
+          height: 100vh; /* full screen */
+        }
+
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 5px solid #f3f3f3; /* light gray */
+          border-top: 5px solid #4caf50; /* green */
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+    </div>
+
+  }
 
   return (
     <>
@@ -480,61 +545,61 @@ console.log('all patieetn',allPatients)
               Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
               {totalItems} results
             </p>
-            <ol className="mt-[10px] sm:mt-0 flex items-center">
-              <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
-                    currentPage === 1
-                      ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
-                      : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                  }`}
-                >
-                  <span className="opacity-0">0</span>
-                  <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
-                    chevron_left
-                  </i>
-                </button>
-              </li>
+           <ol className="mt-[10px] sm:mt-0 flex items-center">
+  <li className="inline-block mx-[2px]">
+    <button
+      onClick={() => handlePageChange(currentPage - 1)}
+      disabled={currentPage === 1}
+      className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
+        currentPage === 1
+          ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
+          : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+      }`}
+    >
+      <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
+        chevron_left
+      </i>
+    </button>
+  </li>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <li
-                    key={page}
-                    className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
-                  >
-                    <button
-                      onClick={() => handlePageChange(page)}
-                      className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md ${
-                        currentPage === page
-                          ? "border border-primary-500 bg-primary-500 text-white"
-                          : "border border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  </li>
-                )
-              )}
+  {getPageNumbers(currentPage, totalPages).map((page, idx) => (
+    <li key={idx} className="inline-block mx-[2px]">
+      {page === "..." ? (
+        <span className="w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md text-gray-400 cursor-default">
+          ...
+        </span>
+      ) : (
+        <button
+          onClick={() => handlePageChange(Number(page))}
+          className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md ${
+            currentPage === page
+              ? "border border-primary-500 bg-primary-500 text-white"
+              : "border border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+          }`}
+        >
+          {page}
+        </button>
+      )}
+    </li>
+  ))}
 
-              <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
-                    currentPage === totalPages
-                      ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
-                      : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                  }`}
-                >
-                  <span className="opacity-0">0</span>
-                  <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
-                    chevron_right
-                  </i>
-                </button>
-              </li>
-            </ol>
+  <li className="inline-block mx-[2px]">
+    <button
+      onClick={() => handlePageChange(currentPage + 1)}
+      disabled={currentPage === totalPages}
+      className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
+        currentPage === totalPages
+          ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
+          : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+      }`}
+    >
+      <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
+        chevron_right
+      </i>
+    </button>
+  </li>
+</ol>
+
           </div>
         </div>
       </div>
