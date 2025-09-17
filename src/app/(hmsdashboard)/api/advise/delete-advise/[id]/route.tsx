@@ -5,9 +5,9 @@ import prisma from "@/lib/prisma";
 // DELETE: Delete an advise by ID from URL path parameter
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params; // Destructuring params from the second argument
+  const { id } = await params; // Destructuring params from the second argument
 
   if (!id) {
     return NextResponse.json(

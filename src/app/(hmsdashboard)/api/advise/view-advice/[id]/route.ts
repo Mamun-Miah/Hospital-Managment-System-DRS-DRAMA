@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params; // Destructuring params from the second argument
-  console.log(id);
+  const { id } = await params; // Destructuring params from the second argument
+  // console.log(id);
   if (!id) {
     return NextResponse.json(
       { error: "Advise ID is required" },
