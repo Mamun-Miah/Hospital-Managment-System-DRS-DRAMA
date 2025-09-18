@@ -566,7 +566,9 @@ export default function Page() {
       </div>
 
       {/* prescription pdf starts here  */}
-      <div className="pdf-only" style={{ display: "none" }}>
+      {/* <div className="pdf-only" style={{ display: "none" }}> */}
+      <div className="pdf-only" >
+
       
         <div
           id="prescription-pdf"
@@ -628,48 +630,79 @@ export default function Page() {
             <hr className="my-6 border-gray-300" />
 
             {/* Prescription Body */}
-            <div className="flex flex-col md:flex-row relative">
+            <div className="flex flex-col md:flex-row relative min-h-[400px]">
               <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-6 bg-white px-2 font-bold ml-6">Rx</div>
 
               {/* Left Column */}
-              <div className="flex-1 pr-4 border-r border-gray-300">
-                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                  <h6 className=""><strong>C/C (Chief Complaint)</strong></h6>
-                </span>
-                <ul className="mt-[7px]">
-                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.chief_complaint_cc ?? ""}</li>
-                </ul>
+             {/* <div className="flex-1 pr-4 border-r border-gray-300"> */}
+             <div className="flex-1 pr-4 border-r border-gray-300 flex flex-col">
+              <div className="flex-1">
+              {/* Chief Complaint */}
+              {prescriptionsData?.chief_complaint_cc && (
+                <>
+                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                    <h6><strong>C/C (Chief Complaint)</strong></h6>
+                  </span>
+                  <ul className="mt-[7px]">
+                    <li className="relative ltr:pl-[15px]">{prescriptionsData.chief_complaint_cc}</li>
+                  </ul>
+                </>
+              )}
 
-                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                  <h6><strong>D/H (Drug History)</strong></h6>
-                </span>
-                <ul className="mt-[7px]">
-                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.drug_history_dh ?? ""}</li>
-                </ul>
+              {/* Drug History */}
+              {prescriptionsData?.drug_history_dh && (
+                <>
+                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                    <h6><strong>D/H (Drug History)</strong></h6>
+                  </span>
+                  <ul className="mt-[7px]">
+                    <li className="relative ltr:pl-[15px]">{prescriptionsData.drug_history_dh}</li>
+                  </ul>
+                </>
+              )}
 
-                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                  <h6><strong>R/F (Relevant Findings)</strong></h6>
-                </span>
-                <ul className="mt-[7px]">
-                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.relevant_findings_rf ?? ""}</li>
-                </ul>
+              {/* Relevant Findings */}
+              {prescriptionsData?.relevant_findings_rf && (
+                <>
+                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                    <h6><strong>R/F (Relevant Findings)</strong></h6>
+                  </span>
+                  <ul className="mt-[7px]">
+                    <li className="relative ltr:pl-[15px]">{prescriptionsData.relevant_findings_rf}</li>
+                  </ul>
+                </>
+              )}
 
-                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                  <h6><strong>O/E (On Examination)</strong></h6>
-                </span>
-                <ul className="mt-[7px]">
-                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.on_examination_oe ?? ""}</li>
-                </ul>
+              {/* On Examination */}
+              {prescriptionsData?.on_examination_oe && (
+                <>
+                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                    <h6><strong>O/E (On Examination)</strong></h6>
+                  </span>
+                  <ul className="mt-[7px]">
+                    <li className="relative ltr:pl-[15px]">{prescriptionsData.on_examination_oe}</li>
+                  </ul>
+                </>
+              )}
 
-                <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                  <h6><strong>Advice Given:</strong></h6>
-                </span>
-                <ul className="mt-[7px]">
-                  <li className="relative ltr:pl-[15px]">{prescriptionsData?.advise ?? ""}</li>
-                </ul>
+              {/* Advice */}
+              {prescriptionsData?.advise && (
+                <>
+                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                    <h6><strong>Advice Given:</strong></h6>
+                  </span>
+                  <ul className="mt-[7px]">
+                    <li className="relative ltr:pl-[15px]">{prescriptionsData.advise}</li>
+                  </ul>
+                </>
+              )}
               </div>
+            </div>
+
               <br />
-              <div className="flex-1 pl-4 mt-3">
+              {/* <div className="flex-1 pl-4 mt-3"> */}
+              <div className="flex-1 pl-4 mt-3 flex flex-col">
+                  <div className="flex-1">
                 <ul>
                   {prescriptionsData?.treatmentItems?.map((t, i) => (
                     <li key={i}>
@@ -683,11 +716,12 @@ export default function Page() {
                   </div>
                 ))}
               </div>
+             </div>
             </div>
           </div>
 
           <div style={{ flexShrink: 0 }}>
-            {/* Footer */}
+            {/* Footer */} 
             <div className="text-right">
               <div className="italic">Electronic Signature</div>
               <div className="font-bold">{prescriptionsData?.doctor?.doctor_name}</div>
@@ -703,6 +737,9 @@ export default function Page() {
                 <span className="font-semibold">Email:</span><span>info@drsdermabd.com</span>
               </div>
             </div>
+            <div className="text-center mt-2 text-xs text-gray-500">
+            Software by: mapleitfirm.com
+          </div>
             {/* Left Side - Footer Info ENDS*/}
           </div>
         </div>
