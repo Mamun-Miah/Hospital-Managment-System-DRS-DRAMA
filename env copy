@@ -2,3 +2,20 @@ DATABASE_URL="mysql://root:@localhost:3306/drs-derma"
 NEXTAUTH_URL=http://127.0.0.1:3000
 NEXTAUTH_SECRET=your-secret-generated-from-openssl
 NEXT_PUBLIC_BASE_URL=http://69.57.163.171:3000
+
+
+//localhostenv
+
+DATABASE_URL="mysql://root:@localhost:3306/drs-derma"
+NEXTAUTH_URL=http://127.0.0.1:3000
+NEXTAUTH_SECRET=your-secret-generated-from-openssl
+# NEXT_PUBLIC_BASE_URL=http://69.57.163.171:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# WordPress OAuth2 Credentials
+WP_CLIENT_ID=gGLJPcUcMLHXiUEUgkHZogOzwOTpcIIy
+WP_CLIENT_SECRET=RnFMvHgCBvImbJRNkFhAcwKxGJbUXQIH
+
+# WordPress URL
+WP_BASE_URL=http://localhost/mysite
+JWT_AUTH_SECRET_KEY=change-me
