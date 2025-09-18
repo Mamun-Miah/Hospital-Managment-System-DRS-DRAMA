@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
 
       <footer className="bg-white dark:bg-[#0c1427] rounded-t-md px-[20px] md:px-[25px] py-[5px] md:py-[2px] text-center">
         <p>
-          © <span className="text-purple-500">DRS DERMA</span><div>Software by: mapleitfirm.com</div>
+          © <span className="text-purple-500">DRS DERMA</span>
           {/* <a
             href="https://envytheme.com/"
             target="_blank"
@@ -18,6 +18,7 @@ const Footer: React.FC = () => {
             MSSL
           </a> */}
         </p>
+        <div>Software by: mapleitfirm.com</div>
       </footer>
     </>
   );
