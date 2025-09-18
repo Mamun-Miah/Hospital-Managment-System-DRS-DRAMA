@@ -1,0 +1,255 @@
+<div class="form-container">
+  <h2>Book an Appointment</h2>
+  <form id="appointmentForm" method="POST">
+    <div class="form-group">
+      <label for="fullName">Full Name *</label>
+      <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number *</label>
+        <input type="tel" id="phone" name="phoneNumber" placeholder="Enter your phone number" required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dateOfBirth" />
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender">
+          <option value="">Select</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="other">Other</option>
+          <option value="prefer_not">Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="appointment-date">Select Appointment Date</label>
+      <input type="date" id="appointment-date" name="date" />
+    </div>
+
+    <div class="form-group">
+      <label for="address">Address</label>
+      <textarea id="address" name="address" rows="3" placeholder="Write your address"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="treatment">Select Treatment</label>
+      <select id="treatment" name="treatmentName">
+        <option value="">Choose a treatment</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="note">Note</label>
+      <textarea id="note" name="notes" rows="2" placeholder="Write your note"></textarea>
+    </div>
+
+    <button type="submit">Book Appointment</button>
+    <p id="response"></p>
+    <p id="error"></p>
+  </form>
+</div>
+
+<style>
+:root {
+  --primary-color: #54499d;
+  --focus-shadow: rgba(84, 73, 157, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+}
+
+.form-container {
+  background-color: #ffffff;
+  max-width: 600px;
+  width: 100%;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  margin: 20px auto;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px var(--focus-shadow);
+  outline: none;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-row .form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+#response {
+  margin-top: 15px;
+  color: green;
+}
+
+#error {
+  margin-top: 5px;
+  color: red;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  background-color: #3f3781;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-shadow);
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-container {
+    padding: 30px 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 25px 20px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const treatmentContainer = document.getElementById("treatment");
+
+  // Load treatments from API
+  fetch("http://localhost:3000/api/treatment/treatment-list/", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    mode: "cors",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      data?.treatments?.forEach((treatment) => {
+        const option = document.createElement("option");
+        option.value = treatment.treatment_name || "";
+        option.textContent = treatment.treatment_name;
+        treatmentContainer.appendChild(option);
+      });
+    })
+    .catch((err) => console.error("Failed to load treatments:", err));
+
+  // Handle form submission
+  const form = document.getElementById("appointmentForm");
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const error = document.getElementById("error");
+    const response = document.getElementById("response");
+    error.innerHTML = "";
+    response.innerHTML = "";
+
+    const formData = {
+      fullName: document.getElementById("fullName").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phoneNumber: document.getElementById("phone").value.trim(),
+      dateOfBirth: document.getElementById("dob").value,
+      gender: document.getElementById("gender").value,
+      date: document.getElementById("appointment-date").value,
+      address: document.getElementById("address").value.trim(),
+      treatmentName: document.getElementById("treatment").value,
+      notes: document.getElementById("note").value.trim(),
+    };
+
+    try {
+      const res = await fetch("http://localhost:3000/api/appointment-request/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        response.innerHTML = "Appointment booked successfully! ";
+        form.reset();
+      } else {
+        error.innerHTML = data.error || "Failed to book appointment.";
+      }
+    } catch (err) {
+      error.innerHTML = "Something went wrong! Please try again.";
+      console.error(err);
+    }
+  });
+});
+</script>
