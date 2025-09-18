@@ -566,8 +566,8 @@ export default function Page() {
       </div>
 
       {/* prescription pdf starts here  */}
-      {/* <div className="pdf-only" style={{ display: "none" }}> */}
-      <div className="pdf-only" >
+      <div className="pdf-only" style={{ display: "none" }}>
+     
 
       
         <div
@@ -737,7 +737,7 @@ export default function Page() {
                 <span className="font-semibold">Email:</span><span>info@drsdermabd.com</span>
               </div>
             </div>
-            <div className="text-center mt-2 text-xs text-gray-500">
+            <div className="text-center mt-2 text-xs text-gray-300">
             Software by: mapleitfirm.com
           </div>
             {/* Left Side - Footer Info ENDS*/}

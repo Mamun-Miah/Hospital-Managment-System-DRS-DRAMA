@@ -7,9 +7,9 @@ const Footer: React.FC = () => {
     <>
       <div className="grow"></div>
 
-      <footer className="bg-white dark:bg-[#0c1427] rounded-t-md px-[20px] md:px-[25px] py-[15px] md:py-[20px] text-center">
+      <footer className="bg-white dark:bg-[#0c1427] rounded-t-md px-[20px] md:px-[25px] py-[5px] md:py-[2px] text-center">
         <p>
-          © <span className="text-purple-500">DRS DERMA</span>
+          © <span className="text-purple-500">DRS DERMA</span><div>Software by: mapleitfirm.com</div>
           {/* <a
             href="https://envytheme.com/"
             target="_blank"
