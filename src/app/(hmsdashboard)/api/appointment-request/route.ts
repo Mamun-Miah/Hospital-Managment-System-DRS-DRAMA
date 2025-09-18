@@ -2,12 +2,17 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-const allowedOrigin = process.env.WP_BASE_URL || "*"; 
+// Allowed origins from env
+const allowedOrigin = [
+  process.env.NEXT_CORS_URL || "",
+  process.env.WP_BASE_URL || "",
+].filter(Boolean); // remove empty strings
 
-// Helper CORS headers
-function corsHeaders() {
+// Helper: CORS headers based on request origin
+function corsHeaders(reqOrigin: string | null) {
+  const origin = reqOrigin && allowedOrigin.includes(reqOrigin) ? reqOrigin : "";
   return {
-    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Origin": origin || "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
@@ -16,6 +21,9 @@ function corsHeaders() {
 // POST handler
 export async function POST(req: Request) {
   try {
+    const reqOrigin = req.headers.get("origin");
+    const headers = corsHeaders(reqOrigin);
+
     const body = await req.json();
     const {
       fullName,
@@ -30,11 +38,11 @@ export async function POST(req: Request) {
       status,
     } = body;
 
-    // validation
+    // Validation
     if (!fullName || !email || !phoneNumber) {
       return NextResponse.json(
         { error: "fullName, email, and phoneNumber are required." },
-        { status: 400, headers: corsHeaders() }
+        { status: 400, headers }
       );
     }
 
@@ -55,7 +63,7 @@ export async function POST(req: Request) {
     if (existing) {
       return NextResponse.json(
         { error: "You have already sent a request today." },
-        { status: 400, headers: corsHeaders() }
+        { status: 400, headers }
       );
     }
 
@@ -77,18 +85,22 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { success: true, appointment },
-      { status: 201, headers: corsHeaders() }
+      { status: 201, headers }
     );
   } catch (error: any) {
     console.error("Error creating appointment:", error);
+    const reqOrigin = req.headers.get("origin");
+    const headers = corsHeaders(reqOrigin);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500, headers: corsHeaders() }
+      { status: 500, headers }
     );
   }
 }
 
 // OPTIONS handler (preflight)
-export function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: corsHeaders() });
+export function OPTIONS(req: Request) {
+  const reqOrigin = req.headers.get("origin");
+  const headers = corsHeaders(reqOrigin);
+  return new NextResponse(null, { status: 204, headers });
 }
