@@ -1,26 +1,39 @@
-import prisma from "@/lib/prisma"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-// import { getServerSession } from "next-auth"
-// import { authOptions } from "@/lib/auth"
 
+const allowedOrigin = process.env.WP_BASE_URL || "*";
+
+// Helper for CORS headers
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
+// GET request
 export async function GET() {
-//     const session = await getServerSession(authOptions)
+  try {
+    const treatmentsList = await prisma.treatmentlist.findMany();
 
-//   if (!session?.user.permissions?.includes("list-treatment")){
-//     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-//   }
+    return NextResponse.json(
+      { treatments: treatmentsList },
+      { headers: corsHeaders() }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Error fetching treatments" },
+      { status: 500, headers: corsHeaders() }
+    );
+  }
+}
 
-    try{
-        const treatmentsList = await prisma.treatmentlist.findMany({})
-
-        return NextResponse.json(
-            { treatments: treatmentsList }, 
-        )
-    } catch(error) {
-        console.error("Error fetching treatments:", error);
-        return NextResponse.json(
-            { error: "An error occurred while fetching treatments." }, 
-            { status: 500 }
-        );
-    }
+// OPTIONS request (preflight)
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: corsHeaders(),
+  });
 }
