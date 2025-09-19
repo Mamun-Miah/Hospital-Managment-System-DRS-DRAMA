@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const appointments = await prisma.appointmentRequest.findMany();
+    const appointments = await prisma.appointmentRequest.findMany({
+      orderBy: { id: "desc" },
+    });
 
     return NextResponse.json({ success: true, appointments }, { status: 200 });
   } catch (err) {

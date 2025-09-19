@@ -74,7 +74,7 @@ export async function POST(req: Request) {
         email,
         phoneNumber,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-        gender,
+        gender: gender || null,
         date: date ? new Date(date) : null,
         address,
         treatmentName,
