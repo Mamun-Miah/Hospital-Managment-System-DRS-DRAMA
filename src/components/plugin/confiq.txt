@@ -1,3 +1,10 @@
+if ( is_object( $value ) ) {
+    $newlist[ $key ] = isset( $value->$field ) ? $value->$field : null;
+} elseif ( is_array( $value ) ) {
+    $newlist[ $key ] = isset( $value[ $field ] ) ? $value[ $field ] : null;
+}
+#class-wp-util-168
+
 define('JWT_AUTH_SECRET_KEY', 'd955^}1MKCN7I=%Nf^8!rLP,#$&E^,FHBd%?EaapezjojOJtW3k%RwBFzks7m#dT');
 define('JWT_AUTH_CORS_ENABLE', true);
 
