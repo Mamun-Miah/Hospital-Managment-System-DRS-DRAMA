@@ -353,7 +353,7 @@ model AppointmentRequest {
   email         String
   phoneNumber   String
   dateOfBirth   DateTime?         @db.Date
-  gender        String?
+  gender        Gender?
   date          DateTime?         @db.Date
   address       String?
   treatmentName String?
