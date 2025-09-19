@@ -32,10 +32,11 @@ export async function POST(req: Request) {
           patient_name: appointment.fullName,
           email: appointment.email,
           mobile_number: appointment.phoneNumber,
-          date_of_birth: appointment.dateOfBirth,
+          date_of_birth: appointment.dateOfBirth || null,
+          set_next_appoinmnet: appointment.date || null,
           gender: appointment.gender,
-          address_line1: appointment.address,
-          note: appointment.notes,
+          address_line1: appointment.address || "",
+          note: appointment.notes || "",
           status: "Active", // required in Patient model
         },
       });

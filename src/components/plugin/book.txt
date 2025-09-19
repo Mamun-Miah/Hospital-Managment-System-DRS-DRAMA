@@ -20,12 +20,12 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label for="dob">Date of Birth</label>
+        <label for="dob">Date of Birth (Optional)</label>
         <input type="date" id="dob" name="dateOfBirth" />
       </div>
 
       <div class="form-group">
-        <label for="gender">Gender</label>
+        <label for="gender">Gender (Optional)</label>
         <select id="gender" name="gender">
           <option value="">Select</option>
           <option value="Female">Female</option>
@@ -37,24 +37,24 @@
     </div>
 
     <div class="form-group">
-      <label for="appointment-date">Select Appointment Date</label>
-      <input type="date" id="appointment-date" name="date" />
+      <label for="appointment-date">Select Appointment Date *</label>
+      <input type="date" id="appointment-date" name="date" required/>
     </div>
 
     <div class="form-group">
-      <label for="address">Address</label>
+      <label for="address">Address (Optional)</label>
       <textarea id="address" name="address" rows="3" placeholder="Write your address"></textarea>
     </div>
 
     <div class="form-group">
-      <label for="treatment">Select Treatment</label>
+      <label for="treatment">Select Treatment (Optional)</label>
       <select id="treatment" name="treatmentName">
         <option value="">Choose a treatment</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="note">Note</label>
+      <label for="note">Note (Optional)</label>
       <textarea id="note" name="notes" rows="2" placeholder="Write your note"></textarea>
     </div>
 

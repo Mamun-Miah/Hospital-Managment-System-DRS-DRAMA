@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     } = body;
 
     // Validation
-    if (!fullName || !email || !phoneNumber) {
+    if (!fullName || !email || !phoneNumber || !date) {
       return NextResponse.json(
         { error: "fullName, email, and phoneNumber are required." },
         { status: 400, headers }
