@@ -78,7 +78,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     className="flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined">grid_view</span>
-                    <span>Dashboard</span>
+                    <span>My Appoinment</span>
                   </Link>
                 </li>
                 <li
@@ -113,7 +113,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     <span>Billing Records</span>
                   </Link>
                 </li>
-                <li
+                {/* <li
                   onClick={() => setSidebarOpen(false)}
                   className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
                     pathname.includes("treatment-history") && "bg-gray-200"
@@ -128,7 +128,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     </span>
                     <span>Treatment History</span>
                   </Link>
-                </li>
+                </li> */}
                 <li
                   onClick={() => setSidebarOpen(false)}
                   className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
