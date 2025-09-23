@@ -27,20 +27,40 @@ export async function POST(req: Request) {
 
     // Handle CONFIRMED -> Move to patient + delete appointment
     if (status === "CONFIRMED") {
-      const patient = await prisma.patient.create({
-        data: {
-          patient_name: appointment.fullName,
-          email: appointment.email,
-          mobile_number: appointment.phoneNumber,
-          date_of_birth: appointment.dateOfBirth || null,
-          set_next_appoinmnet: appointment.date || null,
-          gender: appointment.gender,
-          address_line1: appointment.address || "",
-          note: appointment.notes || "",
-          status: "Active", // required in Patient model
-        },
+      // Check if patient with same phone exists
+      const existingPatient = await prisma.patient.findUnique({
+        where: { mobile_number: appointment.phoneNumber },
       });
 
+      let patient;
+
+      if (existingPatient) {
+        // Update existing patient
+        patient = await prisma.patient.update({
+          where: { patient_id: existingPatient.patient_id },
+          data: {
+            status: "Active",
+            set_next_appoinmnet: appointment.date || null,
+          },
+        });
+      } else {
+        // Create new patient
+        patient = await prisma.patient.create({
+          data: {
+            patient_name: appointment.fullName,
+            email: appointment.email,
+            mobile_number: appointment.phoneNumber,
+            date_of_birth: appointment.dateOfBirth || null,
+            set_next_appoinmnet: appointment.date || null,
+            gender: appointment.gender,
+            address_line1: appointment.address || "",
+            note: appointment.notes || "",
+            status: "Active",
+          },
+        });
+      }
+
+      // Delete appointment request
       await prisma.appointmentRequest.delete({
         where: { id },
       });
