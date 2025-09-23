@@ -62,10 +62,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           md:translate-x-0 md:static md:inset-auto`}
           >
             <div className="p-6 flex items-center font-bold border-gray-200">
-              <Image src="/images/logo.png" width={50} height={50} alt="logo" />
-              <p className="text-[#5503D9] ml-2">DRS DERMA</p>
+              <Image src="/images/logo-org.png" width={250} height={50} alt="logo" />
+              
             </div>
-            <nav className="mt-6">
+            <nav className="mt-6 sh">
   <ul>
     {/* HMS Parent Menu */}
     <li className=" rounded transition-all duration-200">
@@ -243,7 +243,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   href="/user/dashboard/book-now"
                   className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
                 >
-                  <span className="material-symbols-outlined">account_box</span>
+                  <span className="material-symbols-outlined">event_upcoming</span>
                   <span>Book Now</span>
                 </Link>
                
