@@ -66,161 +66,136 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <p className="text-[#5503D9] ml-2">DRS DERMA</p>
             </div>
             <nav className="mt-6">
-              <ul>
-                <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname === "/user/dashboard/" && "bg-gray-200"
-                  }`}
-                >
-                  <Link
-                    href="/user/dashboard/"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">grid_view</span>
-                    <span>My Appoinment</span>
-                  </Link>
-                </li>
-                <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("prescription") && "bg-gray-200"
-                  }`}
-                >
-                  <Link
-                    href="/user/dashboard/prescription"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">
-                      prescriptions
-                    </span>
-                    <span>Prescription</span>
-                  </Link>
-                </li>
-                <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("billing-records") && "bg-gray-200"
-                  }`}
-                >
-                  <Link
-                    href="/user/dashboard/billing-records"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">
-                      credit_card
-                    </span>
-                    <span>Billing Records</span>
-                  </Link>
-                </li>
-                {/* <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("treatment-history") && "bg-gray-200"
-                  }`}
-                >
-                  <Link
-                    href="/user/dashboard/treatment-history"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">
-                      medical_information
-                    </span>
-                    <span>Treatment History</span>
-                  </Link>
-                </li> */}
-                <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("e-commerce") && "bg-gray-200"
-                  }`}
-                >
-                  <a
-                    href="/user/dashboard/e-commerce"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">
-                      add_shopping_cart
-                    </span>
-                    <span>E-Commerce</span>
-                  </a>
-                </li>
-                <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("lms") && "bg-gray-200"
-                  }`}
-                >
-                  <a
-                    href="/user/dashboard/lms"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">
-                      book_ribbon
-                    </span>
-                    <span>LMS</span>
-                  </a>
-                </li>
-                <li
-                  onClick={() => setSidebarOpen(false)}
-                  className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
-                    pathname.includes("my-account") && "bg-gray-200"
-                  }`}
-                >
+  <ul>
+    {/* HMS Parent Menu */}
+    <li className=" rounded transition-all duration-200">
+      <details className="group">
+        <summary className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 p-3 rounded">
+          <span className="material-symbols-outlined">local_hospital</span>
+          <span>HMS</span>
+        </summary>
+        <ul className="pl-6 mt-2 space-y-1">
+          <li
+            onClick={() => setSidebarOpen(false)}
+            className={`p-2 hover:bg-gray-200 rounded transition-all duration-200 ${
+              pathname === "/user/dashboard/" && "bg-gray-200"
+            }`}
+          >
+            <Link href="/user/dashboard/" className="flex items-center gap-2">
+              <span className="material-symbols-outlined">grid_view</span>
+              <span>My Appointment</span>
+            </Link>
+          </li>
+          <li
+            onClick={() => setSidebarOpen(false)}
+            className={`p-2 hover:bg-gray-200 rounded transition-all duration-200 ${
+              pathname.includes("prescription") && "bg-gray-200"
+            }`}
+          >
+            <Link
+              href="/user/dashboard/prescription"
+              className="flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined">prescriptions</span>
+              <span>Prescription</span>
+            </Link>
+          </li>
+          <li
+            onClick={() => setSidebarOpen(false)}
+            className={`p-2 hover:bg-gray-200 rounded transition-all duration-200 ${
+              pathname.includes("billing-records") && "bg-gray-200"
+            }`}
+          >
+            <Link
+              href="/user/dashboard/billing-records"
+              className="flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined">credit_card</span>
+              <span>Billing Records</span>
+            </Link>
+          </li>
+        </ul>
+      </details>
+    </li>
 
-                  <a
-                    href="/user/dashboard/my-account"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">account_box</span>
-                    <span>My Account</span>
-                  </a>
-                </li>
-                {/* <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200">
-                  <a
-                    href="/user/dashboard/my-account"
-                    className="flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined">
-                      account_box
-                    </span>
-                    <span>My Account</span>
-                  </a>
-                </li> */}
-                <li className="p-3 hover:bg-gray-200 rounded">
-                  <button
-                    onClick={async () => {
-                      const email = localStorage.getItem("wp_user_email");
-                      if (!email) return;
+    {/* E-Commerce */}
+    <li
+      onClick={() => setSidebarOpen(false)}
+      className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
+        pathname.includes("e-commerce") && "bg-gray-200"
+      }`}
+    >
+      <a href="/user/dashboard/e-commerce" className="flex items-center gap-2">
+        <span className="material-symbols-outlined">add_shopping_cart</span>
+        <span>E-Commerce</span>
+      </a>
+    </li>
 
-                      try {
-                        const res = await fetch("/api/auth/logout", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ email }),
-                        });
+    {/* LMS */}
+    <li
+      onClick={() => setSidebarOpen(false)}
+      className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
+        pathname.includes("lms") && "bg-gray-200"
+      }`}
+    >
+      <a href="/user/dashboard/lms" className="flex items-center gap-2">
+        <span className="material-symbols-outlined">book_ribbon</span>
+        <span>LMS</span>
+      </a>
+    </li>
 
-                        const data = await res.json();
+    {/* My Account */}
+    <li
+      onClick={() => setSidebarOpen(false)}
+      className={`p-3 hover:bg-gray-200 rounded transition-all duration-200 ${
+        pathname.includes("my-account") && "bg-gray-200"
+      }`}
+    >
+      <a
+        href="/user/dashboard/my-account"
+        className="flex items-center gap-2"
+      >
+        <span className="material-symbols-outlined">account_box</span>
+        <span>My Account</span>
+      </a>
+    </li>
 
-                        if (data.success) {
-                          localStorage.removeItem("wp_user_email");
-                          localStorage.removeItem("wp_user_token");
+    {/* Logout */}
+    <li className="p-3 hover:bg-gray-200 rounded">
+      <button
+        onClick={async () => {
+          const email = localStorage.getItem("wp_user_email");
+          if (!email) return;
 
-                          // Redirect to WordPress logout link
-                          window.location.href = data.redirectUrl;
-                        }
-                      } catch (err) {
-                        console.error("Logout failed:", err);
-                      }
-                    }}
-                    className="flex items-center gap-2 w-full text-left"
-                  >
-                    <span className="material-symbols-outlined">logout</span>
-                    <span>Logout</span>
-                  </button>
-                </li>
-              </ul>
-            </nav>
+          try {
+            const res = await fetch("/api/auth/logout", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              localStorage.removeItem("wp_user_email");
+              localStorage.removeItem("wp_user_token");
+
+              // Redirect to WordPress logout link
+              window.location.href = data.redirectUrl;
+            }
+          } catch (err) {
+            console.error("Logout failed:", err);
+          }
+        }}
+        className="flex items-center gap-2 w-full text-left"
+      >
+        <span className="material-symbols-outlined">logout</span>
+        <span>Logout</span>
+      </button>
+    </li>
+  </ul>
+</nav>
+
           </aside>
 
           {/* Overlay for mobile */}
@@ -251,8 +226,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </div>
               </div>
 
-              <div>
-                {/* <li className="p-3 hover:bg-gray-200 rounded transition-all duration-200"> */}
+              {/* <div>
+                
                 <a
                   href="/user/dashboard/my-account"
                   className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
@@ -260,17 +235,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   <span className="material-symbols-outlined">account_box</span>
                   <span>My Account</span>
                 </a>
-                {/* </li> */}
-              </div>
+                
+              </div> */}
                <div>
                 
-                <a
-                  href="/user/dashboard/my-account"
+                <Link
+                  href="/user/dashboard/book-now"
                   className="flex items-center gap-2 p-3 hover:bg-gray-200 rounded transition-all duration-200"
                 >
                   <span className="material-symbols-outlined">account_box</span>
                   <span>Book Now</span>
-                </a>
+                </Link>
                
               </div>
             </header>
