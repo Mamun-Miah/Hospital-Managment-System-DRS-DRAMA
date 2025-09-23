@@ -93,6 +93,12 @@ document.addEventListener("DOMContentLoaded", function() {
     return;
   }
 });
+document.addEventListener("DOMContentLoaded", function() {
+  const emailField = document.querySelector("#user_email");
+  if (emailField) {
+    emailField.setAttribute("readonly", "true"); // or "disabled"
+  }
+});
 </script>
 
 

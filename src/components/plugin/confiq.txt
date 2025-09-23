@@ -23,7 +23,7 @@ define('WP_DEBUG_DISPLAY', false);
 
 
 
-.woocommerce-MyAccount-navigation-link--customer-logout, .woocommerce-MyAccount-navigation-link--downloads, .tutor-dashboard-menu-logout, .woocommerce-MyAccount-navigation-link--edit-account, .tutor-dashboard-menu-withdraw{
+.woocommerce-MyAccount-navigation-link--customer-logout, .woocommerce-MyAccount-navigation-link--downloads, .tutor-dashboard-menu-logout, .woocommerce-MyAccount-navigation-link--edit-account, .tutor-dashboard-menu-withdraw, .tutor-dashboard-menu-settings, .tutor-dashboard-menu-my-profile, .um_account_submit_general{
 	display:none;
 }
 .site-logo{
