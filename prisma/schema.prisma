@@ -83,6 +83,7 @@ model Patient {
   status                    PatientStatus
   image_url                 String?                     @db.VarChar(255)
   note                      String?                     @db.LongText
+  treatment_name            String?                     @db.VarChar(255)
   marital_status            MaritalStatus?
   created_at                DateTime                    @default(now())
   updated_at                DateTime?                   @updatedAt
