@@ -39,6 +39,7 @@ export async function POST(req: Request) {
         patient = await prisma.patient.update({
           where: { patient_id: existingPatient.patient_id },
           data: {
+            treatment_name: appointment.treatmentName || "",
             status: "Active",
             set_next_appoinmnet: appointment.date || null,
           },
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
           data: {
             patient_name: appointment.fullName,
             email: appointment.email,
+            treatment_name: appointment.treatmentName || "",
             mobile_number: appointment.phoneNumber,
             date_of_birth: appointment.dateOfBirth || null,
             set_next_appoinmnet: appointment.date || null,
