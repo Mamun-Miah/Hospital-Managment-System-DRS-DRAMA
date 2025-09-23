@@ -45,6 +45,7 @@ export async function GET(req: Request) {
       valid: true,
       email,
       username: userToken.username,
+      phoneNumber: userToken.phone_number,
     });
   } catch (error) {
     console.error("check-session error:", error);

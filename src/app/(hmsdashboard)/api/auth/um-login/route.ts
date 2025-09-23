@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     // Create new token
     await prisma.userToken.create({
-      data: { username:data.user_display_name, email: data.user_email, token: data.token, expiresAt },
+      data: { username:data.user_display_name,phone_number:data.phone_number, email: data.user_email, token: data.token, expiresAt },
     });
 
     // Return token + user info (no cookies)
@@ -47,6 +47,7 @@ export async function POST(req: Request) {
         username: data.user_nicename,
         email: data.user_email,
         displayName: data.user_display_name,
+        phoneNumber: data.phone_number,
       },
     });
   } catch (error) {
