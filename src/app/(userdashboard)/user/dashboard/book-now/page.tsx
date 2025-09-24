@@ -192,7 +192,7 @@ export default function BookAppointment() {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            rows={3}
+            rows={1}
             placeholder="Write your address"
             className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           ></textarea>

@@ -17,8 +17,13 @@ const inter = Inter({
 });
   
 export const metadata: Metadata = {
-  title: "DRS DERMA - Admin Dashboard",
-  description: "DRS DERMA Admin Dashboard",
+  title: "DRS DERMA - HMS",
+  description: "DRS DERMA -HMS",
+  icons: {
+    icon: '/favicon.ico',            // default icon
+    shortcut: '/favicon-32x32.png',  // used for pinned/tab shortcuts
+    apple: '/apple-touch-icon.png',  // iOS
+  },
 };
 
 export default function RootLayout({
