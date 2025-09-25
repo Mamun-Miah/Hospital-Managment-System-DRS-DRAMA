@@ -111,6 +111,13 @@ export default function EditRolePage() {
       checked: false,
       parentId: "34",
     },
+    {
+          permission_id: "appoinment-request",
+          id: "38",
+          name: "Appoinment Request",
+          icon: <UserCheck className="h-4 w-4" />,
+          checked: false,
+        },
 
     // Existing HMS Permissions
     {

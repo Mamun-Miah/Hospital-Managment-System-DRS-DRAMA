@@ -107,6 +107,13 @@ export default function RoleManagementForm() {
       checked: false,
       parentId: "34",
     },
+    {
+      permission_id: "appoinment-request",
+      id: "38",
+      name: "Appoinment Request",
+      icon: <UserCheck className="h-4 w-4" />,
+      checked: false,
+    },
 
     // Existing HMS Permissions
     {
@@ -187,7 +194,9 @@ export default function RoleManagementForm() {
         if (permission.id === permissionId) {
           return { ...permission, checked }
         }
+        // console.log(permission)
         return permission
+        
       })
       
 

@@ -37,6 +37,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
 
       const createRole = session?.user.permissions.includes("create-role");
       const allStaff = session?.user.permissions.includes("all-staff");
+      const appoinmentRequest = session?.user.permissions.includes("appoinment-request");
    
 
     // const role = session.user?.role;
@@ -1440,6 +1441,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
             </span> */}
 
             {/* patient */}
+             {appoinmentRequest && (
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link
               href="/doctor/appoinment-request/"
@@ -1457,6 +1459,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                  Appoinment Request
               </Link>
             </div>
+             )}
              <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <button
                 className={`accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
