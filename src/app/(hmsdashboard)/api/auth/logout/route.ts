@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     });
 
     // Return the WordPress logout URL
-    const wpLogoutUrl = "http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/";
+    const wpLogoutUrl = `${process.env.WP_BASE_URL}/logout/?redirect_to=${process.env.WP_BASE_URL}/login/`;
 
     return NextResponse.json({
       success: true,

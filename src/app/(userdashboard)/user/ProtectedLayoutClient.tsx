@@ -30,7 +30,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
         }
 
         if (!email) {
-          router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
+          router.replace(`${process.env.WP_BASE_URL}/logout/?redirect_to=${process.env.WP_BASE_URL}/login/`);
           return;
         }
 
@@ -39,7 +39,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
         // console.log('username',data)
 
         if (!data.valid) {
-          router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
+          router.replace(`${process.env.WP_BASE_URL}/logout/?redirect_to=${process.env.WP_BASE_URL}/login/`);
           return;
         }
         if (data.username) {
@@ -50,7 +50,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
         setLoading(false);
       } catch (err) {
         console.error("Session validation error:", err);
-        router.replace("http://localhost/mysite/logout/?redirect_to=http://localhost/mysite/login/");
+        router.replace(`${process.env.WP_BASE_URL}/logout/?redirect_to=${process.env.WP_BASE_URL}/login/`);
       }
     };
 
