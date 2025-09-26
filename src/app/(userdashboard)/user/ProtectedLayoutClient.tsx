@@ -16,7 +16,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
     const checkSession = async () => {
       try {
         const params = new URLSearchParams(window.location.search);
-        const urlParam = params.get("url"); 
+        const urlParam = params.get("url");  
         let email = "";
 
         if (urlParam) {

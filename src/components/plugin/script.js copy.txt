@@ -1,0 +1,79 @@
+<script>
+const apiUrl = "http://localhost:3000";
+const siteUrl = "http://localhost/drsderma-wp/";
+
+document.addEventListener("DOMContentLoaded", function () {
+  // --- UM Login Form Handler ---
+  const loginForm = document.querySelector(".um-login form"); 
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const usernameInput = loginForm.querySelector('input[name^="username"]');
+      const passwordInput = loginForm.querySelector('input[name^="user_password"]');
+      if (!usernameInput || !passwordInput) return;
+
+      try {
+        const res = await fetch(`${apiUrl}/api/auth/um-login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: usernameInput.value,
+            password: passwordInput.value,
+          }),
+        });
+
+        const data = await res.json();
+        console.log("JWT Response:", data);
+
+        if (data.token && data.user?.email) {
+          localStorage.clear();
+          window.location.href = `${apiUrl}/user/dashboard`;
+        } else {
+          alert("Login failed: " + (data.error || "No token returned"));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error sending credentials to Next.js API");
+      }
+    });
+  }
+
+  // --- Dashboard Redirect ---
+  const ul = document.querySelector(".um-misc-ul");
+  if (ul) {
+    const dashboardLink = ul.querySelector(`a[href='${apiUrl}/user/dashboard/']`);
+    if (dashboardLink) {
+      window.location.href = `${apiUrl}/user/dashboard/`;
+      return;
+    }
+    ul.innerHTML = '';
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = `${apiUrl}/user/dashboard/`;
+    a.textContent = "Dashboard";
+    li.appendChild(a);
+    ul.appendChild(li);
+    window.location.href = `${apiUrl}/user/dashboard/`;
+    return;
+  }
+
+  const main = document.querySelector(".site-main.post-12.page.type-page.status-publish.hentry");
+  if (main && main.textContent.includes("You are already registered")) {
+    window.location.href = `${apiUrl}/user/dashboard/`;
+    return;
+  }
+
+  const successNotice = document.querySelector("p.um-notice.success");
+  if (successNotice && successNotice.textContent.includes("Your account was updated successfully")) {
+    window.location.href = `${siteUrl}`;
+    return;
+  }
+
+  // --- Lock Email Field ---
+  const emailField = document.querySelector("#user_email");
+  if (emailField) {
+    emailField.setAttribute("readonly", "true");
+  }
+});
+</script>
