@@ -8,7 +8,7 @@ const lms = () => {
     
     
     <iframe
-        src="http://localhost/mysite/dashboard/"
+        src={`${process.env.WP_BASE_URL}/dashboard/`}
         className="w-[100%] h-[150%] border rounded-xl shadow-lg"
         style={{ border: "none" }}
          sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
