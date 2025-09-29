@@ -44,27 +44,26 @@ useEffect(() => {
   return (
     <>
     <div className="p-5">
-      <div className="trezo-card  bg-cover bg-no-repeat bg-center mb-[25px] bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-[20px] md:p-[25px] rounded-md relative z-[1] h-[250px] overflow-hidden">
+      <div className="trezo-card  bg-cover bg-no-repeat bg-center mb-[25px] bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-[20px] md:p-[25px] rounded-md relative z-[1] md:h-[250] h-[270px] overflow-hidden">
         <div className="trezo-card-content">
           <div className="sm:grid sm:grid-cols-5 justify-center items-center flex gap-[25px]">
-            <div className="sm:col-span-3 ">
-              <p className="!text-[20px] !mb-[2px] !text-white">
-                <span className="text-orange-100 text-3xl">
-                  {" "}
+            <div className="sm:col-span-3">
+              <p className="!text-[20px] !mb-[2px] !text-white md:mt-0 mt-4">
+                <span className="text-orange-100 md:text-3xl text-2xl -tracking-tighter">
                   Hi, {storedUsername}
                 </span>
               </p>
 
-              <p className="text-orange-100 md:text-2xl text-xl font-medium">
+              <p className="text-orange-100 md:text-2xl text-xl font-medium md:leading-normal !leading-[30px]">
                 {" "}
                 Welcome to DRS DERMA.
               </p>
-              <p className="text-blue-200 text-lg">
+              <p className="text-blue-200 text-lg md:leading-normal !leading-[30px]">
                 We’re here to make your care simple and stress-free.
               </p>
             </div>
 
-            <div className="sm:col-span-2">
+            <div className="md:inline hidden sm:col-span-2">
               <div className="text-center mt-[20px] sm:mt-0">
                 <Image
                   src="/images/female-doctor.png"
