@@ -103,7 +103,7 @@ useEffect(() => {
               </h2>
               <p className="text-sm text-gray-500 mt-1 flex justify-between">
                 <span> Treatment Name:</span>{" "}
-                <span>{appointment?.treatmentName}</span>
+                <span>{appointment?.treatmentName || "Not Selected"}</span>
               </p>
               <p className="text-sm text-gray-500 mt-1 flex justify-between">
                 <span> Appointment Date:</span>{" "}
@@ -145,14 +145,14 @@ useEffect(() => {
             <p className="flex justify-between mt-4">
               <span>Total Paid:</span>
               <span className="font-bold text-green-700">
-                ${invoice?.paid_amount}
+                {invoice?.paid_amount || 0}
               </span>
             </p>
             <p className="flex justify-between">
               <span>Due:</span>
               <span className="font-bold text-red-600">
                 {" "}
-                ${invoice?.due_amount}
+                {invoice?.due_amount || 0}
               </span>
             </p>
           </div>
