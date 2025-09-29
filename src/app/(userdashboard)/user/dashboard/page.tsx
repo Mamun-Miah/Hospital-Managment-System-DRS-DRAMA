@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export default function Page() {
+  const getPhone = localStorage.getItem("wp_phone_number");
   const storedUsername = localStorage.getItem("wp_user_username");
   const [appointment, setAppointment] = useState({
     treatmentName: "",
@@ -12,14 +13,24 @@ export default function Page() {
   });
 
   const [invoice, setInvoice] = useState({ paid_amount: 0, due_amount: 0 });
-  useEffect(() => {
-    fetch("/api/user-dashboard/my-appointment?phone=01866666667")
-      .then((res) => res.json())
-      .then((data) => {
-        setAppointment(data?.appointment);
-        setInvoice(data.invoice ? data.invoice : { ...invoice });
-      });
-  }, [appointment, invoice]);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await fetch(`/api/user-dashboard/my-appointment?phone=${getPhone}`);
+      const data = await res.json();
+
+      setAppointment(data?.appointment || null);
+      setInvoice(data.invoice || {}); // don't spread old state
+    } catch (err) {
+      console.error("Failed to fetch appointment:", err);
+    }
+  };
+
+  if (getPhone) {
+    fetchData();
+  }
+}, [getPhone]); // only depends on phone
+
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "-";
@@ -92,22 +103,22 @@ export default function Page() {
               </h2>
               <p className="text-sm text-gray-500 mt-1 flex justify-between">
                 <span> Treatment Name:</span>{" "}
-                <span>{appointment.treatmentName}</span>
+                <span>{appointment?.treatmentName}</span>
               </p>
               <p className="text-sm text-gray-500 mt-1 flex justify-between">
                 <span> Appointment Date:</span>{" "}
-                <span> {formatDate(appointment.date)}</span>
+                <span> {formatDate(appointment?.date)}</span>
               </p>
               <p className="text-sm text-gray-500 mt-1 flex justify-between">
                 <span>Appointment Status: </span>{" "}
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium  ${
-                    appointment.status === "REJECTED"
+                    appointment?.status === "REJECTED"
                       ? "bg-red-300 text-red-800"
                       : "bg-blue-100 text-blue-800"
                   }`}
                 >
-                  {appointment.status}
+                  {appointment?.status}
                 </span>
               </p>
             </div>
