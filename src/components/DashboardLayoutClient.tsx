@@ -287,7 +287,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 type="button"
               >
                 <span className="material-symbols-outlined">apps</span>
-                <span className="font-medium">Solutions</span>{" "}
+                <span className="font-medium">Quick Links</span>{" "}
                 <span className="material-symbols-outlined">
                   {dropDownOpen ? "expand_less" : "expand_more"}
                 </span>

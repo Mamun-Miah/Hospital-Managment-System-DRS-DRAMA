@@ -20,7 +20,7 @@ useEffect(() => {
       const data = await res.json();
 
       setAppointment(data?.appointment || null);
-      setInvoice(data.invoice || {}); // don't spread old state
+      setInvoice(data.invoice || {}); 
     } catch (err) {
       console.error("Failed to fetch appointment:", err);
     }
