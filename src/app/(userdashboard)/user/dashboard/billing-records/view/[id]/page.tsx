@@ -77,18 +77,27 @@ const ViewInvoice: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!id) return;
-    fetch(`/api/invoice/view-invoice/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const { treatments, invoice } = data;
-        setTreatments(treatments);
-        setInvoice(invoice);
-      })
-      .catch((error) => {
-        console.error("Error fetching invoice:", error);
-      });
-  }, [id]);
+  if (!id) return;
+
+  const token = sessionStorage.getItem("token"); // your frontend token
+
+  fetch(`/api/invoice/view-invoice/${id}`, {
+    headers: {
+      "Authorization": `Bearer ${token}`, // pass token here
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const { treatments, invoice } = data;
+      setTreatments(treatments);
+      setInvoice(invoice);
+    })
+    .catch((error) => {
+      console.error("Error fetching invoice:", error);
+    });
+}, [id]);
+
 
   if (!invoice) return <div>Loading...</div>;
 

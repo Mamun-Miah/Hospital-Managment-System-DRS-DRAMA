@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import crypto from "crypto";
 
 export async function POST(req: Request) {
     
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
     // Calculate token expiry (1 hour)
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 1);
-
+    const tokenHash = crypto.createHash("sha256").update(data.token).digest("hex");
     // Delete existing token for this email
     await prisma.userToken.deleteMany({
       where: { email: data.user_email },
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
 
     // Create new token
     await prisma.userToken.create({
-      data: { username:data.user_display_name,phone_number:data.phone_number, email: data.user_email, token: data.token, expiresAt },
+      data: { username:data.user_display_name,phone_number:data.phone_number, email: data.user_email,tokenHash, token: data.token, expiresAt },
     });
 
     // Return token + user info (no cookies)
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
         id: data.user_id,
         username: data.user_nicename,
         email: data.user_email,
+        tokenHash,  
         displayName: data.user_display_name,
         phoneNumber: data.phone_number,
       },

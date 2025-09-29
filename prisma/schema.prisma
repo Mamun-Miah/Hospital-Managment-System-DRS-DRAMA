@@ -331,6 +331,7 @@ model UserToken {
   id           Int      @id @default(autoincrement())
   username     String
   token        String   @db.Text
+  tokenHash    String   @unique @db.VarChar(64) // SHA256 hash
   expiresAt    DateTime
   email        String
   phone_number String

@@ -1,22 +1,41 @@
+
 import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import crypto from "crypto";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user.permissions?.includes("invoice")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-  const id = (await params).id;
-  const invoiceId = parseInt(id);
-
   try {
+    // 1. Get NextAuth session
+    const session = await getServerSession(authOptions);
+
+    // 2. Get token from Authorization header
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader?.split(" ")[1]; // "Bearer <token>"
+
+    // 3. Validate token via SHA256 hash
+    let tokenValid = false;
+    if (token) {
+      const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+      const userToken = await prisma.userToken.findFirst({
+        where: { tokenHash },
+      });
+      tokenValid = !!userToken && userToken.expiresAt > new Date();
+    }
+
+    // 4. Allow access if session has permission OR token is valid
+    if (!session?.user.permissions?.includes("invoice") && !tokenValid) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // --- Existing invoice fetching logic ---
+    const id = (await params).id;
+    const invoiceId = parseInt(id);
+
     // 1. Get invoice with patient and prescription info
     const invoice = await prisma.invoice.findUnique({
       where: { invoice_id: invoiceId },
@@ -32,14 +51,11 @@ export async function GET(
             gender: true,
             set_next_appoinmnet: true,
             status: true,
-            mobile_number: true
-
+            mobile_number: true,
           },
         },
         prescription: {
-          select: {
-            prescription_id: true,
-          },
+          select: { prescription_id: true },
         },
       },
     });
@@ -54,26 +70,19 @@ export async function GET(
         patient_id: invoice.patient_id,
         invoice_id: { lt: invoiceId },
       },
-      orderBy: {
-        invoice_id: "desc",
-      },
-      select: {
-        due_amount: true,
-        invoice_number: true,
-      },
+      orderBy: { invoice_id: "desc" },
+      select: { due_amount: true, invoice_number: true },
     });
 
-    // 3. Get treatments from prescription with full details (including total_cost from treatmentlist)
+    // 3. Get treatments from prescription with full details
     const treatments = await prisma.prescriptionTreatmentItem.findMany({
-      where: {
-        prescription_id: invoice.prescription?.prescription_id ?? 0,
-      },
+      where: { prescription_id: invoice.prescription?.prescription_id ?? 0 },
       include: {
         treatment: {
           select: {
             treatment_id: true,
             treatment_name: true,
-            total_cost: true, // <-- This gets the cost from Treatmentlist
+            total_cost: true,
           },
         },
       },

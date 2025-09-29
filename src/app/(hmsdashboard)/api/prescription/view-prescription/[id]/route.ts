@@ -1,21 +1,37 @@
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma"; 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import crypto from "crypto";
 
 export async function GET(
   request: NextRequest, 
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user.permissions?.includes("prescription-list")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
-
   try {
+    // 1. Get NextAuth session
+    const session = await getServerSession(authOptions);
+
+    // 2. Get token from Authorization header
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader?.split(" ")[1]; // "Bearer <token>"
+
+    // 3. Validate token via SHA256 hash
+    let tokenValid = false;
+    if (token) {
+      const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+      const userToken = await prisma.userToken.findFirst({
+        where: { tokenHash },
+      });
+      tokenValid = !!userToken && userToken.expiresAt > new Date();
+    }
+
+    // 4. Allow access if session has permission OR token is valid
+    if (!session?.user.permissions?.includes("prescription-list") && !tokenValid) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // --- Fetch prescription logic remains unchanged ---
     const { id } = await params;
     const prescriptionId = parseInt(id);
 
@@ -57,7 +73,6 @@ export async function GET(
             designation: true,
             doctor_fee: true,
           },
-
         },
         items: {
           select: {
@@ -66,11 +81,7 @@ export async function GET(
             dose_mid_day: true,
             dose_night: true,
             duration_days: true,
-            medicine: {
-              select: {
-                name: true,
-              },
-            },
+            medicine: { select: { name: true } },
           },
         },
         treatmentItems: {
@@ -86,11 +97,8 @@ export async function GET(
                 treatment_name: true,
                 total_cost: true,
                 duration_months: true,
-
               },
             },
-
-
           },
         },
       },
@@ -100,32 +108,25 @@ export async function GET(
       return NextResponse.json({ error: "Prescription not found" }, { status: 404 });
     }
 
-    //Change date formate
+    // Format dates
     const prescribedDate = new Date(prescription.prescribed_at);
-    const formattedPrescribedDate = `${String(prescribedDate.getDate()).padStart(2, "0")}.${String(prescribedDate.getMonth() + 1).padStart(2, "0")}.${prescribedDate.getFullYear()}`;
-
-    const nextVisitDate = prescription.next_visit_date
-      ? new Date(prescription.next_visit_date)
-      : null;
-
+    const formattedPrescribedDate = `${String(prescribedDate.getDate()).padStart(2,"0")}.${String(prescribedDate.getMonth()+1).padStart(2,"0")}.${prescribedDate.getFullYear()}`;
+    const nextVisitDate = prescription.next_visit_date ? new Date(prescription.next_visit_date) : null;
     const formattedNextVisitDate = nextVisitDate
-      ? `${String(nextVisitDate.getDate()).padStart(2, "0")}.${String(nextVisitDate.getMonth() + 1).padStart(2, "0")}.${nextVisitDate.getFullYear()}`
+      ? `${String(nextVisitDate.getDate()).padStart(2,"0")}.${String(nextVisitDate.getMonth()+1).padStart(2,"0")}.${nextVisitDate.getFullYear()}`
       : null;
 
     const formatted = {
       ...prescription,
       prescribed_at: formattedPrescribedDate,
-      // prescribed_at_time: `${String(prescribedDate.getHours()).padStart(2, "0")}:${String(prescribedDate.getMinutes()).padStart(2, "0")}`,
-      prescribed_at_time: `${String(prescribedDate.getUTCHours()).padStart(2, "0")}:${String(prescribedDate.getUTCMinutes()).padStart(2, "0")}`,
+      prescribed_at_time: `${String(prescribedDate.getUTCHours()).padStart(2,"0")}:${String(prescribedDate.getUTCMinutes()).padStart(2,"0")}`,
       next_visit_date: formattedNextVisitDate,
-      items: prescription.items.map((item) => {
-        return {
-          ...item,
-          medicine_name: item.medicine?.name ?? null,
-          medicine: undefined, // remove nested object after extracting name
-        };
-      }),
-      treatmentItems: prescription.treatmentItems.map((treat) => ({
+      items: prescription.items.map(item => ({
+        ...item,
+        medicine_name: item.medicine?.name ?? null,
+        medicine: undefined,
+      })),
+      treatmentItems: prescription.treatmentItems.map(treat => ({
         ...treat,
         treatment_name: treat.treatment?.treatment_name ?? null,
         total_cost: treat.treatment?.total_cost ?? null,

@@ -219,31 +219,41 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    if (!prescriptionId) return;
+ useEffect(() => {
+  if (!prescriptionId) return;
 
-    const fetchPrescriptionData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `/api/prescription/view-prescription/${prescriptionId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch prescription");
+  const fetchPrescriptionData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = sessionStorage.getItem("token"); // get token
+
+      const response = await fetch(
+        `/api/prescription/view-prescription/${prescriptionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // attach token
+          },
         }
-        const data = await response.json();
+      );
 
-        setPrescriptionsData(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to fetch prescription");
       }
-    };
 
-    fetchPrescriptionData();
-  }, [prescriptionId]);
+      const data = await response.json();
+      setPrescriptionsData(data);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPrescriptionData();
+}, [prescriptionId]);
+
 
   if (loading) return <p>Loading prescription...</p>;
   if (error) return <p>Error: {error}</p>;

@@ -44,6 +44,7 @@ export async function GET(req: Request) {
       data: { status: 200 },
       valid: true,
       email,
+      token: userToken.token,
       username: userToken.username,
       phoneNumber: userToken.phone_number,
     });

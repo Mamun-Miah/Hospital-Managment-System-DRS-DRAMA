@@ -43,6 +43,7 @@ useEffect(() => {
   };
   return (
     <>
+    <div className="p-5">
       <div className="trezo-card  bg-cover bg-no-repeat bg-center mb-[25px] bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-[20px] md:p-[25px] rounded-md relative z-[1] h-[250px] overflow-hidden">
         <div className="trezo-card-content">
           <div className="sm:grid sm:grid-cols-5 justify-center items-center flex gap-[25px]">
@@ -118,7 +119,7 @@ useEffect(() => {
                       : "bg-blue-100 text-blue-800"
                   }`}
                 >
-                  {appointment?.status}
+                  {appointment?.status ==="Active"? "Confirmed":appointment?.status || "Not Booked"}
                 </span>
               </p>
             </div>
@@ -173,6 +174,7 @@ useEffect(() => {
             </p>
           </div>
         </div> */}
+      </div>
       </div>
     </>
   );

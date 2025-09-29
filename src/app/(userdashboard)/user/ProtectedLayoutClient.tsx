@@ -45,7 +45,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
         if (data.username) {
           localStorage.setItem("wp_user_username", data.username);
           localStorage.setItem("wp_phone_number", data.phoneNumber);
-
+          sessionStorage.setItem("token", data.token);
         }
         setLoading(false);
       } catch (err) {
