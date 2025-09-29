@@ -76,21 +76,28 @@ const InvoiceList: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchInvoiceList = async () => {
-      try {
-        const res = await fetch(`/api/user-dashboard/invoice?phone=${getphone_number}`);
-        const data = await res.json();
+ useEffect(() => {
+  const fetchInvoiceList = async () => {
+    try {
+      const token = sessionStorage.getItem("token"); // get token from sessionStorage
 
-        setInvoices(data.formattedinvoiceList);
-        console.log("Fetched Invoices:", data.formattedinvoiceList);
-      } catch (error) {
-        console.error("Error fetching invoices:", error);
-      }
-    };
+      const res = await fetch(`/api/user-dashboard/invoice?phone=${getphone_number}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`, // send token in header
+        },
+      });
 
-    fetchInvoiceList();
-  }, [getphone_number]);
+      const data = await res.json();
+      setInvoices(data.formattedinvoiceList);
+      console.log("Fetched Invoices:", data.formattedinvoiceList);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+    }
+  };
+
+  if (getphone_number) fetchInvoiceList(); // only fetch if phone exists
+}, [getphone_number]);
+
 
   return (
     <>
