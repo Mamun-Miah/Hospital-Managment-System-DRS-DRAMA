@@ -57,10 +57,10 @@
       <label for="note">Note (Optional)</label>
       <textarea id="note" name="notes" rows="2" placeholder="Write your note"></textarea>
     </div>
-
-    <button type="submit">Book Appointment</button>
-    <p id="response"></p>
+<p id="response"></p>
     <p id="error"></p>
+    <button type="submit">Book Appointment</button>
+    
   </form>
 </div>
 
@@ -84,10 +84,8 @@ body {
   background-color: #ffffff;
   max-width: 600px;
   width: 100%;
-  padding: 40px;
   border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
-  margin: 20px auto;
+  margin: 0px auto;
 }
 
 .form-container h2 {
