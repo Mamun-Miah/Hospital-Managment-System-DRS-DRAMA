@@ -29,7 +29,7 @@ useEffect(() => {
   if (getPhone) {
     fetchData();
   }
-}, [getPhone]); // only depends on phone
+}, [getPhone]);
 
 
   const formatDate = (dateString: string | null) => {
