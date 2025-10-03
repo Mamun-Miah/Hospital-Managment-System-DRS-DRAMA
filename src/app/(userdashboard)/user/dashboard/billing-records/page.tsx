@@ -18,8 +18,7 @@ interface Invoice {
 }
 
 const InvoiceList: React.FC = () => {
-    const getphone_number = localStorage.getItem("wp_phone_number");
-
+  const getphone_number = localStorage.getItem("wp_phone_number");
   const [invoices, setInvoices] = useState<Invoice[]>([]);
 
   // console.log("allTreatment", allTreatment);
@@ -76,7 +75,7 @@ const InvoiceList: React.FC = () => {
     }
   };
 
- useEffect(() => {
+  useEffect(() => {
   const fetchInvoiceList = async () => {
     try {
       const token = sessionStorage.getItem("token"); // get token from sessionStorage
@@ -98,25 +97,30 @@ const InvoiceList: React.FC = () => {
   if (getphone_number) fetchInvoiceList(); // only fetch if phone exists
 }, [getphone_number]);
 
-
   return (
     <>
-      <div className=" p-5 mb-[25px] md:flex items-center justify-between">
+      <div className="md:mb-[25px] mb-5 md:flex items-center justify-between">
         <h5 className="!mb-0">Billing Records</h5>
 
-        <ol className="flex items-center">
+        <ol className="flex items-center md:mt-0 mt-3">
           <li className="inline-block">
-            <Link href="/user/dashboard" className="flex items-end">
+            <Link href="/user/dashboard" className="flex items-center">
               <i className="material-symbols-outlined text-primary-500">home</i>
               Dashboard
             </Link>
           </li>
-          <span className="material-symbols-outlined">chevron_right</span>
-          <li className="">Billing Records</li>
+
+          <li className="flex items-center">
+            {" "}
+            <span className="material-symbols-outlined">
+              chevron_right
+            </span>{" "}
+            <span>Billing Records</span>
+          </li>
         </ol>
       </div>
-      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-        <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-between">
+      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] md:p-[25px] rounded-md">
+        <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-between gap-4">
           <div className="trezo-card-title">
             <form className="relative sm:w-[265px]">
               <label className="leading-none absolute ltr:left-[13px] rtl:right-[13px] text-black dark:text-white mt-px top-1/2 -translate-y-1/2">
@@ -132,7 +136,7 @@ const InvoiceList: React.FC = () => {
             </form>
           </div>
 
-          <div className="flex justify-start">
+          <div className="flex justify-start md:mt-0 mt-3">
             <select
               onChange={(e) =>
                 setFilterType(
@@ -142,7 +146,7 @@ const InvoiceList: React.FC = () => {
               value={filterType}
               className="px-5 bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
             >
-              <option value="All">Sort Payment Status</option>
+              <option value="All">Payment Type</option>
               <option value="Full">Full</option>
               <option value="Partial">Partial</option>
               <option value="Unpaid">Unpaid</option>
@@ -296,67 +300,67 @@ const InvoiceList: React.FC = () => {
                 )}
               </tbody>
             </table>
-            <div className="pt-[12.5px] sm:flex sm:items-center justify-between">
-              <p className="!mb-0 !text-xs">
-                Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
-                {totalItems} results
-              </p>
-              <ol className="mt-[10px] sm:mt-0 flex items-center">
-                <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
-                      currentPage === 1
-                        ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
-                        : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                    }`}
-                  >
-                    <span className="opacity-0">0</span>
-                    <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
-                      chevron_left
-                    </i>
-                  </button>
-                </li>
+          </div>
+          <div className="pt-[12.5px] sm:flex sm:items-center justify-between">
+            <p className="!mb-0 !text-xs">
+              Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+              {totalItems} results
+            </p>
+            <ol className="mt-[10px] sm:mt-0 flex items-center">
+              <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
+                    currentPage === 1
+                      ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
+                      : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+                  }`}
+                >
+                  <span className="opacity-0">0</span>
+                  <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
+                    chevron_left
+                  </i>
+                </button>
+              </li>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
-                    <li
-                      key={page}
-                      className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <li
+                    key={page}
+                    className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
+                  >
+                    <button
+                      onClick={() => handlePageChange(page)}
+                      className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md ${
+                        currentPage === page
+                          ? "border border-primary-500 bg-primary-500 text-white"
+                          : "border border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+                      }`}
                     >
-                      <button
-                        onClick={() => handlePageChange(page)}
-                        className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md ${
-                          currentPage === page
-                            ? "border border-primary-500 bg-primary-500 text-white"
-                            : "border border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    </li>
-                  )
-                )}
+                      {page}
+                    </button>
+                  </li>
+                )
+              )}
 
-                <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
-                      currentPage === totalPages
-                        ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
-                        : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                    }`}
-                  >
-                    <span className="opacity-0">0</span>
-                    <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
-                      chevron_right
-                    </i>
-                  </button>
-                </li>
-              </ol>
-            </div>
+              <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
+                    currentPage === totalPages
+                      ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
+                      : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+                  }`}
+                >
+                  <span className="opacity-0">0</span>
+                  <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
+                    chevron_right
+                  </i>
+                </button>
+              </li>
+            </ol>
           </div>
         </div>
       </div>

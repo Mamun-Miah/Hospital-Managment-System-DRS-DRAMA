@@ -219,17 +219,15 @@ export default function Page() {
     }
   };
 
- useEffect(() => {
-  if (!prescriptionId) return;
+  useEffect(() => {
+    if (!prescriptionId) return;
 
-  const fetchPrescriptionData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const token = sessionStorage.getItem("token"); // get token
-
-      const response = await fetch(
+    const fetchPrescriptionData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+         const token = sessionStorage.getItem("token");
+        const response = await fetch(
         `/api/prescription/view-prescription/${prescriptionId}`,
         {
           headers: {
@@ -237,23 +235,21 @@ export default function Page() {
           },
         }
       );
+        if (!response.ok) {
+          throw new Error("Failed to fetch prescription");
+        }
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch prescription");
+        setPrescriptionsData(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const data = await response.json();
-      setPrescriptionsData(data);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchPrescriptionData();
-}, [prescriptionId]);
-
+    fetchPrescriptionData();
+  }, [prescriptionId]);
 
   if (loading) return <p>Loading prescription...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -265,9 +261,31 @@ export default function Page() {
 
   return (
     <>
-      <div className="p-5 mb-[25px] md:flex items-center justify-between">
+      <div className="md:mb-[25px] mb-5 md:flex items-center justify-between">
         <h5 className="!mb-0">Prescriptions</h5>
 
+        <ol className="flex items-center md:mt-0 mt-3">
+          <li className="flex items-center">
+            {/* <Link href="/user/dashboard" className="flex items-center"> */}
+            <span className="material-symbols-outlined text-primary-500">
+              home
+            </span>
+            <span>Dashboard</span>
+            {/* </Link> */}
+          </li>
+
+          <li className="flex items-center">
+            {" "}
+            <span className="material-symbols-outlined">
+              chevron_right
+            </span>{" "}
+            <span>Prescription</span>
+          </li>
+          <span className="material-symbols-outlined">chevron_right</span>
+          <li className="">View</li>
+        </ol>
+      </div>
+      <div className="md:mb-[25px] mb-[0] md:flex items-center justify-between">
         <div>
           <button
             type="button"
@@ -329,7 +347,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="mt-[20px] sm:mt-0">
+            <div className="hidden md:block mt-[20px] sm:mt-0">
               <Image
                 src="/images/logo.png"
                 alt="logo"
@@ -425,9 +443,9 @@ export default function Page() {
             Treatments:
           </span>
 
-          <div className="lg:w-4/5 md:-mx-[25px] px-2  ">
+          <div className="lg:w-4/5 md:-mx-[25px] -mx-[20px]   md:px-2">
             <div className="table-responsive overflow-x-auto">
-              <table className="w-full  mb-12 border-collapse">
+              <table className="w-full mb-12 border-collapse">
                 <thead>
                   <tr className="bg-gray-50  dark:bg-[#15203c]">
                     <th className="text-left text-gray-600 dark:text-gray-300 py-3 px-4 border-b border-gray-200 dark:border-[#1f2a48]">

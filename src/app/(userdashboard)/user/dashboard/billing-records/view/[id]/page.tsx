@@ -98,7 +98,6 @@ const ViewInvoice: React.FC = () => {
     });
 }, [id]);
 
-
   if (!invoice) return <div>Loading...</div>;
 
   const handleDownloadPDF = () => {
@@ -145,23 +144,30 @@ const ViewInvoice: React.FC = () => {
 
   return (
     <>
-      <div className="p-5 mb-[25px] md:flex items-center justify-between">
+      <div className="md:mb-[25px] mb-5 md:flex items-center justify-between">
         <h5 className="!mb-0">Billing Details</h5>
-        <ol className="flex items-center">
+
+        <ol className="flex items-center md:mt-0 mt-3">
           <li className="inline-block">
-            <Link href="/user/dashboard" className="flex items-end">
+            <Link href="/user/dashboard" className="flex items-center">
               <i className="material-symbols-outlined text-primary-500">home</i>
-              Dashboard
+              <span>Dashboard</span>
             </Link>
           </li>
-          <span className="material-symbols-outlined">chevron_right</span>
-          <li className="">Billing Details</li>
+
+          <li className="flex items-center">
+            {" "}
+            <span className="material-symbols-outlined">
+              chevron_right
+            </span>{" "}
+            <span>Billing Details</span>
+          </li>
           <span className="material-symbols-outlined">chevron_right</span>
           <li className="">View</li>
         </ol>
       </div>
 
-      <div className="flex justify-end gap-2 mb-4">
+      <div className="flex md:justify-end gap-2 mb-4">
         <button
           onClick={handleDownloadPDF}
           className="bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600"
@@ -502,7 +508,7 @@ const ViewInvoice: React.FC = () => {
 
       {/* THIS IS THE ORIGINAL FRONTEND DISPLAY SECTION (UNCHANGED) */}
       <div>
-        <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
+        <div className="trezo-card bg-white dark:bg-[#0c1427] md:mb-[25px] md:p-[25px] rounded-md">
           <div className="sm:flex items-center justify-between">
             <div>
               <Image
@@ -561,8 +567,8 @@ const ViewInvoice: React.FC = () => {
           </div>
         </div>
 
-        <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-          <div className="trezo-card-content">
+        <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] md:p-[25px] rounded-md">
+          <div className="trezo-card-content overflow-x-auto md:pt-0 pt-6">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>

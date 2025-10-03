@@ -31,7 +31,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const [dropDownOpen, setDropDownOpen] = useState(false);
-  console.log(username);
 
   // Close when clicking outside
   useEffect(() => {
@@ -72,25 +71,29 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed inset-y-0 left-0 bg-white shadow-lg min-w-64 transform
+        className={`fixed inset-y-0 left-0 bg-white shadow-lg min-w-72 px-4 transform
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           transition-transform duration-300 z-40
           md:translate-x-0 md:static md:inset-auto`}
       >
-        <div className="md:hidden p-6 flex items-center font-bold border-gray-200 relative">
+        <div className="md:hidden p-6 font-bold border-gray-200 relative">
           <button
             onClick={() => setSidebarOpen(false)}
             className="absolute right-3 top-3 bg-gray-50"
           >
             <span className="material-symbols-outlined">close</span>
           </button>
-          <Image
-            src="/images/logo-org.png"
-            className="md:mt-0 mt-5"
-            width={200}
-            height={50}
-            alt="logo"
-          />
+        </div>
+        <div className="md:mt-5 mt-2">
+          <Link href="/">
+            <Image
+              src="/images/logo-org.png"
+              className="max-w-full"
+              width={200}
+              height={50}
+              alt="logo"
+            />
+          </Link>
         </div>
         <nav className="mt-6 sh">
           <ul>
@@ -268,13 +271,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </button>
           </div>
           <div className="hidden md:block">
-            <Image
-              src="/images/logo-org.png"
-              className="md:mt-0 mt-5"
-              width={200}
-              height={50}
-              alt="logo"
-            />
+            <h5>Welcome {username}</h5>
           </div>
           <div ref={sidebarRef} className="relative inline-block">
             <div className="flex items-center">
@@ -287,7 +284,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 type="button"
               >
                 <span className="material-symbols-outlined">apps</span>
-                <span className="font-medium">Quick Links</span>{" "}
+                <span className="font-medium">Solutions</span>{" "}
                 <span className="material-symbols-outlined">
                   {dropDownOpen ? "expand_less" : "expand_more"}
                 </span>
@@ -311,7 +308,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   </span>
                   <span className="font-medium">Book Now</span>{" "}
                 </Link>
-                <a
+                <Link
                   onClick={() => setDropDownOpen(false)}
                   href="/user/dashboard/e-commerce"
                   role="menuitem"
@@ -321,7 +318,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     shopping_cart
                   </span>
                   <span>Ecommerce</span>
-                </a>
+                </Link>
 
                 <Link
                   onClick={() => setDropDownOpen(false)}

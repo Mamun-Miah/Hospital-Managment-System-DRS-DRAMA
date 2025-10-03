@@ -11,21 +11,17 @@ interface Prescription {
   mobile_number: number;
 }
 const InvoiceList: React.FC = () => {
-  const getphone_number = localStorage.getItem("wp_phone_number");
+  const getPhone = localStorage.getItem("wp_phone_number");
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
-  const [morePrescriptions, setMorePrescriptions] = useState<Prescription[]>(
-    []
-  );
-  console.log(setMorePrescriptions)
-  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     const prescriptionList = async () => {
       try {
         const response = await fetch(
-          `/api/user-dashboard/prescription-list?phone=${getphone_number}`
+          `/api/user-dashboard/prescription-list?phone=${getPhone}`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch prescriptions");
+          throw new Error("Failed to fetch treatments");
         }
         const data = await response.json();
         setPrescriptions(data.prescriptions);
@@ -35,7 +31,7 @@ const InvoiceList: React.FC = () => {
     };
 
     prescriptionList();
-  }, [getphone_number]);
+  }, [getPhone]);
   // console.log(prescriptions)
 
   // console.log("allTreatment", allTreatment);
@@ -96,28 +92,15 @@ const InvoiceList: React.FC = () => {
     }
   };
 
-  // const handleView = (id: number) => {
-  //   const fetchPatient = async () => {
-  //     const res = await fetch(
-  //       `/api/prescription/prescription-by-patient-id/${id}`
-  //     );
-  //     const newPres = await res.json();
-  //     setMorePrescriptions(newPres.prescriptions);
-  //     console.log(newPres.prescriptions);
-  //   };
-  //   setIsOpen(true);
-
-  //   fetchPatient();
-  // };
   return (
     <>
-      <div className="p-5 mb-[25px] md:flex items-center justify-between">
-        <h5 className="!mb-0">Prescription List</h5>
+      <div className="md:flex items-center justify-between">
+        <h5 className="!mb-0">Prescriptions</h5>
 
-        <ul className="breadcumb flex mt-[12px] md:mt-0">
+        <ul className="breadcumb flex md:mt-0 mt-3">
           <li className="">
             <Link
-              href="/user/dashboard/"
+              href="/dashboard/"
               className="inline-block relative ltr:pl-[22px] rtl:pr-[22px] transition-all hover:text-primary-500"
             >
               <i className="material-symbols-outlined absolute ltr:left-0 rtl:right-0 !text-lg -mt-px text-primary-500 top-1/2 -translate-y-1/2">
@@ -132,8 +115,8 @@ const InvoiceList: React.FC = () => {
           <li>Prescription List</li>
         </ul>
       </div>
-      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
-        <div className="trezo-card-header mb-[20px] md:mb-[25px] sm:flex items-center justify-between">
+      <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] md:p-[25px] rounded-md">
+        <div className="trezo-card-header mb-[20px] md:mt-0 mt-3 md:mb-[25px] sm:flex items-center justify-between">
           <div className="trezo-card-title">
             <form className="sm:w-[500px] flex items-center gap-5">
               <div className="relative ">
@@ -165,7 +148,7 @@ const InvoiceList: React.FC = () => {
         </div>
 
         <div className="trezo-card-content relative">
-          <div className="table-responsive">
+          <div className="table-responsive overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr>
@@ -242,14 +225,6 @@ const InvoiceList: React.FC = () => {
                               </i>
                             </button>
                           </Link>
-
-                          {/* <button
-                            onClick={() => handleView(treatment.patient_id)}
-                          >
-                            <span className="material-symbols-outlined !text-md">
-                              history
-                            </span>
-                          </button> */}
                         </div>
                       </td>
                     </tr>
@@ -266,181 +241,70 @@ const InvoiceList: React.FC = () => {
                 )}
               </tbody>
             </table>
+          </div>
 
-            <div className="pt-[12.5px] sm:flex sm:items-center justify-between">
-              <p className="!mb-0 !text-xs">
-                Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
-                {totalItems} results
-              </p>
-              <ol className="mt-[10px] sm:mt-0 flex items-center">
-                <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
-                      currentPage === 1
-                        ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
-                        : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                    }`}
+          <div className="pt-[12.5px] sm:flex sm:items-center justify-between">
+            <p className="!mb-0 !text-xs">
+              Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of{" "}
+              {totalItems} results
+            </p>
+            <ol className="mt-[10px] sm:mt-0 flex items-center">
+              <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
+                    currentPage === 1
+                      ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
+                      : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+                  }`}
+                >
+                  <span className="opacity-0">0</span>
+                  <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
+                    chevron_left
+                  </i>
+                </button>
+              </li>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <li
+                    key={page}
+                    className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
                   >
-                    <span className="opacity-0">0</span>
-                    <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
-                      chevron_left
-                    </i>
-                  </button>
-                </li>
-
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
-                    <li
-                      key={page}
-                      className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
+                    <button
+                      onClick={() => handlePageChange(page)}
+                      className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md ${
+                        currentPage === page
+                          ? "border border-primary-500 bg-primary-500 text-white"
+                          : "border border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+                      }`}
                     >
-                      <button
-                        onClick={() => handlePageChange(page)}
-                        className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md ${
-                          currentPage === page
-                            ? "border border-primary-500 bg-primary-500 text-white"
-                            : "border border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    </li>
-                  )
-                )}
+                      {page}
+                    </button>
+                  </li>
+                )
+              )}
 
-                <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
-                      currentPage === totalPages
-                        ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
-                        : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
-                    }`}
-                  >
-                    <span className="opacity-0">0</span>
-                    <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
-                      chevron_right
-                    </i>
-                  </button>
-                </li>
-              </ol>
-            </div>
+              <li className="inline-block mx-[2px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0">
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`w-[31px] h-[31px] block leading-[29px] relative text-center rounded-md border ${
+                    currentPage === totalPages
+                      ? "border-gray-200 dark:border-[#172036] text-gray-400 cursor-not-allowed"
+                      : "border-gray-100 dark:border-[#172036] hover:bg-primary-500 hover:text-white hover:border-primary-500"
+                  }`}
+                >
+                  <span className="opacity-0">0</span>
+                  <i className="material-symbols-outlined left-0 right-0 absolute top-1/2 -translate-y-1/2">
+                    chevron_right
+                  </i>
+                </button>
+              </li>
+            </ol>
           </div>
         </div>
-        {/* modal open here */}
-        {isOpen && morePrescriptions && (
-          <div className="fixed inset-0  z-50 flex items-center justify-center bg-[rgba(0,0,0,0.4)]">
-            <div className="bg-white p-10 rounded-lg shadow-lg w-8xl relative ">
-              <button
-                className="absolute top-[-2px] right-[10px] text-4xl text-red-500 hover:text-black"
-                onClick={() => setIsOpen(false)}
-              >
-                &times;
-              </button>
-              {/* <h2 className="text-2xl font-bold mb-2">Patient Details</h2> */}
-
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Prescription ID
-                    </th>
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Patient ID
-                    </th>
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Patient Name
-                    </th>
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Mobile Number
-                    </th>
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Prescribed Date
-                    </th>
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Doctor&apos; Name
-                    </th>
-
-                    <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody className="text-black dark:text-white">
-                  {filteredPrescriptions.length > 0 ? (
-                    filteredPrescriptions?.map((treatment) => (
-                      <tr key={treatment.prescription_id}>
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <span className="block text-xs font-semibold text-primary-500">
-                            {treatment.prescription_id}
-                          </span>
-                        </td>
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <span className="block text-xs font-semibold text-primary-500">
-                            {treatment.patient_id}
-                          </span>
-                        </td>
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <span className="block text-xs font-semibold text-primary-500">
-                            {treatment.patient_name}
-                          </span>
-                        </td>
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <span className="block text-xs font-semibold text-primary-500">
-                            {treatment.mobile_number}
-                          </span>
-                        </td>
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                            {treatment.prescribed_at}
-                          </span>
-                        </td>
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                            {treatment.doctor_name}
-                          </span>
-                        </td>
-
-                        <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
-                          <div className="flex items-center gap-[9px]">
-                            <Link
-                              href={`/doctor/view-prescription/${treatment.prescription_id}`}
-                            >
-                              <button
-                                type="button"
-                                className="text-primary-500 leading-none custom-tooltip"
-                                // onClick={() => setOpen(true)}
-                              >
-                                <i className="material-symbols-outlined !text-md">
-                                  visibility
-                                </i>
-                              </button>
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan={7}
-                        className="text-center py-4 text-gray-500 dark:text-gray-400"
-                      >
-                        No prescriptions available
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          // view modal
-        )}
-        {/* modal close here */}
       </div>
     </>
   );
