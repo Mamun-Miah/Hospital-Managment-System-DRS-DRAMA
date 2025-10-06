@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
     }
 
     // If no patient, check requestedAppointment
-    const requestedAppointment = await prisma.appointmentRequest.findMany({
+    const requestedAppointment = await prisma.appointmentRequest.findFirst({
       where: { phoneNumber: phone },
       select: {
         treatmentName: true,
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json(
-      { appointment: requestedAppointment[0] },
+      { appointment: requestedAppointment },
       { status: 200 }
     );
   } catch (error) {
