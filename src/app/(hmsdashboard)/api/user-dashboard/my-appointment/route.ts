@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (patient) {
-      const invoice = await prisma.invoice.findFirst({
+      const invoice = await prisma.invoice.findMany({
         where: { patient_id: patient.patient_id },
         orderBy: {
           invoice_creation_date: "desc",
@@ -32,7 +32,8 @@ export async function GET(req: NextRequest) {
           due_amount: true,
         },
       });
-
+      const totalDue = invoice.reduce((sum, item) => sum + (item.due_amount??0), 0);
+    const totalPaid = invoice.reduce((sum, item) => sum + (item.paid_amount??0), 0);
       return NextResponse.json(
         {
           appointment: {
@@ -40,7 +41,7 @@ export async function GET(req: NextRequest) {
             status: patient.status,
             treatmentName: "",
           },
-          invoice,
+          invoice: { paid_amount: totalPaid || 0, due_amount: totalDue || 0 },
         },
         { status: 200 }
       );

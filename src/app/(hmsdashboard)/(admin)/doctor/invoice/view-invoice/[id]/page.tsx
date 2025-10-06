@@ -40,6 +40,7 @@ interface Invoice {
 }
 
 const ViewInvoice: React.FC = () => {
+  const [previous_due, setPrevious_due] = useState<number>(0);
   const { id } = useParams<{ id: string }>();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [treatments, setTreatments] = useState<Treatment[]>([]);
@@ -75,7 +76,9 @@ const ViewInvoice: React.FC = () => {
     fetch(`/api/invoice/view-invoice/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        const { treatments, invoice } = data;
+        const { treatments, invoice,previous_due } = data;
+        console.log(previous_due);
+        setPrevious_due(previous_due);
         setTreatments(treatments);
         setInvoice(invoice);
       })
@@ -340,7 +343,7 @@ const ViewInvoice: React.FC = () => {
               <div className="mt-4 flex justify-between items-end">
                 <div>
                   {/* paid or due stamp  */}
-                  {(totatTreatmentCost + invoice.doctor_fee + invoice.previous_due - invoice.paid_amount) === 0 ? (
+                  {(totatTreatmentCost + invoice.doctor_fee + previous_due - invoice.paid_amount) === 0 ? (
                     <div className="paid-stamp">PAID</div>
                   ) : (
                     <div className="due-stamp">DUE</div>
@@ -352,8 +355,8 @@ const ViewInvoice: React.FC = () => {
                   <table style={{ width: "100%" }}>
                     <tbody>
                       <tr><td>Total Treatment Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost}</td></tr>
-                      <tr><td>Previous Due:</td><td style={{ textAlign: 'right' }}>BDT. {invoice.previous_due}</td></tr>
-                      <tr><td >Total Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost + invoice.doctor_fee + invoice.previous_due}</td></tr>
+                      <tr><td>Previous Due:</td><td style={{ textAlign: 'right' }}>BDT. {previous_due}</td></tr>
+                      <tr><td >Total Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost + invoice.doctor_fee + previous_due}</td></tr>
                       <tr><td ></td><td style={{ textAlign: 'right' }}></td></tr>
 
                       <tr className="border-t summary-row-padded">
@@ -362,7 +365,7 @@ const ViewInvoice: React.FC = () => {
                       </tr>
                       <tr className="border-t summary-row-padded">
                         <td className="font-bold">Due Tk.</td>
-                        <td className="font-bold" style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost + invoice.doctor_fee + invoice.previous_due - invoice.paid_amount}</td>
+                        <td className="font-bold" style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost + invoice.doctor_fee + previous_due - invoice.paid_amount}</td>
                       </tr>
 
                       <tr><td colSpan={2} style={{ borderTop: "1px solid #000" }}></td></tr>
@@ -461,7 +464,7 @@ const ViewInvoice: React.FC = () => {
                 <tr className="mt-5 text-black">
                   <td className="p-3"></td>
                   <td className="p-3 pl-6">Previous Due: </td>
-                  <td className="p-3 pl-6">Tk. {invoice.previous_due}</td>
+                  <td className="p-3 pl-6">Tk. {previous_due}</td>
                 </tr>
                 <tr className="px-20">
                   <td className="border-b-1 border-gray-200"></td>
@@ -472,7 +475,7 @@ const ViewInvoice: React.FC = () => {
                   <td className="p-3"></td>
                   <td className="p-3 pl-6">Total Cost: </td>
                   <td className="p-3 pl-6">
-                    Tk. {totatTreatmentCost + invoice.doctor_fee + invoice.previous_due}
+                    Tk. {totatTreatmentCost + invoice.doctor_fee + previous_due}
                   </td>
                 </tr>
                 <tr className="mt-5 font-semibold text-black">
@@ -500,7 +503,7 @@ const ViewInvoice: React.FC = () => {
                   <td className="p-3"></td>
                   <td className="p-3 pl-6">Total Due: </td>
                   <td className="p-3 pl-6">
-                    Tk. {totatTreatmentCost + invoice.doctor_fee + invoice.previous_due - invoice.paid_amount}
+                    Tk. {totatTreatmentCost + invoice.doctor_fee + previous_due - invoice.paid_amount}
                   </td>
                 </tr>
               </tbody>
