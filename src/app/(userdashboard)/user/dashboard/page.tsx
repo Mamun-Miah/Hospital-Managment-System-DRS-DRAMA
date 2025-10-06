@@ -118,7 +118,8 @@ useEffect(() => {
                       : "bg-blue-100 text-blue-800"
                   }`}
                 >
-                  {appointment?.status ==="Active"? "Confirmed":appointment?.status || "Not Booked"}
+                  {/* {appointment?.status ==="Active"? "Confirmed":appointment?.status || "Not Booked"} */}
+                   {appointment.status ? appointment.status : "Not Booked"}
                 </span>
               </p>
             </div>

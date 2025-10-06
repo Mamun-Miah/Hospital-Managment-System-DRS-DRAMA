@@ -12,12 +12,30 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // If no patient, check requestedAppointment
+    const requestedAppointment = await prisma.appointmentRequest.findFirst({
+      where: { phoneNumber: phone },
+      select: {
+        treatmentName: true,
+        date: true,
+        status: true,
+      },
+    });
+
+    if (requestedAppointment) {
+      return NextResponse.json(
+        { appointment: requestedAppointment },
+        { status: 200 }
+      );
+    }
+
     const patient = await prisma.patient.findFirst({
       where: { mobile_number: phone },
       select: {
         patient_id: true,
         status: true,
         set_next_appoinmnet: true,
+        treatment_name: true,
       },
     });
 
@@ -32,35 +50,26 @@ export async function GET(req: NextRequest) {
           due_amount: true,
         },
       });
-      const totalDue = invoice.reduce((sum, item) => sum + (item.due_amount??0), 0);
-    const totalPaid = invoice.reduce((sum, item) => sum + (item.paid_amount??0), 0);
+      const totalDue = invoice.reduce(
+        (sum, item) => sum + (item.due_amount ?? 0),
+        0
+      );
+      const totalPaid = invoice.reduce(
+        (sum, item) => sum + (item.paid_amount ?? 0),
+        0
+      );
       return NextResponse.json(
         {
           appointment: {
             date: patient?.set_next_appoinmnet,
             status: patient.status,
-            treatmentName: "",
+            treatmentName: patient.treatment_name,
           },
           invoice: { paid_amount: totalPaid || 0, due_amount: totalDue || 0 },
         },
         { status: 200 }
       );
     }
-
-    // If no patient, check requestedAppointment
-    const requestedAppointment = await prisma.appointmentRequest.findFirst({
-      where: { phoneNumber: phone },
-      select: {
-        treatmentName: true,
-        date: true,
-        status: true,
-      },
-    });
-
-    return NextResponse.json(
-      { appointment: requestedAppointment },
-      { status: 200 }
-    );
   } catch (error) {
     if (error) {
       return NextResponse.json(
