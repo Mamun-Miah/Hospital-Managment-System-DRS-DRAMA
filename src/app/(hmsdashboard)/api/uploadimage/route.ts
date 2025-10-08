@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
   const filePath = path.join(process.cwd(), "images", filename);
   await writeFile(filePath, buffer);
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = "https://hms.drsdermabd.com";
   const imageUrl = `${baseUrl}/api/images/${filename}`;
 
   return NextResponse.json({ imageUrl });
