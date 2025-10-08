@@ -22,7 +22,7 @@ export default function BookAppointment() {
 
   // Load treatments
   useEffect(() => {
-    fetch("http://localhost:3000/api/treatment/treatment-list/")
+    fetch("https://hms.drsdermabd.com/api/treatment/treatment-list/")
       .then((res) => res.json())
       .then((data) => {
         if (data?.treatments) {
@@ -63,7 +63,7 @@ export default function BookAppointment() {
 
     try {
       const res = await fetch(
-        "http://localhost:3000/api/appointment-request/",
+        "https://hms.drsdermabd.com/api/appointment-request/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -17,6 +17,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
       try {
         const params = new URLSearchParams(window.location.search);
         const urlParam = params.get("url");  
+        console.log('urlParam',urlParam)
         let email = "";
 
         if (urlParam) {
@@ -37,7 +38,7 @@ export default function ProtectedLayoutClient({ children }: Props) {
         const res = await fetch(`/api/auth/validate-token?url=${btoa(email)}:200`);
         const data = await res.json();
         // console.log('username',data)
-
+ 
         if (!data.valid) {
           router.replace(`${process.env.NEXT_PUBLIC_WP_BASE_URL}/logout/?redirect_to=${process.env.NEXT_PUBLIC_WP_BASE_URL}/login/`);
           return;
