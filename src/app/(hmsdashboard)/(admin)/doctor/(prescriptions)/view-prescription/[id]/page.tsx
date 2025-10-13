@@ -567,9 +567,6 @@ export default function Page() {
 
       {/* prescription pdf starts here  */}
       <div className="pdf-only" style={{ display: "none" }}>
-     
-
-      
         <div
           id="prescription-pdf"
           ref={(el) => {
@@ -591,39 +588,81 @@ export default function Page() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-start">
               {/* Doctor Info */}
               <div className="max-w-[70%]">
-                <h2 className="text-lg font-bold">{prescriptionsData?.doctor?.doctor_name}</h2>
-                <p className="text-sm">{prescriptionsData?.doctor?.designation}</p>
-                <p className="text-sm">{prescriptionsData?.doctor?.specialization}</p>
+                <h2 className="text-lg font-bold">
+                  {prescriptionsData?.doctor?.doctor_name}
+                </h2>
+                <p className="text-sm">
+                  {prescriptionsData?.doctor?.designation}
+                </p>
+                <p className="text-sm">
+                  {prescriptionsData?.doctor?.specialization}
+                </p>
               </div>
 
               {/* Hospital Logo */}
               <div className="mt-4 mr-2 md:mt-0">
-                <div><Image src="/images/logo.png" alt="logo" width={120} height={40} /></div>
-                
-                  <div className="text-sm">Trusted Center for Skin,<br/> Hair & Sexual Health </div>
+                <div>
+                  <Image
+                    src="/images/logo.png"
+                    alt="logo"
+                    width={120}
+                    height={40}
+                  />
+                </div>
 
+                <div className="text-sm">
+                  Trusted Center for Skin,
+                  <br /> Hair & Sexual Health{" "}
+                </div>
               </div>
-              
             </div>
 
             {/* Patient + Visit Info */}
             <div className="flex flex-col md:flex-row justify-between mt-6">
               {/* Left */}
               <div>
-                <BarcodeComponent value={`${prescriptionsData?.prescription_id}`} width={3} height={25} />
-                <div><strong>Patient ID:</strong> {prescriptionsData?.patient_id}</div>
-                <div><strong>Name:</strong> {prescriptionsData?.patient.patient_name}</div>
-                <div><strong>Age:</strong> {prescriptionsData?.patient.age}</div>
-                <div><strong>Address:</strong> {prescriptionsData?.patient.city}</div>
+                <BarcodeComponent
+                  value={`${prescriptionsData?.prescription_id}`}
+                  width={3}
+                  height={25}
+                />
+                <div>
+                  <strong>Patient ID:</strong> {prescriptionsData?.patient_id}
+                </div>
+                <div>
+                  <strong>Name:</strong>{" "}
+                  {prescriptionsData?.patient.patient_name}
+                </div>
+                <div>
+                  <strong>Age:</strong> {prescriptionsData?.patient.age}
+                </div>
+                <div>
+                  <strong>Address:</strong> {prescriptionsData?.patient.city}
+                </div>
               </div>
 
               {/* Right */}
               <div className="mt-4 md:mt-0">
-                <BarcodeComponent value={`${prescriptionsData?.prescription_id}`} width={3} height={25} />
-                <div><strong>Prescription ID:</strong> {prescriptionsData?.prescription_id}</div>
-                <div><strong>Visit Date:</strong> {prescriptionsData?.prescribed_at}</div>
-                <div><strong>Visit Time:</strong> {prescriptionsData?.prescribed_at_time}</div>
-                <div><strong>Gender:</strong> {prescriptionsData?.patient.gender}</div>
+                <BarcodeComponent
+                  value={`${prescriptionsData?.prescription_id}`}
+                  width={3}
+                  height={25}
+                />
+                <div>
+                  <strong>Prescription ID:</strong>{" "}
+                  {prescriptionsData?.prescription_id}
+                </div>
+                <div>
+                  <strong>Visit Date:</strong>{" "}
+                  {prescriptionsData?.prescribed_at}
+                </div>
+                <div>
+                  <strong>Visit Time:</strong>{" "}
+                  {prescriptionsData?.prescribed_at_time}
+                </div>
+                <div>
+                  <strong>Gender:</strong> {prescriptionsData?.patient.gender}
+                </div>
               </div>
             </div>
 
@@ -631,115 +670,147 @@ export default function Page() {
 
             {/* Prescription Body */}
             <div className="flex flex-col md:flex-row relative min-h-[400px]">
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-6 bg-white px-2 font-bold ml-6">Rx</div>
+              <div className="absolute left-1/3 top-0 -translate-x-1/2 -translate-y-6 bg-white px-2 font-bold ml-6">
+                Rx
+              </div>
 
               {/* Left Column */}
-             {/* <div className="flex-1 pr-4 border-r border-gray-300"> */}
-             <div className="flex-1 pr-4 border-r border-gray-300 flex flex-col">
-              <div className="flex-1">
-              {/* Chief Complaint */}
-              {prescriptionsData?.chief_complaint_cc && (
-                <>
-                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                    <h6><strong>C/C (Chief Complaint)</strong></h6>
-                  </span>
-                  <ul className="mt-[7px]">
-                    <li className="relative ltr:pl-[15px]">{prescriptionsData.chief_complaint_cc}</li>
-                  </ul>
-                </>
-              )}
+              {/* <div className="flex-1 pr-4 border-r border-gray-300"> */}
+              <div className="max-w-1/3 flex-1 pr-4 border-r border-gray-300 flex flex-col">
+                <div className="flex-1">
+                  {/* Chief Complaint */}
+                  {prescriptionsData?.chief_complaint_cc && (
+                    <>
+                      <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                        <h6>
+                          <strong>C/C (Chief Complaint)</strong>
+                        </h6>
+                      </span>
+                      <ul className="mt-[7px]">
+                        <li className="relative ltr:pl-[15px]">
+                          {prescriptionsData.chief_complaint_cc}
+                        </li>
+                      </ul>
+                    </>
+                  )}
 
-              {/* Drug History */}
-              {prescriptionsData?.drug_history_dh && (
-                <>
-                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                    <h6><strong>D/H (Drug History)</strong></h6>
-                  </span>
-                  <ul className="mt-[7px]">
-                    <li className="relative ltr:pl-[15px]">{prescriptionsData.drug_history_dh}</li>
-                  </ul>
-                </>
-              )}
+                  {/* Drug History */}
+                  {prescriptionsData?.drug_history_dh && (
+                    <>
+                      <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                        <h6>
+                          <strong>D/H (Drug History)</strong>
+                        </h6>
+                      </span>
+                      <ul className="mt-[7px]">
+                        <li className="relative ltr:pl-[15px]">
+                          {prescriptionsData.drug_history_dh}
+                        </li>
+                      </ul>
+                    </>
+                  )}
 
-              {/* Relevant Findings */}
-              {prescriptionsData?.relevant_findings_rf && (
-                <>
-                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                    <h6><strong>R/F (Relevant Findings)</strong></h6>
-                  </span>
-                  <ul className="mt-[7px]">
-                    <li className="relative ltr:pl-[15px]">{prescriptionsData.relevant_findings_rf}</li>
-                  </ul>
-                </>
-              )}
+                  {/* Relevant Findings */}
+                  {prescriptionsData?.relevant_findings_rf && (
+                    <>
+                      <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                        <h6>
+                          <strong>R/F (Relevant Findings)</strong>
+                        </h6>
+                      </span>
+                      <ul className="mt-[7px]">
+                        <li className="relative ltr:pl-[15px]">
+                          {prescriptionsData.relevant_findings_rf}
+                        </li>
+                      </ul>
+                    </>
+                  )}
 
-              {/* On Examination */}
-              {prescriptionsData?.on_examination_oe && (
-                <>
-                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                    <h6><strong>O/E (On Examination)</strong></h6>
-                  </span>
-                  <ul className="mt-[7px]">
-                    <li className="relative ltr:pl-[15px]">{prescriptionsData.on_examination_oe}</li>
-                  </ul>
-                </>
-              )}
+                  {/* On Examination */}
+                  {prescriptionsData?.on_examination_oe && (
+                    <>
+                      <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                        <h6>
+                          <strong>O/E (On Examination)</strong>
+                        </h6>
+                      </span>
+                      <ul className="mt-[7px]">
+                        <li className="relative ltr:pl-[15px]">
+                          {prescriptionsData.on_examination_oe}
+                        </li>
+                      </ul>
+                    </>
+                  )}
 
-              {/* Advice */}
-              {prescriptionsData?.advise && (
-                <>
-                  <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                    <h6><strong>Advice Given:</strong></h6>
-                  </span>
-                  <ul className="mt-[7px]">
-                    <li className="relative ltr:pl-[15px]">{prescriptionsData.advise}</li>
-                  </ul>
-                </>
-              )}
+                  {/* Advice */}
+                  {prescriptionsData?.advise && (
+                    <>
+                      <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+                        <h6>
+                          <strong>Advice Given:</strong>
+                        </h6>
+                      </span>
+                      <ul className="mt-[7px]">
+                        <li className="relative ltr:pl-[15px]">
+                          {prescriptionsData.advise}
+                        </li>
+                      </ul>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
 
               <br />
               {/* <div className="flex-1 pl-4 mt-3"> */}
-              <div className="flex-1 pl-4 mt-3 flex flex-col">
-                  <div className="flex-1">
-                <ul>
-                  {prescriptionsData?.treatmentItems?.map((t, i) => (
-                    <li key={i}>
-                      • {t.treatment_name}({t.session_number}) - Next session: {t.next_treatment_session_interval_date}
-                    </li>
+              <div className="min-w-2/3 flex-1 pl-4 mt-3 flex flex-col">
+                <div className="flex-1">
+                  <ul>
+                    {prescriptionsData?.treatmentItems?.map((t, i) => (
+                      <li key={i}>
+                        • {t.treatment_name}({t.session_number}) - Next session:{" "}
+                        {t.next_treatment_session_interval_date}
+                      </li>
+                    ))}
+                  </ul>
+                  {prescriptionsData.items.map((item, i) => (
+                    <div key={i} className="flex">
+                      • {item.medicine_name}, ({item.dose_morning || "0"}+
+                      {item.dose_mid_day || "0"}+{item.dose_night || "0"}) -{" "}
+                      {item.duration_days ? `${item.duration_days} days` : ""}
+                    </div>
                   ))}
-                </ul>
-                {prescriptionsData.items.map((item, i) => (
-                  <div key={i} className="flex">
-                    •  {item.medicine_name},  ({item.dose_morning || "0"}+{item.dose_mid_day || "0"}+{item.dose_night || "0"}) - {item.duration_days ? `${item.duration_days} days` : ""}
-                  </div>
-                ))}
+                </div>
               </div>
-             </div>
             </div>
           </div>
 
           <div style={{ flexShrink: 0 }}>
-            {/* Footer */} 
+            {/* Footer */}
             <div className="text-right">
               <div className="italic">Electronic Signature</div>
-              <div className="font-bold">{prescriptionsData?.doctor?.doctor_name}</div>
+              <div className="font-bold">
+                {prescriptionsData?.doctor?.doctor_name}
+              </div>
             </div>
             <hr className="my-4 border-gray-300" />
 
             {/* Left Side - Footer Info */}
             <div className="text-center">
               <div className="font-bold">DRS DERMA</div>
-              <div>7/A, Main Road, Mohammadia Housing Society, Mohammadpur, Dhaka, Bangladesh, 1207</div>
               <div>
-                <span className="font-semibold">Phone:</span><span>+880 1670 600067 | </span>
-                <span className="font-semibold">Email:</span><span>info@drsdermabd.com</span>
+                7/A, Main Road, Mohammadia Housing Society, Mohammadpur, Dhaka,
+                Bangladesh, 1207
+              </div>
+              <div>
+                <span className="font-semibold">Phone:</span>
+                <span>+880 1670 600067 | </span>
+                <span className="font-semibold">Email:</span>
+                <span>info@drsdermabd.com</span>
               </div>
             </div>
             <div className="text-center mt-2 text-xs text-gray-300">
-            Software by: mapleitfirm.com
-          </div>
+              Software by: mapleitfirm.com
+            </div>
             {/* Left Side - Footer Info ENDS*/}
           </div>
         </div>

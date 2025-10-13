@@ -18,18 +18,15 @@ interface Invoice {
   doctor_fee: number;
   total_cost: number;
   due_amount: number;
-  next_session_date: string ; // ISO date string or null
+  next_session_date: string; // ISO date string or null
   previous_session_date: string | null; // ISO date string or null
   doctor_name: string;
   patient_name: string;
   mobile_number: string;
 }
 
-
 const InvoiceList: React.FC = () => {
-  const [invoices, setInvoices] = useState<Invoice[]>([
-   
-  ]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
 
   // console.log("allTreatment", allTreatment);
   const [filteredInvoice, setFilteredInvoice] = useState<Invoice[]>(invoices);
@@ -44,42 +41,39 @@ const InvoiceList: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
 
   const currentInvoice = filteredInvoice?.slice(startIndex, endIndex);
-  const [filterType, setFilterType] = useState<"All" | "Full" | "Partial" | "Unpaid">("All");
+  const [filterType, setFilterType] = useState<
+    "All" | "Full" | "Partial" | "Unpaid"
+  >("All");
 
+  useEffect(() => {
+    const applyFilters = () => {
+      let result: Invoice[] = invoices;
 
+      // Apply search filter
+      if (search) {
+        result = result?.filter(
+          (invoice) =>
+            invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
+            invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
+            invoice.invoice_number.toLowerCase().includes(search) ||
+            invoice.mobile_number.includes(search)
+        );
+      }
 
+      // Apply payment type filter
+      if (filterType !== "All") {
+        result = result?.filter((invoice) => {
+          const actualPaymentType = invoice.payment_type || "Unpaid";
+          return actualPaymentType === filterType;
+        });
+      }
 
+      setFilteredInvoice(result);
+      setCurrentPage(1);
+    };
 
-useEffect(() => {
-  const applyFilters = () => {
-    let result: Invoice[] = invoices;
-
-    // Apply search filter
-    if (search) {
-      result = result?.filter(
-        (invoice) =>
-          invoice.patient_name.toLowerCase().includes(search.toLowerCase()) ||
-          invoice.doctor_name.toLowerCase().includes(search.toLowerCase()) ||
-          invoice.invoice_number.toLowerCase().includes(search) ||
-          invoice.mobile_number.includes(search)
-      );
-    }
-
-    // Apply payment type filter
-    if (filterType !== "All") {
-      result = result?.filter((invoice) => {
-        const actualPaymentType = invoice.payment_type || "Unpaid";
-        return actualPaymentType === filterType;
-      });
-    }
-
-    setFilteredInvoice(result);
-    setCurrentPage(1);
-  };
-
-  applyFilters();
-}, [search, invoices, filterType]);
-
+    applyFilters();
+  }, [search, invoices, filterType]);
 
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -88,25 +82,24 @@ useEffect(() => {
     }
   };
 
- useEffect(() => {
-     const fetchInvoiceList = async () => {
-       try {
-         const res = await fetch("/api/invoice/invoice-list");
-         const data = await res.json();
- 
-         
-           setInvoices(data.formattedinvoiceList);
+  useEffect(() => {
+    const fetchInvoiceList = async () => {
+      try {
+        const res = await fetch("/api/invoice/invoice-list");
+        const data = await res.json();
+
+        setInvoices(data.formattedinvoiceList);
         console.log("Fetched Invoices:", data.formattedinvoiceList);
-       } catch (error) {
-         console.error("Error fetching invoices:", error);
-       }
-     };
- 
-     fetchInvoiceList();
-   }, []);
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
+
+    fetchInvoiceList();
+  }, []);
 
   //  const handleDelete = async (id: number) => {
-   
+
   //      //Sweet Alert for confirmation
   //        const swalWithBootstrapButtons = Swal.mixin({
   //          customClass: {
@@ -115,7 +108,7 @@ useEffect(() => {
   //          },
   //          buttonsStyling: true
   //        });
-      
+
   //        swalWithBootstrapButtons.fire({
   //          title: "Are you sure?",
   //          text: "You won't be able to revert this!",
@@ -127,7 +120,7 @@ useEffect(() => {
   //        }).then (async(result) => {
   //          if (result.isConfirmed) {
   //            swalWithBootstrapButtons.fire({
-   
+
   //              title: "Deleted!",
   //              text: "Invoice Has been successfully deleted.",
   //              icon: "success",
@@ -142,7 +135,7 @@ useEffect(() => {
   //                  if (!response.ok) {
   //                    throw new Error("Failed to delete invoice");
   //                  }
-                 
+
   //                  // Remove the deleted doctor from the state
   //                  setInvoices((prevInvoices) =>
   //                    prevInvoices.filter((invoice) => invoice.invoice_id !== id)
@@ -152,9 +145,9 @@ useEffect(() => {
   //                }
   //          }
   //        });
-   
+
   //    }
-console.log(currentInvoice)
+  console.log(currentInvoice);
   return (
     <>
       <div className="mb-[25px] md:flex items-center justify-between">
@@ -193,23 +186,25 @@ console.log(currentInvoice)
                 onChange={(e) => setSearch(e.target.value)}
               />
             </form>
-            
           </div>
 
-                                <div className="flex justify-start">
-                  <select
-                    onChange={(e) => setFilterType(e.target.value as "Full" | "Partial" | "Unpaid" | "All")}
-                    value={filterType}
-                    className="px-5 bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
-                  >
-                    <option value="All">Sort Payment Status</option>
-                    <option value="Full">Full</option>
-                    <option value="Partial">Partial</option>
-                    <option value="Unpaid">Unpaid</option>
-                  </select>
-              </div>
-          
-          
+          <div className="flex justify-start">
+            <select
+              onChange={(e) =>
+                setFilterType(
+                  e.target.value as "Full" | "Partial" | "Unpaid" | "All"
+                )
+              }
+              value={filterType}
+              className="px-5 bg-gray-50 border border-gray-50 h-[36px] text-xs rounded-md w-full block text-black placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
+            >
+              <option value="All">Sort Payment Status</option>
+              <option value="Full">Full</option>
+              <option value="Partial">Partial</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+
           {/* <div className="trezo-card-subtitle mt-[15px] sm:mt-0">
             <Link
               href="/doctor/invoice/create-invoice"
@@ -230,45 +225,42 @@ console.log(currentInvoice)
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] px-5 font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     ID
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Invoice Number
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Patient Name
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Mobile Number
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Doctor Name
                   </th>
-                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  {/* <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Treatment Name
                   </th> */}
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Prescribed Date
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
-                    Next Appointment Date
-                  </th>
 
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Total Cost
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Paid Amount
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Due
                   </th>
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Status
                   </th>
 
-                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px] px-[20px] text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
+                  <th className="whitespace-nowrap uppercase text-[10px] font-bold tracking-[1px] ltr:text-left rtl:text-right pt-0 pb-[12.5px]  text-gray-500 dark:text-gray-400 ltr:first:pl-0 rtl:first:pr-0 ltr:last:pr-0 rtl:first:pl-0">
                     Actions
                   </th>
                 </tr>
@@ -278,63 +270,65 @@ console.log(currentInvoice)
                 {currentInvoice?.length > 0 ? (
                   currentInvoice.map((treatment) => (
                     <tr key={treatment.invoice_id}>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-5  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-primary-500">
                           {treatment.invoice_id}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment.invoice_number}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment.patient_name}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment.mobile_number}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment.doctor_name}
                         </span>
                       </td>
 
-                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment.treatmentName}
                         </span>
                       </td> */}
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
-                          {new Date(treatment?.invoice_creation_date).toLocaleDateString()}
+                          {new Date(
+                            treatment?.invoice_creation_date
+                          ).toLocaleDateString()}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      {/* <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment?.next_session_date ? new Date(treatment?.next_session_date).toLocaleDateString(): "--"}
                         </span>
-                      </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      </td> */}
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="font-bold block text-xs text-gray-500 dark:text-gray-400">
-                        {treatment.total_cost}
+                          {treatment.total_cost}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="font-bold block text-xs text-gray-500 dark:text-gray-400">
                           {treatment.paid_amount}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span className="block text-xs font-semibold text-gray-500 dark:text-gray-400">
                           {treatment.due_amount}
                         </span>
                       </td>
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <span
                           className={`${
                             treatment.payment_type === "Full"
@@ -342,17 +336,19 @@ console.log(currentInvoice)
                               : treatment.payment_type === "Partial"
                               ? "bg-yellow-600"
                               : "bg-red-500"
-                    
-                              
                           } px-2 py-1 rounded text-xs font-semibold text-gray-100`}
                         >
-                             {treatment.payment_type === "Full" ? "Paid" : (treatment.payment_type ? treatment.payment_type : "Unpaid")}
+                          {treatment.payment_type === "Full"
+                            ? "Paid"
+                            : treatment.payment_type
+                            ? treatment.payment_type
+                            : "Unpaid"}
                         </span>
                       </td>
 
-                      <td className="ltr:text-left rtl:text-right whitespace-nowrap px-[20px] py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
+                      <td className="ltr:text-left rtl:text-right whitespace-nowrap  py-[12.5px] ltr:first:pl-0 rtl:first:pr-0 border-b border-primary-50 dark:border-[#172036] ltr:last:pr-0 rtl:last:pl-0">
                         <div className="flex items-center gap-[9px]">
-                 {/* {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
+                          {/* {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
                             <button
                               type="button"
                               className="text-primary-500 leading-none custom-tooltip"
@@ -363,19 +359,25 @@ console.log(currentInvoice)
                               </i>
                             </button>
                           )} */}
- {treatment.payment_type && treatment.payment_type !== 'Unpaid' && (
-                        <Link href={`/doctor/invoice/view-invoice/${treatment.invoice_id}`}>
-                          <button
-                            type="button"
-                            className="text-primary-500 leading-none custom-tooltip"
-                            // onClick={() => setOpen(true)}
+                          {treatment.payment_type &&
+                            treatment.payment_type !== "Unpaid" && (
+                              <Link
+                                href={`/doctor/invoice/view-invoice/${treatment.invoice_id}`}
+                              >
+                                <button
+                                  type="button"
+                                  className="text-primary-500 leading-none custom-tooltip"
+                                  // onClick={() => setOpen(true)}
+                                >
+                                  <i className="material-symbols-outlined !text-md">
+                                    visibility
+                                  </i>
+                                </button>
+                              </Link>
+                            )}
+                          <Link
+                            href={`/doctor/invoice/create-invoice/${treatment.invoice_id}`}
                           >
-                            <i className="material-symbols-outlined !text-md">
-                              visibility
-                            </i>
-                          </button>
-                          </Link>)}
-                          <Link href={`/doctor/invoice/create-invoice/${treatment.invoice_id}`}>
                             <button
                               type="button"
                               className="text-gray-500 dark:text-gray-400 leading-none custom-tooltip"
