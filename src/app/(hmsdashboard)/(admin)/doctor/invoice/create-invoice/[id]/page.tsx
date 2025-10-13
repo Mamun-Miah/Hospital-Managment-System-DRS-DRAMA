@@ -123,7 +123,8 @@ const EditInvoice: React.FC = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        router.push("/doctor/invoice/invoice-list/");
+        // router.push("/doctor/invoice/invoice-list/");
+        router.push(`/doctor/invoice/view-invoice/${id}`);
       } else {
         Swal.fire({
           icon: "error",
