@@ -38,6 +38,12 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
       const createRole = session?.user.permissions.includes("create-role");
       const allStaff = session?.user.permissions.includes("all-staff");
       const appoinmentRequest = session?.user.permissions.includes("appoinment-request");
+
+      const adviseList = session?.user.permissions.includes("advise-list");
+      const doctorList = session?.user.permissions.includes("doctor-list");
+      const dashboard = session?.user.permissions.includes("dashboard");
+      const treatmentList = session?.user.permissions.includes("treatment-list");
+      const medicineList = session?.user.permissions.includes("medicine-list");
    
 
     // const role = session.user?.role;
@@ -76,23 +82,23 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
 
             <div className="accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
                   
-
+              {dashboard && (
                <Link href="/dashboard/">      
-              <button
-                className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
-                  pathname === "/dashboard/" ? "active" : ""
-                }`}
-                type="button"
-                onClick={() => toggleAccordion(0)}
-              >
-                <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
-                  dashboard
-                </i>
-                <span className="title leading-none">Dashboard</span>
-                
-              </button>
+                  <button
+                    className={`accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative hover:bg-gray-50 text-left dark:hover:bg-[#15203c] ${
+                      pathname === "/dashboard/" ? "active" : ""
+                    }`}
+                    type="button"
+                    onClick={() => toggleAccordion(0)}
+                  >
+                    <i className="material-symbols-outlined transition-all text-gray-500 dark:text-gray-400 ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px">
+                      dashboard
+                    </i>
+                    <span className="title leading-none">Dashboard</span>
+                    
+                  </button>
               </Link> 
-
+              )}
               <div
                 className={`accordion-collapse ${
                   openIndex === 0 ? "open" : "hidden"
@@ -1514,6 +1520,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                 </div>
               </div>
             </div>
+            {doctorList && (
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link
               href="/doctor/doctor-list/"
@@ -1531,6 +1538,8 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                  Doctor List
               </Link>
             </div>
+            )}
+            {treatmentList && (
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link
               href="/doctor/add-treatment/treatment-list/"
@@ -1548,7 +1557,8 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                  Treatment List
               </Link>
             </div>
-            {prescriptionList && (
+            )}
+            {adviseList && (
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link
               href="/doctor/advise/"
@@ -1567,7 +1577,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
               </Link>
             </div>
             )}
-
+            {medicineList && (
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link
               href="/doctor/medicine/"
@@ -1585,6 +1595,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ toggleActive }) => {
                  Medicine List
               </Link>
             </div>
+            )}
             {todayAppoinments &&(
             <div className=" hover:cursor-pointer accordion-item rounded-md text-black dark:text-white mb-[5px] whitespace-nowrap">
               <Link

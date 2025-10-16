@@ -118,6 +118,41 @@ export default function EditRolePage() {
           icon: <UserCheck className="h-4 w-4" />,
           checked: false,
         },
+        {
+      permission_id: "dashboard",
+      id: "43",
+      name: "DashBoard",
+      icon: <UserCheck className="h-4 w-4" />,
+      checked: false,
+    },
+    {
+      permission_id: "advise-list",
+      id: "39",
+      name: "Advise List",
+      icon: <UserCheck className="h-4 w-4" />,
+      checked: false,
+    },
+    {
+      permission_id: "treatment-list",
+      id: "40",
+      name: "Treatment List",
+      icon: <UserCheck className="h-4 w-4" />,
+      checked: false,
+    },
+    {
+      permission_id: "medicine-list",
+      id: "41",
+      name: "Medicine List",
+      icon: <UserCheck className="h-4 w-4" />,
+      checked: false,
+    },
+    {
+      permission_id: "doctor-list",
+      id: "42",
+      name: "Doctor List",
+      icon: <UserCheck className="h-4 w-4" />,
+      checked: false,
+    },
 
     // Existing HMS Permissions
     {
