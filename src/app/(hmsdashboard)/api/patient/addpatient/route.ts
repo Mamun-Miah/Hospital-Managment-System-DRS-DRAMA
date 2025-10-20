@@ -65,7 +65,7 @@
             : new Date(),
           age,
           blood_group,
-          marital_status,
+          marital_status: marital_status || null,
           note,
           weight: weight || null, // latest weight
           emergency_contact_phone: emergencyContactNumber,

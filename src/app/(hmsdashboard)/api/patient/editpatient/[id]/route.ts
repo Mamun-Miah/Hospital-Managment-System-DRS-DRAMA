@@ -37,7 +37,7 @@ export async function PATCH(
       set_next_appoinmnet: data.set_next_appoinmnet ? new Date(data.set_next_appoinmnet) : new Date(),
       age: data.age,
       blood_group: data.blood_group,
-      marital_status: data.marital_status,
+      marital_status: data.marital_status? data.marital_status : null,
       note: data.note,
       weight: data.weight !== undefined && data.weight !== null ? Number(data.weight).toFixed(2) : undefined,
       emergency_contact_phone: data.emergency_contact_phone,
