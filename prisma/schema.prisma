@@ -241,16 +241,16 @@ model Prescription {
 }
 
 model PrescriptionItem {
-  item_id         Int     @id @default(autoincrement())
+  item_id         Int          @id @default(autoincrement())
   prescription_id Int
   medicine_id     Int?
   dose_morning    String?
   dose_mid_day    String?
   dose_night      String?
   duration_days   Int?
-
-  prescription Prescription @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
-  medicine     Medicine?    @relation(fields: [medicine_id], references: [medicine_id])
+  medicine_advise String?      @db.Text
+  prescription    Prescription @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
+  medicine        Medicine?    @relation(fields: [medicine_id], references: [medicine_id])
 
   treatmentLinks            PrescriptionTreatmentItem[]
   Treatmentlist             Treatmentlist?              @relation(fields: [treatmentlistTreatment_id], references: [treatment_id])
