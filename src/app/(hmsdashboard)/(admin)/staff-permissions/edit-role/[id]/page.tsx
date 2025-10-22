@@ -301,8 +301,10 @@ export default function EditRolePage() {
       return updatedPermissions
     })
   }
-  
+   
 
+
+  
   const handleUpdate = async () => {
     const selectedPermissions = permissions.filter((p) => p.checked)
     const permissionsId = selectedPermissions.map((p) => p.id)
