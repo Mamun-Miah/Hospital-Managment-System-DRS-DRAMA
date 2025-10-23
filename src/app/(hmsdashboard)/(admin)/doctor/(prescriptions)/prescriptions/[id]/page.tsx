@@ -59,6 +59,7 @@ interface Medicine {
   // Add these new optional properties
   newMedicineName?: string;
   newMedicineBrandName?: string;
+  medicine_advise: string;
 }
 
 interface Doctor {
@@ -217,6 +218,8 @@ const AddAppointment: React.FC = () => {
   //Set Loading State
   const [loading, setLoading] = useState(false);
 
+  // console.log(medicines);
+  // console.log(formData);
   async function getPrescribedData(id: string) {
     setLoading(true);
     try {
@@ -226,7 +229,7 @@ const AddAppointment: React.FC = () => {
       }
       const result = await res.json();
       const data = result.data;
-      console.log("Data", data);
+      // console.log("Data", data);
       //get medicines value
       const medicines = data.medicines;
 
@@ -317,7 +320,7 @@ const AddAppointment: React.FC = () => {
         medicines: [...medicines],
         treatments: [...treatments],
       };
-      console.log("Sending:", prescribedData);
+      console.log("Prescribed Data:", prescribedData);
 
       const res = await fetch("/api/appoinments/save-appoinments", {
         method: "POST",
@@ -342,7 +345,7 @@ const AddAppointment: React.FC = () => {
         timer: 1500,
       });
       // alert("Prescription saved successfully!");
-      router.push("/doctor/appointment/");
+      // router.push("/doctor/appointment/");
     } catch (err: any) {
       console.error("Submission error:", err);
       setError(err.message || "Failed to submit");
@@ -611,6 +614,7 @@ const AddAppointment: React.FC = () => {
         // Add these new properties for local state
         newMedicineName: "",
         newMedicineBrandName: "",
+        medicine_advise: "",
       },
     ]);
   };
@@ -679,9 +683,11 @@ const AddAppointment: React.FC = () => {
   };
   const handleMedicineChange = (
     medIndex: number,
-    key: "name" | "duration",
+    key: "name" | "duration" | "medicine_advise",
     value: string | number
   ) => {
+    // console.log("formData", formData);
+    console.log("medicines", medicines);
     setMedicines((prev) => {
       const updated = [...prev];
       updated[medIndex] = {
@@ -758,7 +764,7 @@ const AddAppointment: React.FC = () => {
       .then((data) => setAdvises(data.advises));
   }, []);
 
-  console.log("advises", advises);
+  // console.log("advises", advises);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const filesArray = Array.from(event.target.files);
@@ -770,8 +776,8 @@ const AddAppointment: React.FC = () => {
     setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
-  console.log(formData);
-  console.log(treatments);
+  // console.log(formData);
+  // console.log(treatments);
 
   // handle select advise
   const handleSelectAdvise = (event: any) => {
@@ -1337,6 +1343,22 @@ const AddAppointment: React.FC = () => {
                     placeholder="0"
                     onClick={() => handleMouseEnter("duration")}
                     className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+                  />
+                </div>
+                <div className="mt-5">
+                  <textarea
+                    // type="text"
+
+                    value={medicine.medicine_advise}
+                    onChange={(e) =>
+                      handleMedicineChange(
+                        index,
+                        "medicine_advise",
+                        e.target.value
+                      )
+                    }
+                    placeholder="Advise"
+                    className="pt-3 h-[125px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[10px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500"
                   />
                 </div>
               </div>

@@ -6,7 +6,6 @@ import { useRef, useCallback } from "react";
 import html2pdf from "html2pdf.js";
 import BarcodeComponent from "@/components/Doctor/BarCodeComponent";
 
-
 export interface Prescription {
   prescription_id: number;
   prescribed_at: string;
@@ -46,19 +45,17 @@ export interface Doctor {
   doctor_name: string;
   phone_number: string;
   specialization: string;
-  designation: string
+  designation: string;
 }
 
 export interface PrescriptionItem {
   item_id: number;
-
-
   dose_morning: string | null;
   dose_mid_day: string | null;
   dose_night: string | null;
   duration_days: number | null;
   medicine_name: string | null;
-
+  medicine_advise: string | null;
 }
 
 export interface TreatmentItem {
@@ -86,8 +83,9 @@ function DownloadPDFButton({
 
     const element = prescriptionRef.current;
 
-    const patientName = prescriptionsData?.patient.patient_name || "prescription";
-    const dateStr = prescriptionsData?.prescribed_at
+    const patientName =
+      prescriptionsData?.patient.patient_name || "prescription";
+    const dateStr = prescriptionsData?.prescribed_at;
     // ? new Date(prescriptionsData.prescribed_at).toISOString().split("T")[0]
     // : new Date().toISOString().split("T")[0];
     const filename = `${patientName.replace(/\s+/g, "_")}_${dateStr}.pdf`;
@@ -107,10 +105,7 @@ function DownloadPDFButton({
 
     // Disable the button visually could be added here if desired
     try {
-      html2pdf()
-        .set(opt)
-        .from(element)
-        .save();
+      html2pdf().set(opt).from(element).save();
     } catch (err: unknown) {
       console.error("PDF generation failed:", err);
     }
@@ -133,12 +128,11 @@ function DownloadPDFButton({
   );
 }
 
-
-
-
 export default function Page() {
+  const [prescriptionsData, setPrescriptionsData] =
+    useState<Prescription | null>(null);
 
-  const [prescriptionsData, setPrescriptionsData] = useState<Prescription | null>(null);
+  console.log(prescriptionsData);
   const prescriptionRef = useRef<HTMLDivElement | null>(null);
 
   const params = useParams();
@@ -152,8 +146,11 @@ export default function Page() {
 
     const element = prescriptionRef.current;
 
-    const patientName = prescriptionsData?.patient.patient_name || "prescription";
-    const dateStr = prescriptionsData?.prescribed_at || new Date().toISOString().split("T")[0];
+    const patientName =
+      prescriptionsData?.patient.patient_name || "prescription";
+    const dateStr =
+      prescriptionsData?.prescribed_at ||
+      new Date().toISOString().split("T")[0];
     const filename = `${patientName.replace(/\s+/g, "_")}_${dateStr}.pdf`;
 
     const opt = {
@@ -174,7 +171,9 @@ export default function Page() {
 
       // Generate PDF and get Blob
       await worker.toPdf();
-      const pdf = await worker.get("pdf") as { output: (type: string) => Blob };
+      const pdf = (await worker.get("pdf")) as {
+        output: (type: string) => Blob;
+      };
       const blob = pdf.output("blob");
       const blobUrl = URL.createObjectURL(blob);
 
@@ -222,7 +221,6 @@ export default function Page() {
     }
   };
 
-
   useEffect(() => {
     if (!prescriptionId) return;
 
@@ -230,7 +228,9 @@ export default function Page() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/prescription/view-prescription/${prescriptionId}`);
+        const response = await fetch(
+          `/api/prescription/view-prescription/${prescriptionId}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch prescription");
         }
@@ -252,9 +252,6 @@ export default function Page() {
   if (!prescriptionsData || !prescriptionsData.patient) {
     return <div>Loading...</div>;
   }
-
-
-  console.log('prescriptionsData', prescriptionsData)
 
   return (
     <>
@@ -279,8 +276,6 @@ export default function Page() {
             prescriptionRef={prescriptionRef}
             prescriptionsData={prescriptionsData}
           />
-
-
         </div>
       </div>
 
@@ -288,20 +283,25 @@ export default function Page() {
         id="prescription-view"
         className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md"
       >
-
         <div className="trezo-card-content">
           <div className="sm:flex justify-between">
             <div className="mt-8">
               <h4 className="!mb-[7px] !text-[20px] !font-semibold">
-                {prescriptionsData.is_drs_derma === "Yes" ? "DRS DERMA" : prescriptionsData?.doctor?.doctor_name}
+                {prescriptionsData.is_drs_derma === "Yes"
+                  ? "DRS DERMA"
+                  : prescriptionsData?.doctor?.doctor_name}
               </h4>
               <span className="block md:text-md mt-[5px]">
-                {prescriptionsData.is_drs_derma === "Yes" ? "" : prescriptionsData?.doctor?.designation}
+                {prescriptionsData.is_drs_derma === "Yes"
+                  ? ""
+                  : prescriptionsData?.doctor?.designation}
               </span>
               <div className="sm:flex justify-between mt-[10px]">
                 <ul className="mb-[7px] sm:mb-0">
                   <li className="mb-[7px] last:mb-0">
-                    <span className="text-black dark:text-white">{prescriptionsData?.doctor?.specialization ?? ""}</span>
+                    <span className="text-black dark:text-white">
+                      {prescriptionsData?.doctor?.specialization ?? ""}
+                    </span>
                   </li>
                   {/* <li className="mb-[7px] last:mb-0">
                         Degree:{" "}
@@ -335,7 +335,6 @@ export default function Page() {
                 height={26}
               />
 
-
               <span className="block md:text-md mt-[5px]">
                 Dhaka, Bangladesh
               </span>
@@ -351,36 +350,55 @@ export default function Page() {
           <div className="sm:flex justify-between mt-[10px]">
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] last:mb-0">
-                ID: <span className="text-black dark:text-white">{prescriptionsData?.patient_id ?? ""}</span>
+                ID:{" "}
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient_id ?? ""}
+                </span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Name:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.patient_name ?? ""}</span>
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient.patient_name ?? ""}
+                </span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Address:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.city ?? ""}</span>
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient.city ?? ""}
+                </span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Mobile Number:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.mobile_number ?? ""}</span>
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient.mobile_number ?? ""}
+                </span>
               </li>
             </ul>
             <ul className="mb-[7px] sm:mb-0">
               <li className="mb-[7px] last:mb-0">
                 Gender :{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.gender ?? ""}</span>
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient.gender ?? ""}
+                </span>
               </li>
               <li className="mb-[7px] last:mb-0">
-                Age: <span className="text-black dark:text-white">{prescriptionsData?.patient.age ?? ""}</span>
+                Age:{" "}
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient.age ?? ""}
+                </span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Blood Group:{" "}
-                <span className="text-black dark:text-white">{prescriptionsData?.patient.blood_group ?? ""}</span>
+                <span className="text-black dark:text-white">
+                  {prescriptionsData?.patient.blood_group ?? ""}
+                </span>
               </li>
               <li className="mb-[7px] last:mb-0">
                 Weight:
-                <span className="text-black dark:text-white"> {prescriptionsData?.patient.weight ?? ""} KG</span>
+                <span className="text-black dark:text-white">
+                  {" "}
+                  {prescriptionsData?.patient.weight ?? ""} KG
+                </span>
               </li>
             </ul>
             <div>
@@ -416,7 +434,10 @@ export default function Page() {
 
                 <tbody className="text-sm text-black dark:text-white">
                   {prescriptionsData.treatmentItems.map((treatment, index) => (
-                    <tr key={index} className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#1b253b] dark:even:bg-[#1e2a47]">
+                    <tr
+                      key={index}
+                      className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#1b253b] dark:even:bg-[#1e2a47]"
+                    >
                       <td className="text-left py-2 px-4 border-b border-gray-100 dark:border-[#2a3a5b]">
                         {treatment.treatment_name}
                       </td>
@@ -430,8 +451,6 @@ export default function Page() {
                   ))}
                 </tbody>
               </table>
-
-
             </div>
           </div>
           <span className="block font-semibold text-black dark:text-white text-[20px] mt-[0px] mb-2">
@@ -463,9 +482,12 @@ export default function Page() {
                     .filter((item) => item.medicine_name !== null) // Only render medicines
                     .map((item, index) => {
                       const dosageParts = [];
-                      if (item.dose_morning) dosageParts.push(`${item.dose_morning} Morning`);
-                      if (item.dose_mid_day) dosageParts.push(`${item.dose_mid_day} Midday`);
-                      if (item.dose_night) dosageParts.push(`${item.dose_night} Night`);
+                      if (item.dose_morning)
+                        dosageParts.push(`${item.dose_morning} Morning`);
+                      if (item.dose_mid_day)
+                        dosageParts.push(`${item.dose_mid_day} Midday`);
+                      if (item.dose_night)
+                        dosageParts.push(`${item.dose_night} Night`);
                       const dosage = dosageParts.join(" - ") || "N/A";
 
                       return (
@@ -477,20 +499,21 @@ export default function Page() {
                             {dosage}
                           </td>
                           <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
-                            {item.duration_days ? `${item.duration_days} Days` : "N/A"}
+                            {item.duration_days
+                              ? `${item.duration_days} Days`
+                              : "N/A"}
                           </td>
                         </tr>
                       );
                     })}
                 </tbody>
-
               </table>
             </div>
           </div>
 
           <div className="h-[1px] bg-gray-100 dark:bg-[#172036] -mx-[20px] md:-mx-[25px] lg:mt-[32px]"></div>
           {/* C/C (Chief Complaint) */}
-          <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
+          <span className="block font-semibold text-black dark:text-white t-[20px] md:mt-[25px]m">
             <h5 className="">C/C (Chief Complaint)</h5>
           </span>
 
@@ -510,7 +533,6 @@ export default function Page() {
               {prescriptionsData?.drug_history_dh ?? ""}
             </li>
           </ul>
-
 
           {/* R/F (Relevant Findings) */}
           <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
@@ -567,6 +589,7 @@ export default function Page() {
 
       {/* prescription pdf starts here  */}
       <div className="pdf-only" style={{ display: "none" }}>
+      {/* <div className="pdf-only"> */}
         <div
           id="prescription-pdf"
           ref={(el) => {
@@ -585,48 +608,46 @@ export default function Page() {
           <div style={{ flex: "1 0 auto" }}>
             {/* Main Content */}
             {/* Header Row */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-start">
-              {/* Doctor Info */}
-              <div className="max-w-[70%]">
-                <h2 className="text-lg font-bold">
-                  {prescriptionsData?.doctor?.doctor_name}
-                </h2>
-                <p className="text-sm">
-                  {prescriptionsData?.doctor?.designation}
-                </p>
-                <p className="text-sm">
-                  {prescriptionsData?.doctor?.specialization}
-                </p>
-              </div>
-
-              {/* Hospital Logo */}
-              <div className="mt-4 mr-2 md:mt-0">
+            <div className="flex items-center justify-center">
+              <div className="text-center">
                 <div>
                   <Image
-                    src="/images/logo.png"
+                    src="/images/logo-org.png"
                     alt="logo"
-                    width={120}
+                    width={220}
                     height={40}
                   />
                 </div>
 
-                <div className="text-sm">
-                  Trusted Center for Skin,
-                  <br /> Hair & Sexual Health{" "}
+                <div className="text-[11px] mt-3">
+                  Trusted Center for Skin, Hair & Sexual Health{" "}
                 </div>
               </div>
             </div>
 
             {/* Patient + Visit Info */}
-            <div className="flex flex-col md:flex-row justify-between mt-6">
+            <div className="flex flex-col md:flex-row justify-between items-end -mt-10">
               {/* Left */}
+
               <div>
+                <div className="pb-3">
+                  <div className="text-lg font-bold pb-0">
+                    {prescriptionsData?.is_drs_derma === "Yes"
+                      ? "DRS DERMA"
+                      : prescriptionsData?.doctor?.doctor_name}
+                  </div>
+                  {prescriptionsData.is_drs_derma === "Yes" || (
+                    <p className="text-sm !pt-0">
+                      {prescriptionsData?.doctor?.designation}
+                    </p>
+                  )}
+                </div>
                 <BarcodeComponent
                   value={`${prescriptionsData?.prescription_id}`}
                   width={3}
                   height={25}
                 />
-                <div>
+                {/* <div>
                   <strong>Patient ID:</strong> {prescriptionsData?.patient_id}
                 </div>
                 <div>
@@ -638,17 +659,39 @@ export default function Page() {
                 </div>
                 <div>
                   <strong>Address:</strong> {prescriptionsData?.patient.city}
-                </div>
+                </div> */}
               </div>
+              {/* <div className="text-center">
+                <div>
+                  <Image
+                    src="/images/logo-org.png"
+                    alt="logo"
+                    width={220}
+                    height={40}
+                  />
+                </div>
 
+                <div className="text-[11px] mt-3">
+                  Trusted Center for Skin, Hair & Sexual Health{" "}
+                </div>
+              </div> */}
               {/* Right */}
               <div className="mt-4 md:mt-0">
+                <div className="mb-3">
+                  <span>
+                    <strong>Date:</strong> {prescriptionsData?.prescribed_at}
+                  </span>
+                  {/* <span>
+                    <strong>Time: </strong>
+                    {prescriptionsData?.prescribed_at_time}
+                  </span> */}
+                </div>
                 <BarcodeComponent
                   value={`${prescriptionsData?.prescription_id}`}
                   width={3}
                   height={25}
                 />
-                <div>
+                {/* <div>
                   <strong>Prescription ID:</strong>{" "}
                   {prescriptionsData?.prescription_id}
                 </div>
@@ -662,10 +705,71 @@ export default function Page() {
                 </div>
                 <div>
                   <strong>Gender:</strong> {prescriptionsData?.patient.gender}
-                </div>
+                </div> */}
               </div>
             </div>
+            <div className="mt-3 flex gap-x-3 gap-y-2 flex-wrap">
+              <span>
+                <strong>Patient ID:</strong> {prescriptionsData?.patient_id},
+              </span>
+              <span>
+                <strong>Name:</strong> {prescriptionsData?.patient.patient_name}
+                ,
+              </span>
 
+              <span>
+                {" "}
+                <strong>Age:</strong>{" "}
+                {prescriptionsData?.patient.age ? (
+                  prescriptionsData?.patient.age
+                ) : (
+                  <span className="inline-block w-15"></span>
+                )}
+                ,
+              </span>
+
+              <span>
+                <strong>Prescription ID:</strong>{" "}
+                {prescriptionsData?.prescription_id},
+              </span>
+
+              <span>
+                <strong>Gender:</strong>{" "}
+                {prescriptionsData?.patient?.gender ? (
+                  prescriptionsData?.patient?.gender
+                ) : (
+                  <span className="inline-block w-15"></span>
+                )}
+                ,
+              </span>
+
+              {
+                <span>
+                  <strong>Address: </strong>
+                  {prescriptionsData?.patient?.city ? (
+                    prescriptionsData?.patient?.city
+                  ) : (
+                    <span className="inline-block w-15"></span>
+                  )}
+                  ,
+                </span>
+              }
+
+              {/* <span> {prescriptionsData?.prescription_id}</span> */}
+              {/* <span>
+                <strong>Visit Date:</strong>
+                {prescriptionsData?.prescribed_at},
+              </span> */}
+
+              <span>
+                <strong>Next Visit:</strong>{" "}
+                {prescriptionsData?.next_visit_date ? (
+                  prescriptionsData?.next_visit_date
+                ) : (
+                  <span className="inline-block w-15"></span>
+                )}
+              </span>
+            </div>
             <hr className="my-6 border-gray-300" />
 
             {/* Prescription Body */}
@@ -681,12 +785,10 @@ export default function Page() {
                   {/* Chief Complaint */}
                   {prescriptionsData?.chief_complaint_cc && (
                     <>
-                      <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                        <h6>
-                          <strong>C/C (Chief Complaint)</strong>
-                        </h6>
+                      <span className="block  text-black dark:text-white mt-[20px] md:mt-[25px]">
+                        <strong>C/C (Chief Complaint)</strong>
                       </span>
-                      <ul className="mt-[7px]">
+                      <ul className="mt-[3px]">
                         <li className="relative ltr:pl-[15px]">
                           {prescriptionsData.chief_complaint_cc}
                         </li>
@@ -698,11 +800,9 @@ export default function Page() {
                   {prescriptionsData?.drug_history_dh && (
                     <>
                       <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                        <h6>
-                          <strong>D/H (Drug History)</strong>
-                        </h6>
+                        <p className="font-bold">D/H (Drug History)</p>
                       </span>
-                      <ul className="mt-[7px]">
+                      <ul className="mt-[3px]">
                         <li className="relative ltr:pl-[15px]">
                           {prescriptionsData.drug_history_dh}
                         </li>
@@ -714,11 +814,9 @@ export default function Page() {
                   {prescriptionsData?.relevant_findings_rf && (
                     <>
                       <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                        <h6>
-                          <strong>R/F (Relevant Findings)</strong>
-                        </h6>
+                        <p className="font-bold">R/F (Relevant Findings)</p>
                       </span>
-                      <ul className="mt-[7px]">
+                      <ul className="mt-[3px]">
                         <li className="relative ltr:pl-[15px]">
                           {prescriptionsData.relevant_findings_rf}
                         </li>
@@ -730,9 +828,7 @@ export default function Page() {
                   {prescriptionsData?.on_examination_oe && (
                     <>
                       <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                        <h6>
-                          <strong>O/E (On Examination)</strong>
-                        </h6>
+                        <p className="font-bold">O/E (On Examination)</p>
                       </span>
                       <ul className="mt-[7px]">
                         <li className="relative ltr:pl-[15px]">
@@ -746,9 +842,11 @@ export default function Page() {
                   {prescriptionsData?.advise && (
                     <>
                       <span className="block font-semibold text-black dark:text-white mt-[20px] md:mt-[25px]">
-                        <h6>
+                        {/* <h6>
                           <strong>Advice Given:</strong>
-                        </h6>
+                        </h6> */}
+
+                        <p className="font-bold">Advice Given:</p>
                       </span>
                       <ul className="mt-[7px]">
                         <li className="relative ltr:pl-[15px]">
@@ -762,8 +860,9 @@ export default function Page() {
 
               <br />
               {/* <div className="flex-1 pl-4 mt-3"> */}
-              <div className="min-w-2/3 flex-1 pl-4 mt-3 flex flex-col">
+              <div className="min-w-2/3 flex-1 pl-4 mt-5 flex flex-col">
                 <div className="flex-1">
+                  <p className="font-bold !mb-0 !pb-0 ">Treatments:</p>
                   <ul>
                     {prescriptionsData?.treatmentItems?.map((t, i) => (
                       <li key={i}>
@@ -772,13 +871,28 @@ export default function Page() {
                       </li>
                     ))}
                   </ul>
-                  {prescriptionsData.items.map((item, i) => (
-                    <div key={i} className="flex">
-                      • {item.medicine_name}, ({item.dose_morning || "0"}+
-                      {item.dose_mid_day || "0"}+{item.dose_night || "0"}) -{" "}
-                      {item.duration_days ? `${item.duration_days} days` : ""}
-                    </div>
-                  ))}
+
+                  <p className="font-bold mt-5 !mb-0 !pb-0">Medicines:</p>
+                  <ul>
+                    {prescriptionsData.items.map((item, i) => (
+                      <span key={i}>
+                        <li className="flex">
+                          •{" "}
+                          <span className="font-semibold">
+                            {item.medicine_name}
+                          </span>
+                          , ({item.dose_morning || "0"}+
+                          {item.dose_mid_day || "0"}+{item.dose_night || "0"}) -{" "}
+                          {item.duration_days
+                            ? `${item.duration_days} days`
+                            : ""}
+                        </li>
+                        <li className="mt-1 pb-2 pl-5">
+                          -{item?.medicine_advise && item.medicine_advise}
+                        </li>
+                      </span>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
@@ -786,11 +900,13 @@ export default function Page() {
 
           <div style={{ flexShrink: 0 }}>
             {/* Footer */}
-            <div className="text-right">
-              <div className="italic">Electronic Signature</div>
-              <div className="font-bold">
+            <div className="flex items-center justify-end">
+              <p className="w-30 italic relative before:content-[''] before:absolute before:top-2 before:-left-6 before:w-full before:h-[1px] before:bg-gray-300">
+                Signature
+              </p>
+              {/* <div className="font-bold">
                 {prescriptionsData?.doctor?.doctor_name}
-              </div>
+              </div> */}
             </div>
             <hr className="my-4 border-gray-300" />
 

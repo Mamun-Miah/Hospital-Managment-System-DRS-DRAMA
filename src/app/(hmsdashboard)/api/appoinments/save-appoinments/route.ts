@@ -2,18 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { generateInvoiceNumber } from "@/lib/invoice";
 import { generatePrescriptionNumber } from "@/lib/prescriptionIdGeneration";
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
-  if (!session?.user.permissions?.includes("todays-appointment")){
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!session?.user.permissions?.includes("todays-appointment")) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   try {
     const data = await req.json();
-    console.log(data)
     const {
       patient_id,
       doctor_name,
@@ -112,6 +111,7 @@ export async function POST(req: NextRequest) {
             dose_mid_day: dosages.dose_mid_day,
             dose_night: dosages.dose_night,
             duration_days: parseInt(med.duration),
+            medicine_advise: med.medicine_advise,
           },
         });
       }
@@ -130,9 +130,11 @@ export async function POST(req: NextRequest) {
           data: {
             prescription_id: prescriptionId,
             patient_id,
-            session_number: treat.session_number == 0? 1: treat.session_number,
+            session_number:
+              treat.session_number == 0 ? 1 : treat.session_number,
             treatment_id: treatment.treatment_id,
-            next_treatment_session_interval_date:treat.nextTreatmentSessionInterval || "",
+            next_treatment_session_interval_date:
+              treat.nextTreatmentSessionInterval || "",
             discount_type:
               treat.discountType === "Flat Rate"
                 ? "Flat"
@@ -155,7 +157,7 @@ export async function POST(req: NextRequest) {
       orderBy: { invoice_creation_date: "desc" },
     });
 
-      if (
+    if (
       latestInvoice &&
       typeof latestInvoice.due_amount === "number" &&
       latestInvoice.due_amount > 0
@@ -163,7 +165,6 @@ export async function POST(req: NextRequest) {
       previousDue = latestInvoice.due_amount;
       newDueAmount = previousDue; // starting due
     }
-
 
     // Generate invoice number
     const invoiceNumber = await generateInvoiceNumber(patient_id);

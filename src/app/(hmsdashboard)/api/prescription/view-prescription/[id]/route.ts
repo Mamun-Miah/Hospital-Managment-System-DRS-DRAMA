@@ -1,11 +1,11 @@
-import prisma from "@/lib/prisma"; 
+import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import crypto from "crypto";
 
 export async function GET(
-  request: NextRequest, 
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -27,7 +27,10 @@ export async function GET(
     }
 
     // 4. Allow access if session has permission OR token is valid
-    if (!session?.user.permissions?.includes("prescription-list") && !tokenValid) {
+    if (
+      !session?.user.permissions?.includes("prescription-list") &&
+      !tokenValid
+    ) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -82,6 +85,7 @@ export async function GET(
             dose_night: true,
             duration_days: true,
             medicine: { select: { name: true } },
+            medicine_advise: true,
           },
         },
         treatmentItems: {
@@ -105,28 +109,43 @@ export async function GET(
     });
 
     if (!prescription) {
-      return NextResponse.json({ error: "Prescription not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Prescription not found" },
+        { status: 404 }
+      );
     }
 
     // Format dates
     const prescribedDate = new Date(prescription.prescribed_at);
-    const formattedPrescribedDate = `${String(prescribedDate.getDate()).padStart(2,"0")}.${String(prescribedDate.getMonth()+1).padStart(2,"0")}.${prescribedDate.getFullYear()}`;
-    const nextVisitDate = prescription.next_visit_date ? new Date(prescription.next_visit_date) : null;
+    const formattedPrescribedDate = `${String(
+      prescribedDate.getDate()
+    ).padStart(2, "0")}.${String(prescribedDate.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}.${prescribedDate.getFullYear()}`;
+    const nextVisitDate = prescription.next_visit_date
+      ? new Date(prescription.next_visit_date)
+      : null;
     const formattedNextVisitDate = nextVisitDate
-      ? `${String(nextVisitDate.getDate()).padStart(2,"0")}.${String(nextVisitDate.getMonth()+1).padStart(2,"0")}.${nextVisitDate.getFullYear()}`
+      ? `${String(nextVisitDate.getDate()).padStart(2, "0")}.${String(
+          nextVisitDate.getMonth() + 1
+        ).padStart(2, "0")}.${nextVisitDate.getFullYear()}`
       : null;
 
     const formatted = {
       ...prescription,
       prescribed_at: formattedPrescribedDate,
-      prescribed_at_time: `${String(prescribedDate.getUTCHours()).padStart(2,"0")}:${String(prescribedDate.getUTCMinutes()).padStart(2,"0")}`,
+      prescribed_at_time: `${String(prescribedDate.getUTCHours()).padStart(
+        2,
+        "0"
+      )}:${String(prescribedDate.getUTCMinutes()).padStart(2, "0")}`,
       next_visit_date: formattedNextVisitDate,
-      items: prescription.items.map(item => ({
+      items: prescription.items.map((item) => ({
         ...item,
         medicine_name: item.medicine?.name ?? null,
         medicine: undefined,
       })),
-      treatmentItems: prescription.treatmentItems.map(treat => ({
+      treatmentItems: prescription.treatmentItems.map((treat) => ({
         ...treat,
         treatment_name: treat.treatment?.treatment_name ?? null,
         total_cost: treat.treatment?.total_cost ?? null,
@@ -138,6 +157,9 @@ export async function GET(
     return NextResponse.json(formatted);
   } catch (error) {
     console.error("Error fetching prescription:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
