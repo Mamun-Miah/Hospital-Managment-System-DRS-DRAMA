@@ -587,7 +587,6 @@ export default function Page() {
         </div>
       </div>
       
-
       {/* prescription pdf starts here  */}
       <div className="pdf-only" style={{ display: "none" }}>
       {/* <div className="pdf-only"> */}
