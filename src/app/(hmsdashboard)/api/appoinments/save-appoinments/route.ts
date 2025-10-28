@@ -110,10 +110,10 @@ export async function POST(req: NextRequest) {
             dose_morning: dosages.dose_morning,
             dose_mid_day: dosages.dose_mid_day,
             dose_night: dosages.dose_night,
-            duration_days: parseInt(med.duration),
+            duration_days: med?.duration+" "+med.durationType,
             medicine_advise: med.medicine_advise,
           },
-        });
+        }); 
       }
     }
 

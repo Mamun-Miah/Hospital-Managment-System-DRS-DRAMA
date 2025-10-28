@@ -500,7 +500,7 @@ export default function Page() {
                           </td>
                           <td className="ltr:text-left rtl:text-right align-top font-semibold whitespace-nowrap px-[20px] py-[18px] ltr:first:pl-[20px] rtl:first:pr-[20px] ltr:md:first:pl-[25px] rtl:md:first:pr-[25px]">
                             {item.duration_days
-                              ? `${item.duration_days} Days`
+                              ? `${item.duration_days}`
                               : "N/A"}
                           </td>
                         </tr>
@@ -879,12 +879,15 @@ export default function Page() {
                         <li className="flex">
                           •{" "}
                           <span className="font-semibold">
-                            {item.medicine_name}
+                            {item.medicine_name} 
                           </span>
-                          , ({item.dose_morning || "0"}+
-                          {item.dose_mid_day || "0"}+{item.dose_night || "0"}) -{" "}
+                          {item.dose_morning && item.dose_mid_day && item.dose_night && `, 
+                          (${item.dose_morning || "0"}+
+                          ${item.dose_mid_day || "0"}+${item.dose_night || "0"}) ` }
+                          
+                          - {" "}
                           {item.duration_days
-                            ? `${item.duration_days} days`
+                            ? `${item.duration_days}`
                             : ""}
                         </li>
                         <li className="mt-1 pb-2 pl-5">

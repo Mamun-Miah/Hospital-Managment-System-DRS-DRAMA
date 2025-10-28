@@ -247,7 +247,7 @@ model PrescriptionItem {
   dose_morning    String?
   dose_mid_day    String?
   dose_night      String?
-  duration_days   Int?
+  duration_days   String?
   medicine_advise String?      @db.Text
   prescription    Prescription @relation(fields: [prescription_id], references: [prescription_id], onDelete: Cascade)
   medicine        Medicine?    @relation(fields: [medicine_id], references: [medicine_id])

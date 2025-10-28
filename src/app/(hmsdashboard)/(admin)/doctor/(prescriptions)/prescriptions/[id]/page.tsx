@@ -55,6 +55,7 @@ interface Dosage {
 interface Medicine {
   name: string;
   duration: string;
+  durationType: string;
   dosages: Dosage[];
   // Add these new optional properties
   newMedicineName?: string;
@@ -205,6 +206,7 @@ const AddAppointment: React.FC = () => {
 
   // set all advices
   const [advises, setAdvises] = useState<Advise[]>([]);
+  // const [durationType, setDurationType] = useState<string>("");
   //Set Error
   const [error, setError] = useState("");
   //modal states
@@ -345,7 +347,7 @@ const AddAppointment: React.FC = () => {
         timer: 1500,
       });
       // alert("Prescription saved successfully!");
-      // router.push("/doctor/appointment/");
+      router.push("/doctor/appointment/");
     } catch (err: any) {
       console.error("Submission error:", err);
       setError(err.message || "Failed to submit");
@@ -606,6 +608,7 @@ const AddAppointment: React.FC = () => {
       {
         name: "Select Medicine",
         duration: "",
+        durationType: "",
         dosages: [
           { time: "Morning", amount: "" },
           { time: "Mid Day", amount: "" },
@@ -683,11 +686,11 @@ const AddAppointment: React.FC = () => {
   };
   const handleMedicineChange = (
     medIndex: number,
-    key: "name" | "duration" | "medicine_advise",
+    key: "name" | "duration" | "medicine_advise" | "durationType",
     value: string | number
   ) => {
     // console.log("formData", formData);
-    console.log("medicines", medicines);
+    
     setMedicines((prev) => {
       const updated = [...prev];
       updated[medIndex] = {
@@ -696,6 +699,7 @@ const AddAppointment: React.FC = () => {
       };
       return updated;
     });
+    
   };
 
   const handleDosageChange = <K extends keyof Dosage>(
@@ -788,6 +792,9 @@ const AddAppointment: React.FC = () => {
         : event.target.value,
     }));
   };
+
+  
+  console.log(medicines)
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -1332,8 +1339,25 @@ const AddAppointment: React.FC = () => {
                 ))}
               </div>
               <div className="w-1/3">
+            <select
+              value={medicine.durationType}
+                    onChange={(e) =>
+                      handleMedicineChange(
+                        index,
+                        "durationType",
+                        e.target.value
+                      )
+                    }
+              className=" rounded p2 border-1"
+             
+            >
+              <option value="">Select Duration</option>
+                <option value="days">Days</option>
+                <option value="month">Month</option>
+                <option value="continue">Continue</option>
+            </select>
                 <div>
-                  <label htmlFor="duration">Days</label>
+                
                   <input
                     type="number"
                     value={medicine.duration}
@@ -1341,8 +1365,14 @@ const AddAppointment: React.FC = () => {
                       handleMedicineChange(index, "duration", e.target.value)
                     }
                     placeholder="0"
+                    disabled={medicine.durationType === "continue"}
                     onClick={() => handleMouseEnter("duration")}
-                    className="h-[55px] rounded-md text-black dark:text-white border border-gray-200 dark:border-[#172036] bg-white dark:bg-[#0c1427] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner"
+                    className={`h-[55px] rounded-md text-black dark:text-white border border-gray-200
+                    ${
+                    medicine.durationType === "continue"
+                      ? "bg-gray-100 dark:bg-gray-800"
+                      : "bg-white dark:bg-[#0c1427]"
+                  } dark:border-[#172036] px-[17px] block w-full outline-0 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-500 show-spinner`}
                   />
                 </div>
                 <div className="mt-5">
@@ -1401,7 +1431,7 @@ const AddAppointment: React.FC = () => {
             </label>
             <select
               onChange={handleSelectAdvise}
-              className="mb-4 py-3 border-1"
+              className="mb-4 rounded py-2 border-1"
               name=""
               id=""
             >
