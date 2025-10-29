@@ -885,7 +885,7 @@ export default function Page() {
                           (${item.dose_morning || "0"}+
                           ${item.dose_mid_day || "0"}+${item.dose_night || "0"}) ` }
                           
-                          - {" "}
+                          - {" "}     
                           {item.duration_days
                             ? `${item.duration_days}`
                             : ""}
@@ -900,6 +900,7 @@ export default function Page() {
               </div>
             </div>
           </div>
+          
 
           <div style={{ flexShrink: 0 }}>
             {/* Footer */}
