@@ -701,7 +701,7 @@ const AddAppointment: React.FC = () => {
     });
     
   };
-
+ 
   const handleDosageChange = <K extends keyof Dosage>(
     medIndex: number,
     doseIndex: number,
