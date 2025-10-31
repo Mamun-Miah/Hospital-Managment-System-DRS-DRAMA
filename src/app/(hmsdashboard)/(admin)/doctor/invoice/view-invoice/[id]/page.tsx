@@ -11,6 +11,8 @@ interface Treatment {
   treatment_name: string;
   treatment_cost: number;
   payable_treatment_amount: number;
+  discount_value: number;
+  discount_type: string;
 }
 
 interface Invoice {
@@ -38,12 +40,17 @@ interface Invoice {
     mobile_number: string;
   };
 }
-
+interface Doctor {
+  doctor_fee: number;
+  doctor_discount_value: number;
+  doctor_discount_type: string;
+}
 const ViewInvoice: React.FC = () => {
   const [previous_due, setPrevious_due] = useState<number>(0);
   const { id } = useParams<{ id: string }>();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const [doctorInfo, setDoctorInfo] = useState<Doctor | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
 
   const totatTreatmentCost: number = treatments.reduce(
@@ -56,10 +63,16 @@ const ViewInvoice: React.FC = () => {
     const now = new Date();
     const birthDate = new Date(dateOfBirth);
     const ageInMilliseconds = now.getTime() - birthDate.getTime();
-    const ageInYears = Math.floor(ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25));
-    const remainingAfterYears = ageInMilliseconds % (1000 * 60 * 60 * 24 * 365.25);
-    const ageInMonths = Math.floor(remainingAfterYears / (1000 * 60 * 60 * 24 * 30.44));
-    const remainingAfterMonths = remainingAfterYears % (1000 * 60 * 60 * 24 * 30.44);
+    const ageInYears = Math.floor(
+      ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25)
+    );
+    const remainingAfterYears =
+      ageInMilliseconds % (1000 * 60 * 60 * 24 * 365.25);
+    const ageInMonths = Math.floor(
+      remainingAfterYears / (1000 * 60 * 60 * 24 * 30.44)
+    );
+    const remainingAfterMonths =
+      remainingAfterYears % (1000 * 60 * 60 * 24 * 30.44);
     const ageInDays = Math.floor(remainingAfterMonths / (1000 * 60 * 60 * 24));
     return `${ageInYears}Y ${ageInMonths}M ${ageInDays}D`;
   };
@@ -76,11 +89,11 @@ const ViewInvoice: React.FC = () => {
     fetch(`/api/invoice/view-invoice/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        const { treatments, invoice,previous_due } = data;
-        console.log(previous_due);
+        const { treatments, invoice, previous_due, doctor } = data;
         setPrevious_due(previous_due);
         setTreatments(treatments);
         setInvoice(invoice);
+        setDoctorInfo(doctor);
       })
       .catch((error) => {
         console.error("Error fetching invoice:", error);
@@ -97,7 +110,7 @@ const ViewInvoice: React.FC = () => {
         filename: "invoice.pdf",
         image: { type: "jpeg", quality: 1 },
         html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "landscape" as const },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
       };
       html2pdf().set(opt).from(element).save();
     }
@@ -110,7 +123,7 @@ const ViewInvoice: React.FC = () => {
         margin: 0,
         image: { type: "jpeg", quality: 1 },
         html2canvas: { scale: 3, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "landscape" as const },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
       };
 
       html2pdf()
@@ -137,7 +150,10 @@ const ViewInvoice: React.FC = () => {
         <h5 className="!mb-0">Invoice Details</h5>
         <ol className="breadcrumb mt-[12px] md:mt-0">
           <li className="breadcrumb-item inline-block relative text-sm mx-[11px]">
-            <Link href="/dashboard/ecommerce/" className="inline-block relative ltr:pl-[22px]">
+            <Link
+              href="/dashboard/ecommerce/"
+              className="inline-block relative ltr:pl-[22px]"
+            >
               <i className="material-symbols-outlined absolute ltr:left-0 top-1/2 -translate-y-1/2 text-primary-500">
                 home
               </i>
@@ -165,9 +181,9 @@ const ViewInvoice: React.FC = () => {
         </button>
       </div>
 
-      <div style={{ display: "none" }}>
-        {/* THIS IS THE UPDATED SECTION FOR THE PDF TEMPLATE */}
-        <div ref={invoiceRef} className="bg-white">
+      {/* THIS IS THE UPDATED SECTION FOR THE PDF TEMPLATE */}
+      <div className="hidden">
+        <div ref={invoiceRef} className="bg-white relative">
           <style>
             {`
               .invoice-container {
@@ -269,48 +285,80 @@ const ViewInvoice: React.FC = () => {
             {/* Header */}
             <div className="invoice-header text-center">
               <div className="flex justify-center">
-                <Image src="/images/logo.png" alt="logo" width={120} height={40} />
+                <Image
+                  src="/images/logo-org.png"
+                  alt="logo"
+                  width={180}
+                  height={60}
+                />
               </div>
-              <div className="text-xs">21 Shyamoli, Mirpur Road, Dhaka-1207 Bangladesh, Phone: 09666700100, Hotline: 10633</div>
+              <div className="text-xs">
+                Trusted Center for Skin, Hair & Sexual Health
+              </div>
             </div>
 
             {/* Barcodes and HN */}
-            <div className="invoice-section mt-4">
+            <div className="invoice-section mt-8">
               <div className="flex justify-between items-center">
-                <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
-                <div className="text-center mt-2">
-                  <span className="font-bold text-lg">HN : {invoice.invoice_number}</span>
+                <BarcodeComponent
+                  value={invoice.invoice_number}
+                  width={1}
+                  height={25}
+                />
+                <div className="text-center">
+                  <span className="font-bold">
+                    HN : {invoice.invoice_number}
+                  </span>
                 </div>
-                <BarcodeComponent value={invoice.invoice_number} width={1.5} height={25} />
+                <BarcodeComponent
+                  value={invoice.invoice_number}
+                  width={1}
+                  height={25}
+                />
               </div>
             </div>
             {/* rtes  */}
             {/* Patient and Invoice Info */}
-            <div className="invoice-section mt-4 flex justify-between">
+            <div className="invoice-section mt-5 flex justify-between">
               {/* Left Column */}
-              <div className="w-1/3">
+              <div>
                 <dl className="info-grid">
-                  <dt>Bill ID.</dt><dd>: {invoice.invoice_number}</dd>
-                  <dt>Name</dt><dd>: {invoice.patient?.patient_name || 'N/A'}</dd>
-                  <dt>Age</dt><dd>: {calculateAge(invoice.patient?.date_of_birth)}</dd>
-                  <dt>Address</dt><dd>: {invoice.patient?.address_line1 || ''}, {invoice.patient?.city || ''}, {invoice.patient?.state_province || ''}, {invoice.patient?.postal_code || ''}</dd>
+                  <dt>Bill ID.</dt>
+                  <dd>: {invoice.invoice_number}</dd>
+                  <dt>Name</dt>
+                  <dd>: {invoice.patient?.patient_name || "N/A"}</dd>
+                  <dt>Age</dt>
+                  <dd>: {calculateAge(invoice.patient?.date_of_birth)}</dd>
+                  <dt>Address</dt>
+                  <dd className="w-2/3">
+                    : {invoice.patient?.address_line1 || ""},{" "}
+                    {invoice.patient?.city || ""},{" "}
+                    {invoice.patient?.state_province || ""},{" "}
+                    {invoice.patient?.postal_code || ""}
+                  </dd>
+
+                  <dt>Date</dt>
+                  <dd>: {formattedDate(invoice.invoice_creation_date)}</dd>
+                  <dt>Gender</dt>
+                  <dd>: {invoice.patient?.gender || ""}</dd>
                 </dl>
               </div>
-              {/* Middle Column */}
-              <div className="w-1/3">
-                <dl className="info-grid">
-                  <dt>Date</dt><dd>: {formattedDate(invoice.invoice_creation_date)}</dd>
-                  <dt>Gender</dt><dd>: {invoice.patient?.gender || ''}</dd>
-                </dl>
-              </div>
+
               {/* Right Column  */}
-              <div className="w-1/3">
+              <div className="w-[190px]">
                 <dl className="info-grid">
-                  <dt></dt><dd className="font-bold">ORIGINAL COPY</dd>
-                  <dt>Patient Phone No.</dt><dd>: {invoice.patient?.mobile_number}</dd>
-                  <dt>Next App. Date</dt><dd>: {formattedDate(invoice.patient?.set_next_appoinmnet)}</dd>
-                  <dt>Payment Type</dt><dd>: {invoice.payment_type}</dd>
-                  <dt>Payment Method</dt><dd>: {invoice.payment_method}</dd>
+                  <dd className="text-[10px] font-bold">ORIGINAL COPY</dd>
+                  <dt></dt>
+                  <dt>Patient Phone No.</dt>
+                  <dd>: {invoice.patient?.mobile_number}</dd>
+                  <dt>Next App. Date</dt>
+                  <dd>
+                    : {formattedDate(invoice.patient?.set_next_appoinmnet)}
+                  </dd>
+                  <dt>Payment Type</dt>
+                  <dd>: {invoice.payment_type}</dd>
+                  <dt>Payment Method</dt>
+                  <dd>: {invoice.payment_method}</dd>
                 </dl>
               </div>
             </div>
@@ -320,56 +368,129 @@ const ViewInvoice: React.FC = () => {
               <table className="table-invoice">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>Service Name</th>
-                    <th style={{ textAlign: 'right' }}>Amount</th>
+                    <th style={{ textAlign: "left" }}>Service Name</th>
+
+                    <th className="text-start">Service Fee</th>
+                    <th className="text-start">Discount</th>
+                    <th style={{ textAlign: "right" }}>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {treatments.map((treatment, i) => (
+                  {treatments?.map((treatment, i) => (
                     <tr key={i}>
                       <td>{treatment.treatment_name}</td>
-                      <td style={{ textAlign: 'right' }}>{treatment.payable_treatment_amount.toFixed(2)}</td>
+                      <td>BDT. {treatment.treatment_cost}</td>
+                      <td>{`${
+                        treatment.discount_type === "Flat" ? "BDT. " : ""
+                      }${treatment.discount_value}${
+                        treatment.discount_type === "Percentage" ? "%" : ""
+                      }`}</td>
+                      <td style={{ textAlign: "right" }}>
+                        {treatment.payable_treatment_amount.toFixed(2)}
+                      </td>
                     </tr>
                   ))}
                   <tr>
                     <td>Doctor Fee</td>
-                    <td style={{ textAlign: 'right' }}>{invoice.doctor_fee.toFixed(2)}</td>
+                    <td>BDT. {doctorInfo?.doctor_fee}</td>
+                    <td>{`${
+                      doctorInfo?.doctor_discount_type === "Flat" ? "BDT. " : ""
+                    }${doctorInfo?.doctor_discount_value}${
+                      doctorInfo?.doctor_discount_type === "Percentage"
+                        ? "%"
+                        : ""
+                    } `}</td>
+                    <td style={{ textAlign: "right" }}>
+                      {invoice.doctor_fee.toFixed(2)}
+                    </td>
                   </tr>
                 </tbody>
               </table>
 
-
-
               <div className="mt-4 flex justify-between items-end">
                 <div>
                   {/* paid or due stamp  */}
-                  {(totatTreatmentCost + invoice.doctor_fee + previous_due - invoice.paid_amount) === 0 ? (
+                  {totatTreatmentCost +
+                    invoice.doctor_fee +
+                    previous_due -
+                    invoice.paid_amount ===
+                  0 ? (
                     <div className="paid-stamp">PAID</div>
                   ) : (
                     <div className="due-stamp">DUE</div>
                   )}
-                  <p><span className="font-bold">In Word:</span> Taka - {numberToWords(invoice.paid_amount)} Only</p>
-                  <p className="mt-2"><span className="font-bold">Prepared By:</span> DRS DERMA</p>
+                  <p>
+                    <span className="font-bold">In Word:</span> Taka -{" "}
+                    {numberToWords(invoice.paid_amount)} Only
+                  </p>
+                  <p className="mt-2">
+                    <span className="font-bold">Prepared By:</span> DRS DERMA
+                  </p>
                 </div>
                 <div className="summary-table">
                   <table style={{ width: "100%" }}>
                     <tbody>
-                      <tr><td>Total Treatment Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost}</td></tr>
-                      <tr><td>Previous Due:</td><td style={{ textAlign: 'right' }}>BDT. {previous_due}</td></tr>
-                      <tr><td >Total Cost:</td><td style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost + invoice.doctor_fee + previous_due}</td></tr>
-                      <tr><td ></td><td style={{ textAlign: 'right' }}></td></tr>
+                      {/* <tr>
+                        <td>Total Treatment Cost:</td>
+                        <td style={{ textAlign: "right" }}>
+                          BDT. {totatTreatmentCost}
+                        </td>
+                      </tr> */}
+                      <tr>
+                        <td>Previous Due:</td>
+                        <td style={{ textAlign: "right" }}>
+                          BDT. {previous_due}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Total Cost:</td>
+                        <td style={{ textAlign: "right" }}>
+                          BDT.{" "}
+                          {totatTreatmentCost +
+                            invoice.doctor_fee +
+                            previous_due}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style={{ textAlign: "right" }}></td>
+                      </tr>
 
                       <tr className="border-t summary-row-padded">
                         <td className="font-bold">Paid Amount:</td>
-                        <td className="font-bold" style={{ textAlign: 'right' }}>BDT. {invoice.paid_amount}</td>
+                        <td
+                          className="font-bold"
+                          style={{ textAlign: "right" }}
+                        >
+                          BDT. {invoice.paid_amount}
+                        </td>
                       </tr>
                       <tr className="border-t summary-row-padded">
                         <td className="font-bold">Due Tk.</td>
-                        <td className="font-bold" style={{ textAlign: 'right' }}>BDT. {totatTreatmentCost + invoice.doctor_fee + previous_due - invoice.paid_amount}</td>
+                        <td
+                          className="font-bold"
+                          style={{ textAlign: "right" }}
+                        >
+                          BDT.{" "}
+                          {totatTreatmentCost +
+                            invoice.doctor_fee +
+                            previous_due -
+                            invoice.paid_amount}
+                        </td>
                       </tr>
 
-                      <tr><td colSpan={2} style={{ borderTop: "1px solid #000" }}></td></tr>
-                      <tr><td colSpan={2} style={{ borderTop: "1px solid #000" }}></td></tr>
+                      <tr>
+                        <td
+                          colSpan={2}
+                          style={{ borderTop: "1px solid #000" }}
+                        ></td>
+                      </tr>
+                      <tr>
+                        <td
+                          colSpan={2}
+                          style={{ borderTop: "1px solid #000" }}
+                        ></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -379,11 +500,22 @@ const ViewInvoice: React.FC = () => {
             {/* Footer */}
             <div className="invoice-footer mt-auto pt-4 flex justify-between items-center">
               <div>
-                <p className="font-bold" style={{ borderTop: '1px solid #000', paddingTop: '2px' }}>Billing Officer</p>
+                <p
+                  className="font-bold"
+                  style={{ borderTop: "1px solid #000", paddingTop: "2px" }}
+                >
+                  Billing Officer
+                </p>
               </div>
-              <div>
-                <p className="text-xs">Software By: MSSL.</p>
-              </div>
+              <p className="text-xs text-gray-500 text-center">
+                Software By:{" "}
+                <span
+                  // href="mailto:info@mapleitfirm.com"
+                  className="text-gray-400"
+                >
+                  mapleitfirm.com
+                </span>
+              </p>
             </div>
           </div>
         </div>
@@ -397,20 +529,50 @@ const ViewInvoice: React.FC = () => {
         <div className="trezo-card bg-white dark:bg-[#0c1427] mb-[25px] p-[20px] md:p-[25px] rounded-md">
           <div className="sm:flex items-center justify-between">
             <div>
-              <Image src="/images/logo.png" alt="logo" className="mb-[10px] dark:hidden" width={120} height={30} />
-              <Image src="/images/white-logo.svg" alt="logo" className="mb-[10px] hidden dark:block" width={120} height={30} />
+              <Image
+                src="/images/logo-org.png"
+                alt="logo"
+                className="mb-[10px] dark:hidden"
+                width={120}
+                height={30}
+              />
 
               <ul className="mb-[7px]">
-                <li className="mb-[7px] text-md">Invoice Number: <span className="text-black dark:text-white">{invoice.invoice_number}</span></li>
-                <li className="mb-[7px] text-md">Invoice Date: <span className="text-black dark:text-white">{formattedDate(invoice.invoice_creation_date)}</span></li>
+                <li className="mb-[7px] text-md">
+                  Invoice Number:{" "}
+                  <span className="text-black dark:text-white">
+                    {invoice.invoice_number}
+                  </span>
+                </li>
+                <li className="mb-[7px] text-md">
+                  Invoice Date:{" "}
+                  <span className="text-black dark:text-white">
+                    {formattedDate(invoice.invoice_creation_date)}
+                  </span>
+                </li>
               </ul>
             </div>
 
             <div className="mt-[20px] sm:mt-0">
               <ul className="mb-[7px]">
-                <li className="mb-[7px] text-md">Patient ID: <span className="text-black dark:text-white">{invoice.patient_id}</span></li>
-                <li className="mb-[7px] text-md">Patient Name: <span className="text-black dark:text-white">{invoice.patient?.patient_name}</span></li>
-                <li className="mb-[7px] text-md">Next Session: <span className="text-black dark:text-white">{formattedDate(invoice.next_session_date)}</span></li>
+                <li className="mb-[7px] text-md">
+                  Patient ID:{" "}
+                  <span className="text-black dark:text-white">
+                    {invoice.patient_id}
+                  </span>
+                </li>
+                <li className="mb-[7px] text-md">
+                  Patient Name:{" "}
+                  <span className="text-black dark:text-white">
+                    {invoice.patient?.patient_name}
+                  </span>
+                </li>
+                <li className="mb-[7px] text-md">
+                  Next Session:{" "}
+                  <span className="text-black dark:text-white">
+                    {formattedDate(invoice.patient?.set_next_appoinmnet)}
+                  </span>
+                </li>
               </ul>
             </div>
           </div>
@@ -481,10 +643,16 @@ const ViewInvoice: React.FC = () => {
                 <tr className="mt-5 font-semibold text-black">
                   <td className="p-3 pl-6 flex gap-3">
                     <div className="text-sm">
-                      Payment Type: <span className="font-medium">{invoice.payment_type}</span>
+                      Payment Type:{" "}
+                      <span className="font-medium">
+                        {invoice.payment_type}
+                      </span>
                     </div>
                     <div className="text-sm">
-                      Payment Method: <span className="font-medium">{invoice.payment_method}</span>
+                      Payment Method:{" "}
+                      <span className="font-medium">
+                        {invoice.payment_method}
+                      </span>
                     </div>
                   </td>
                   <td className="p-3 pl-6">
@@ -503,7 +671,11 @@ const ViewInvoice: React.FC = () => {
                   <td className="p-3"></td>
                   <td className="p-3 pl-6">Total Due: </td>
                   <td className="p-3 pl-6">
-                    Tk. {totatTreatmentCost + invoice.doctor_fee + previous_due - invoice.paid_amount}
+                    Tk.{" "}
+                    {totatTreatmentCost +
+                      invoice.doctor_fee +
+                      previous_due -
+                      invoice.paid_amount}
                   </td>
                 </tr>
               </tbody>

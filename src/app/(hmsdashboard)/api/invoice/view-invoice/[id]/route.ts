@@ -1,4 +1,3 @@
-
 import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
@@ -55,7 +54,11 @@ export async function GET(
           },
         },
         prescription: {
-          select: { prescription_id: true },
+          select: {
+            prescription_id: true,
+            doctor_discount_type: true,
+            doctor_discount_value: true,
+          },
         },
       },
     });
@@ -88,6 +91,13 @@ export async function GET(
       },
     });
 
+    const doctorInfo = await prisma.doctor.findUnique({
+      where: { doctor_id: invoice?.doctor_id || undefined },
+      select: {
+        doctor_fee: true,
+      },
+    });
+
     const formattedTreatments = treatments.map((t) => ({
       treatment_id: t.treatment?.treatment_id,
       treatment_name: t.treatment?.treatment_name || "",
@@ -104,6 +114,11 @@ export async function GET(
         previous_due: previousInvoice?.due_amount ?? 0,
         previous_invoice_number: previousInvoice?.invoice_number ?? null,
         treatments: formattedTreatments,
+        doctor: {
+          doctor_fee: doctorInfo?.doctor_fee,
+          doctor_discount_type: invoice.prescription?.doctor_discount_type,
+          doctor_discount_value: invoice.prescription?.doctor_discount_value,
+        },
       },
       { status: 200 }
     );
