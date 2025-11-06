@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
       previousDue = latestInvoice.due_amount;
       newDueAmount = previousDue; // starting due
     }
-
+ 
     // Generate invoice number
     const invoiceNumber = await generateInvoiceNumber(patient_id);
 
